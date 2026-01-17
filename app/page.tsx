@@ -45,11 +45,11 @@ export default function Home() {
         async function fetchContent() {
             try {
                 const [trendingRes, newestRes, pakRes, indRes, hwdRes] = await Promise.all([
-                    fetch('/api/movies?category=trending&limit=20'),
-                    fetch('/api/movies?category=new&limit=20'),
-                    fetch('/api/movies?category=pakistani&limit=20'),
-                    fetch('/api/movies?category=indian&limit=20'),
-                    fetch('/api/movies?category=hollywood&limit=20')
+                    fetch('/api/movies?category=trending&limit=100'),
+                    fetch('/api/movies?category=new&limit=100'),
+                    fetch('/api/movies?category=pakistani&limit=100'),
+                    fetch('/api/movies?category=indian&limit=100'),
+                    fetch('/api/movies?category=hollywood&limit=100')
                 ]);
 
                 const [tData, nData, pData, iData, hData] = await Promise.all([

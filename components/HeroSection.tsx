@@ -67,7 +67,7 @@ export default function HeroSection({ movies }: { movies: Movie[] }) {
                                 initial={{ y: 30, opacity: 0 }}
                                 animate={{ y: 0, opacity: 1 }}
                                 transition={{ delay: 0.4 }}
-                                className="text-4xl sm:text-5xl md:text-8xl font-black text-white uppercase tracking-tighter mb-4 md:mb-6 leading-[0.9] md:leading-[0.85]"
+                                className="text-3xl sm:text-5xl md:text-8xl font-black text-white uppercase tracking-tighter mb-4 md:mb-6 leading-[0.9] md:leading-[0.85]"
                             >
                                 {movie.title}
                             </motion.h1>
@@ -76,7 +76,7 @@ export default function HeroSection({ movies }: { movies: Movie[] }) {
                                 initial={{ y: 30, opacity: 0 }}
                                 animate={{ y: 0, opacity: 1 }}
                                 transition={{ delay: 0.5 }}
-                                className="text-white/60 text-base md:text-xl line-clamp-2 md:line-clamp-3 max-w-xl mb-8 md:mb-10 leading-relaxed font-medium"
+                                className="text-white/60 text-sm md:text-xl line-clamp-2 md:line-clamp-3 max-w-xl mb-8 md:mb-10 leading-relaxed font-medium"
                             >
                                 {movie.overview}
                             </motion.p>

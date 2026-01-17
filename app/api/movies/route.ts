@@ -68,7 +68,7 @@ export async function GET(request: Request) {
         }
 
         // Fetch details for all titles (in batches to avoid rate limiting)
-        const batchSize = 20;
+        const batchSize = 30;
         const titlesWithDetails: any[] = [];
 
         for (let i = 0; i < allTitles.length; i += batchSize) {
@@ -80,7 +80,7 @@ export async function GET(request: Request) {
 
             // Small delay between batches to avoid rate limiting
             if (i + batchSize < allTitles.length) {
-                await new Promise(resolve => setTimeout(resolve, 100));
+                await new Promise(resolve => setTimeout(resolve, 50));
             }
         }
 
