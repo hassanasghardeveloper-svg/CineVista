@@ -200,6 +200,7 @@ export default function WatchPage() {
                         {streamSource === 'vidking' ? (
                             <VidkingPlayer
                                 tmdbId={title.tmdb_id}
+                                imdbId={title.imdb_id}
                                 type={title.type === 'tv_series' ? 'tv' : 'movie'}
                                 theme="#f97316" // matching accent-orange
                                 onProgress={handleProgress}
@@ -207,6 +208,7 @@ export default function WatchPage() {
                         ) : (
                             <VidnestPlayer
                                 tmdbId={title.tmdb_id}
+                                imdbId={title.imdb_id}
                                 type={title.type === 'tv_series' ? 'tv' : 'movie'}
                                 color="#f97316" // matching accent-orange
                                 onProgress={handleProgress}

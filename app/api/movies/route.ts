@@ -43,32 +43,28 @@ export async function GET(request: Request) {
     try {
         let allTitles: any[] = [];
 
-        if (category === 'all') {
-            // Fetch from all categories and combine
-            // Pakistani content (Urdu)
-            const pakistaniTitles = await fetchTitlesList(type, 'ur', 100);
-
-            // Indian content (Hindi)
-            const indianTitles = await fetchTitlesList(type, 'hi', 150);
-
-            // Hollywood content (English)
-            const hollywoodTitles = await fetchTitlesList(type, 'en', 250);
-
-            // Combine all - deduplicate by ID
-            const combined = [...pakistaniTitles, ...indianTitles, ...hollywoodTitles];
-            const seen = new Set();
-            allTitles = combined.filter((t: any) => {
-                if (seen.has(t.id)) return false;
-                seen.add(t.id);
-                return true;
-            }).slice(0, limit);
-
+        if (category === 'trending') {
+            allTitles = await fetchTitlesList(type, null, limit);
         } else if (category === 'pakistani') {
             allTitles = await fetchTitlesList(type, 'ur', limit);
         } else if (category === 'indian') {
             allTitles = await fetchTitlesList(type, 'hi', limit);
         } else if (category === 'hollywood') {
             allTitles = await fetchTitlesList(type, 'en', limit);
+        } else if (category === 'new') {
+            // Fetch and sort by year/release date
+            const params = new URLSearchParams({
+                apiKey: API_KEY || '',
+                types: type === 'tv' ? 'tv_series' : 'movie',
+                limit: String(limit),
+                sort_by: 'release_date_desc',
+            });
+            const res = await fetch(`${BASE_URL}/list-titles/?${params}`);
+            const data = await res.json();
+            allTitles = data.titles || [];
+        } else {
+            // Default to trending/all
+            allTitles = await fetchTitlesList(type, null, limit);
         }
 
         // Fetch details for all titles (in batches to avoid rate limiting)

@@ -3,7 +3,8 @@
 import { useEffect, useRef } from 'react';
 
 interface VidnestPlayerProps {
-    tmdbId: number | string;
+    tmdbId?: number | string;
+    imdbId?: string;
     type: 'movie' | 'tv';
     season?: number | string;
     episode?: number | string;
@@ -14,6 +15,7 @@ interface VidnestPlayerProps {
 
 export default function VidnestPlayer({
     tmdbId,
+    imdbId,
     type,
     season = 1,
     episode = 1,
@@ -41,9 +43,13 @@ export default function VidnestPlayer({
     }, [onProgress]);
 
     const baseUrl = 'https://vidnest.net/embed';
+    const id = tmdbId || imdbId;
+
+    if (!id) return <div className="p-10 text-center text-white/40">No ID provided</div>;
+
     const embedUrl = type === 'movie'
-        ? `${baseUrl}/movie/${tmdbId}`
-        : `${baseUrl}/tv/${tmdbId}/${season}/${episode}`;
+        ? `${baseUrl}/movie/${id}`
+        : `${baseUrl}/tv/${id}/${season}/${episode}`;
 
     const params = new URLSearchParams();
     if (autoplay) params.append('autoplay', '1');
@@ -59,6 +65,7 @@ export default function VidnestPlayer({
                 className="absolute inset-0 w-full h-full"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
+                referrerPolicy="origin"
                 title={`Vidnest Player - ${type === 'movie' ? 'Movie' : 'TV Series'}`}
             />
         </div>

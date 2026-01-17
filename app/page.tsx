@@ -34,26 +34,38 @@ function transformMovie(apiMovie: any): Movie {
 }
 
 export default function Home() {
-    const [movies, setMovies] = useState<Movie[]>([]);
-    const [tvShows, setTvShows] = useState<Movie[]>([]);
+    const [trending, setTrending] = useState<Movie[]>([]);
+    const [newest, setNewest] = useState<Movie[]>([]);
+    const [pakistani, setPakistani] = useState<Movie[]>([]);
+    const [indian, setIndian] = useState<Movie[]>([]);
+    const [hollywood, setHollywood] = useState<Movie[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         async function fetchContent() {
             try {
-                // Fetch movies
-                const moviesRes = await fetch('/api/movies?type=movie&limit=15');
-                const moviesData = await moviesRes.json();
-                if (moviesData.titles) {
-                    setMovies(moviesData.titles.map(transformMovie));
-                }
+                const [trendingRes, newestRes, pakRes, indRes, hwdRes] = await Promise.all([
+                    fetch('/api/movies?category=trending&limit=20'),
+                    fetch('/api/movies?category=new&limit=20'),
+                    fetch('/api/movies?category=pakistani&limit=20'),
+                    fetch('/api/movies?category=indian&limit=20'),
+                    fetch('/api/movies?category=hollywood&limit=20')
+                ]);
 
-                // Fetch TV shows
-                const tvRes = await fetch('/api/movies?type=tv&limit=10');
-                const tvData = await tvRes.json();
-                if (tvData.titles) {
-                    setTvShows(tvData.titles.map(transformMovie));
-                }
+                const [tData, nData, pData, iData, hData] = await Promise.all([
+                    trendingRes.json(),
+                    newestRes.json(),
+                    pakRes.json(),
+                    indRes.json(),
+                    hwdRes.json()
+                ]);
+
+                if (tData.titles) setTrending(tData.titles.map(transformMovie));
+                if (nData.titles) setNewest(nData.titles.map(transformMovie));
+                if (pData.titles) setPakistani(pData.titles.map(transformMovie));
+                if (iData.titles) setIndian(iData.titles.map(transformMovie));
+                if (hData.titles) setHollywood(hData.titles.map(transformMovie));
+
             } catch (error) {
                 console.error('Failed to fetch content:', error);
             } finally {
@@ -64,15 +76,14 @@ export default function Home() {
         fetchContent();
     }, []);
 
-    const allContent = [...movies, ...tvShows];
-    const heroContent = movies.length > 0 ? movies.slice(0, 6) : [];
+    const heroContent = trending.slice(0, 6);
 
     if (loading) {
         return (
             <main className="min-h-screen bg-black flex items-center justify-center">
                 <div className="text-center">
                     <div className="w-12 h-12 border-4 border-accent-orange border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-                    <p className="text-white/40 text-sm font-bold uppercase tracking-widest">Loading movies...</p>
+                    <p className="text-white/40 text-sm font-bold uppercase tracking-widest">Loading Cinema...</p>
                 </div>
             </main>
         );
@@ -81,17 +92,26 @@ export default function Home() {
     return (
         <main className="min-h-screen bg-black">
             <Header />
-            {heroContent.length > 0 && (
-                <>
-                    <HeroSection movies={heroContent} />
-                    <div className="relative z-10 py-20 space-y-16">
-                        <MovieRow title="Trending Movies" movies={movies} />
-                        {tvShows.length > 0 && <MovieRow title="Popular TV Shows" movies={tvShows} />}
-                        <MovieRow title="Top Rated" movies={[...movies].sort((a, b) => b.rating - a.rating)} />
-                    </div>
-                    <Footer />
-                </>
-            )}
+            {heroContent.length > 0 && <HeroSection movies={heroContent} />}
+
+            <div className="relative z-10 py-12 space-y-20">
+                <MovieRow title="Trending Now" movies={trending} />
+                <MovieRow title="New Releases" movies={newest} />
+
+                {pakistani.length > 0 && (
+                    <MovieRow title="Pakistani Dramas & Movies" movies={pakistani} />
+                )}
+
+                {indian.length > 0 && (
+                    <MovieRow title="Indian Cinema" movies={indian} />
+                )}
+
+                {hollywood.length > 0 && (
+                    <MovieRow title="Hollywood Blockbusters" movies={hollywood} />
+                )}
+            </div>
+
+            <Footer />
         </main>
     );
 }
