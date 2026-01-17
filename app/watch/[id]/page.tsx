@@ -138,9 +138,9 @@ export default function WatchPage() {
             </div>
 
             {/* Player Header / Toggle */}
-            <div className="bg-dark-900 border-b border-white/5 px-6 py-4">
-                <div className="max-w-[1400px] mx-auto flex items-center justify-between">
-                    <div className="flex gap-2 items-center">
+            <div className="bg-dark-900 border-b border-white/5 px-4 md:px-6 py-4">
+                <div className="max-w-[1400px] mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div className="flex flex-wrap justify-center md:justify-start gap-2 items-center">
                         <button
                             onClick={() => setWatchMode('trailer')}
                             className={`flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-black uppercase tracking-widest transition-all ${watchMode === 'trailer'
@@ -151,23 +151,24 @@ export default function WatchPage() {
                             <Youtube className="w-4 h-4" />
                             Official Trailer
                         </button>
-                        {title.tmdb_id && (
+                        {/* Mobile Optimized Play Button */}
+                        {(title.tmdb_id || title.imdb_id) && (
                             <button
                                 onClick={() => setWatchMode('movie')}
-                                className={`flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-black uppercase tracking-widest transition-all ${watchMode === 'movie'
+                                className={`flex items-center gap-2 px-6 py-2.5 rounded-full text-xs md:text-sm font-black uppercase tracking-widest transition-all ${watchMode === 'movie'
                                     ? 'bg-accent-orange text-white ring-4 ring-accent-orange/20'
                                     : 'bg-accent-orange/10 text-accent-orange hover:bg-accent-orange/20'
                                     }`}
                             >
                                 <Play className="w-4 h-4 fill-current" />
-                                Watch {title.type === 'tv_series' ? 'Series' : 'Movie'}
+                                {title.type === 'tv_series' ? 'Watch Series' : 'Watch Movie'}
                             </button>
                         )}
                     </div>
 
                     {/* Source Switcher - Only show in movie mode */}
                     {watchMode === 'movie' && (
-                        <div className="flex items-center gap-3 bg-white/5 p-1 rounded-full border border-white/10">
+                        <div className="flex flex-wrap justify-center items-center gap-2 md:gap-3 bg-white/5 p-1 rounded-full border border-white/10">
                             <button
                                 onClick={() => setStreamSource('vidking')}
                                 className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-tighter transition-all ${streamSource === 'vidking'
@@ -194,9 +195,9 @@ export default function WatchPage() {
             </div>
 
             {/* Video Player Section */}
-            <div className="w-full bg-black">
-                {watchMode === 'movie' && title.tmdb_id ? (
-                    <div className="max-w-[1400px] mx-auto aspect-video">
+            <div className="w-full bg-black relative">
+                {watchMode === 'movie' && (title.tmdb_id || title.imdb_id) ? (
+                    <div className="max-w-[1400px] mx-auto w-full aspect-video">
                         {streamSource === 'vidking' ? (
                             <VidkingPlayer
                                 tmdbId={title.tmdb_id}

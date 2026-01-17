@@ -66,9 +66,10 @@ export default function VidkingPlayer({
                 ref={iframeRef}
                 src={finalUrl}
                 className="absolute inset-0 w-full h-full"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowFullScreen
-                referrerPolicy="origin"
+                referrerPolicy="no-referrer"
+                loading="lazy"
                 title={`Vidking Player - ${type === 'movie' ? 'Movie' : 'TV Series'}`}
             />
         </div>
