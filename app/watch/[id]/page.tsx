@@ -3,8 +3,8 @@
 import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowLeft, Star, Calendar, ShieldCheck, Server, AlertCircle, X } from 'lucide-react'
+import { motion } from 'framer-motion'
+import { ArrowLeft, Star, Calendar, ShieldCheck, AlertCircle } from 'lucide-react'
 import { Movie } from '@/app/page'
 
 
