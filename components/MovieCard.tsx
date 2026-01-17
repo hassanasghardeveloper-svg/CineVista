@@ -1,42 +1,56 @@
 'use client';
 
-import { useState } from 'react';
-import { Play, Info, Star } from 'lucide-react';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { Star, Play } from 'lucide-react';
 import { Movie } from '@/app/page';
 
 export default function MovieCard({ movie }: { movie: Movie }) {
     return (
-        <motion.div
-            whileHover={{ scale: 1.05, y: -5 }}
-            className="flex-shrink-0 w-48 md:w-56 group cursor-pointer"
+        <Link
+            href={`/watch/${movie.id}`}
+            className="group relative block aspect-[2/3] w-full bg-dark-800 rounded-lg md:rounded-xl overflow-hidden shadow-2xl transition-all duration-500 hover:shadow-accent-orange/10"
         >
-            <Link href={`/watch/${movie.id}`}>
-                <div className="relative aspect-[2/3] rounded-xl overflow-hidden shadow-2xl border border-white/5 mb-3 bg-zinc-900">
-                    <img
-                        src={movie.posterPath}
-                        alt={movie.title}
-                        className="w-full h-full object-cover transition-all duration-500 group-hover:brightness-50"
-                        loading="lazy"
-                    />
-                    <div className="absolute inset-0 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                        <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-black">
-                            <Play className="fill-current w-6 h-6 ml-1" />
-                        </div>
+            <div
+                className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
+                style={{ backgroundImage: `url(${movie.posterPath})` }}
+            />
+
+            {/* Premium Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-60 group-hover:opacity-100 transition-opacity duration-300" />
+
+            <div className="absolute inset-0 flex flex-col justify-end p-4 md:p-6 translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                <div className="bg-black/40 backdrop-blur-xl border border-white/10 rounded-xl p-3 md:p-4 opacity-0 group-hover:opacity-100 transition-all duration-500 scale-95 group-hover:scale-100">
+                    <div className="flex items-center justify-between mb-2">
+                        <span className="bg-accent-orange text-[8px] font-black tracking-widest px-1.5 py-0.5 rounded text-white uppercase">
+                            {movie.type === 'tv_series' ? 'TV' : 'HD'}
+                        </span>
+                        {movie.rating > 0 && (
+                            <div className="flex items-center gap-1">
+                                <Star className="w-3 h-3 text-accent-orange fill-current" />
+                                <span className="text-[10px] font-black text-white">{movie.rating.toFixed(1)}</span>
+                            </div>
+                        )}
                     </div>
-                    <div className="absolute top-2 right-2 bg-black/60 backdrop-blur-md px-2 py-1 rounded-md flex items-center gap-1">
-                        <Star className="w-3 h-3 text-accent-orange fill-current" />
-                        <span className="text-[10px] font-bold text-white">{movie.rating.toFixed(1)}</span>
+                    <h3 className="text-white font-black text-xs md:text-sm uppercase tracking-tight line-clamp-1 mb-1">
+                        {movie.title}
+                    </h3>
+                    <div className="flex items-center gap-2 text-[8px] font-bold text-white/40 uppercase tracking-widest">
+                        <span>{movie.releaseDate?.split('-')[0] || 'N/A'}</span>
+                        {movie.genres && movie.genres[0] && (
+                            <>
+                                <span className="w-1 h-1 rounded-full bg-white/20" />
+                                <span>{movie.genres[0]}</span>
+                            </>
+                        )}
                     </div>
                 </div>
-                <h3 className="text-white text-sm font-bold truncate group-hover:text-accent-orange transition-colors">
-                    {movie.title}
-                </h3>
-                <p className="text-zinc-500 text-[10px] mt-1 uppercase font-bold tracking-widest">
-                    {movie.releaseDate.split('-')[0]}
-                </p>
-            </Link>
-        </motion.div>
+            </div>
+
+            <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="bg-white text-black p-2 rounded-full shadow-xl">
+                    <Play className="w-3 h-3 fill-current" />
+                </div>
+            </div>
+        </Link>
     );
 }

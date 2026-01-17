@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import HeroSection from '../components/HeroSection';
 import MovieRow from '../components/MovieRow';
-import AddMovieModal from '../components/AddMovieModal';
 import Footer from '../components/Footer';
 
 export interface Movie {
@@ -15,64 +14,83 @@ export interface Movie {
     backdropPath: string;
     releaseDate: string;
     rating: number;
-    embedCode: string;
+    type: string;
+    genres: string[];
 }
 
-const DEMO_MOVIES: Movie[] = [
-    {
-        id: '1',
-        title: 'Inception',
-        overview: 'A thief who steals corporate secrets through dream-sharing technology is given the inverse task of planting an idea into a CEO\'s mind.',
-        posterPath: 'https://image.tmdb.org/t/p/w500/9gk7adHYeDvHkCSEqAvQNLV5Ber.jpg',
-        backdropPath: 'https://image.tmdb.org/t/p/original/s3TBrRGB1iav7gFOCNx3H31MoES.jpg',
-        releaseDate: '2010-07-16',
-        rating: 8.4,
-        embedCode: '<iframe src="https://www.youtube.com/embed/YoHD9XEInc0" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>'
-    }
-];
+// Transform API response to our Movie format
+function transformMovie(apiMovie: any): Movie {
+    return {
+        id: String(apiMovie.id),
+        title: apiMovie.title || 'Unknown Title',
+        overview: apiMovie.plot_overview || 'No description available.',
+        posterPath: apiMovie.poster || 'https://via.placeholder.com/500x750?text=No+Poster',
+        backdropPath: apiMovie.backdrop || apiMovie.poster || 'https://via.placeholder.com/1920x1080?text=No+Image',
+        releaseDate: apiMovie.release_date || apiMovie.year?.toString() || '',
+        rating: apiMovie.user_rating || 0,
+        type: apiMovie.type || 'movie',
+        genres: apiMovie.genre_names || [],
+    };
+}
 
 export default function Home() {
     const [movies, setMovies] = useState<Movie[]>([]);
-    const [showAddModal, setShowAddModal] = useState(false);
+    const [tvShows, setTvShows] = useState<Movie[]>([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const saved = localStorage.getItem('cinevault_movies_v2');
-        if (saved) {
-            setMovies(JSON.parse(saved));
-        } else {
-            setMovies(DEMO_MOVIES);
-            localStorage.setItem('cinevault_movies_v2', JSON.stringify(DEMO_MOVIES));
+        async function fetchContent() {
+            try {
+                // Fetch movies
+                const moviesRes = await fetch('/api/movies?type=movie&limit=15');
+                const moviesData = await moviesRes.json();
+                if (moviesData.titles) {
+                    setMovies(moviesData.titles.map(transformMovie));
+                }
+
+                // Fetch TV shows
+                const tvRes = await fetch('/api/movies?type=tv&limit=10');
+                const tvData = await tvRes.json();
+                if (tvData.titles) {
+                    setTvShows(tvData.titles.map(transformMovie));
+                }
+            } catch (error) {
+                console.error('Failed to fetch content:', error);
+            } finally {
+                setLoading(false);
+            }
         }
+
+        fetchContent();
     }, []);
 
-    const addMovie = (movie: Movie) => {
-        const updated = [...movies, movie];
-        setMovies(updated);
-        localStorage.setItem('cinevault_movies_v2', JSON.stringify(updated));
-        setShowAddModal(false);
-    };
+    const allContent = [...movies, ...tvShows];
+    const heroContent = movies.length > 0 ? movies.slice(0, 6) : [];
+
+    if (loading) {
+        return (
+            <main className="min-h-screen bg-black flex items-center justify-center">
+                <div className="text-center">
+                    <div className="w-12 h-12 border-4 border-accent-orange border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+                    <p className="text-white/40 text-sm font-bold uppercase tracking-widest">Loading movies...</p>
+                </div>
+            </main>
+        );
+    }
 
     return (
-        <main className="min-h-screen bg-dark-950">
-            <Header onAddClick={() => setShowAddModal(true)} />
-
-            {movies.length > 0 && (
+        <main className="min-h-screen bg-black">
+            <Header />
+            {heroContent.length > 0 && (
                 <>
-                    <HeroSection movies={movies.slice(0, 5)} />
-                    <div className="relative z-10 -mt-24 pb-20 space-y-16">
-                        <MovieRow title="Your Library" movies={movies} />
-                        <MovieRow title="Favorites" movies={[...movies].sort((a, b) => b.rating - a.rating)} />
+                    <HeroSection movies={heroContent} />
+                    <div className="relative z-10 py-20 space-y-16">
+                        <MovieRow title="Trending Movies" movies={movies} />
+                        {tvShows.length > 0 && <MovieRow title="Popular TV Shows" movies={tvShows} />}
+                        <MovieRow title="Top Rated" movies={[...movies].sort((a, b) => b.rating - a.rating)} />
                     </div>
+                    <Footer />
                 </>
-            )}
-
-            <Footer />
-
-            {showAddModal && (
-                <AddMovieModal
-                    onClose={() => setShowAddModal(false)}
-                    onAdd={addMovie}
-                />
             )}
         </main>
     );

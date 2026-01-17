@@ -1,21 +1,25 @@
+'use client';
+
 import MovieCard from './MovieCard';
 import { Movie } from '@/app/page';
 
-interface MovieRowProps {
-    title: string;
-    movies: Movie[];
-}
+export default function MovieRow({ title, movies }: { title: string; movies: Movie[] }) {
+    if (movies.length === 0) return null;
 
-export default function MovieRow({ title, movies }: MovieRowProps) {
     return (
         <section className="px-6 md:px-12">
-            <h2 className="text-xl md:text-2xl font-black text-white uppercase tracking-tighter mb-8 pl-1 border-l-4 border-accent-orange">
+            <h2 className="text-sm font-black uppercase tracking-[0.3em] text-white/40 mb-6 flex items-center gap-4">
                 {title}
+                <div className="h-[1px] flex-1 bg-white/5" />
             </h2>
-            <div className="flex gap-4 md:gap-6 overflow-x-auto hide-scrollbar pb-8 px-1">
-                {movies.map(movie => (
-                    <MovieCard key={movie.id} movie={movie} />
-                ))}
+            <div className="relative group/row">
+                <div className="flex gap-4 overflow-x-auto scrollbar-hide pb-4 hide-scrollbar scroll-smooth">
+                    {movies.map(movie => (
+                        <div key={movie.id} className="min-w-[160px] md:min-w-[240px] transition-transform duration-300 hover:scale-105 active:scale-95">
+                            <MovieCard movie={movie} />
+                        </div>
+                    ))}
+                </div>
             </div>
         </section>
     );
