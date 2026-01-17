@@ -5,6 +5,9 @@ import SmoothScroll from '@/components/SmoothScroll'
 export const metadata: Metadata = {
     title: 'CineVault | Your Movie Universe',
     description: 'Discover and watch your favorite movies',
+    icons: {
+        icon: '/favicon.png',
+    },
 }
 
 export default function RootLayout({
