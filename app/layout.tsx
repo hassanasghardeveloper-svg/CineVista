@@ -1,27 +1,21 @@
-import type { Metadata } from 'next'
-import './globals.css'
-import SmoothScroll from '@/components/SmoothScroll'
+import type { Metadata } from "next";
+import "./globals.css";
 
 export const metadata: Metadata = {
-    title: 'CineVault | Your Movie Universe',
-    description: 'Discover and watch your favorite movies',
-    icons: {
-        icon: '/favicon.png',
-    },
-}
+    title: "CineVault | Premium Cinema Experience",
+    description: "Watch your favorite movies in high quality without limits.",
+};
 
 export default function RootLayout({
     children,
-}: {
-    children: React.ReactNode
-}) {
+}: Readonly<{
+    children: React.ReactNode;
+}>) {
     return (
         <html lang="en">
-            <body>
-                <SmoothScroll>
-                    {children}
-                </SmoothScroll>
+            <body className="antialiased selection:bg-accent-orange selection:text-white">
+                {children}
             </body>
         </html>
-    )
+    );
 }
