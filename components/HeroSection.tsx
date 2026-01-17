@@ -105,7 +105,7 @@ export default function HeroSection({ movies }: { movies: Movie[] }) {
             </AnimatePresence>
 
             {/* Slider Navigation Controls */}
-            <div className="absolute bottom-12 right-6 md:right-16 flex items-center gap-6 z-20">
+            <div className="absolute bottom-36 md:bottom-12 right-6 md:right-16 flex items-center gap-6 z-20">
                 <div className="flex gap-2">
                     {movies.map((_, i) => (
                         <button

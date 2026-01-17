@@ -32,7 +32,7 @@ export default function Header() {
                 </nav>
 
                 {/* Search - Right */}
-                <Link href="/search" className="p-2 text-white/70 hover:text-white hover:bg-white/10 rounded-full transition-all">
+                <Link href="/search" className="hidden md:block p-2 text-white/70 hover:text-white hover:bg-white/10 rounded-full transition-all">
                     <Search className="w-5 h-5" />
                 </Link>
             </div>
