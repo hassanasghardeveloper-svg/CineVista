@@ -27,8 +27,8 @@ export default function VidnestPlayer({
 
     useEffect(() => {
         const handleMessage = (event: MessageEvent) => {
-            // Vidnest typically uses vidnest.net
-            if (event.origin !== 'https://vidnest.net') return;
+            // Vidnest (VidLink) uses vidlink.pro
+            if (event.origin !== 'https://vidlink.pro') return;
 
             const data = event.data;
             if (data && typeof data.progress !== 'undefined') {
@@ -42,7 +42,7 @@ export default function VidnestPlayer({
         return () => window.removeEventListener('message', handleMessage);
     }, [onProgress]);
 
-    const baseUrl = 'https://vidnest.net/embed';
+    const baseUrl = 'https://vidlink.pro/embed';
     const id = tmdbId || imdbId;
 
     if (!id) return <div className="p-10 text-center text-white/40">No ID provided</div>;
