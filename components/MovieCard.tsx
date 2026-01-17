@@ -17,7 +17,7 @@ export default function MovieCard({ movie, isDimmed, onHoverStart, onHoverEnd }:
     const [isHovered, setIsHovered] = useState(false)
 
     const posterUrl = movie.posterPath
-        ? `https://image.tmdb.org/t/p/w500${movie.posterPath}`
+        ? (movie.posterPath.startsWith('http') ? movie.posterPath : `https://image.tmdb.org/t/p/w500${movie.posterPath}`)
         : '/placeholder-poster.jpg'
 
     const year = movie.releaseDate?.split('-')[0] || '2024'

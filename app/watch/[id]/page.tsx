@@ -150,7 +150,7 @@ export default function WatchPage() {
                 <div className="hidden md:block w-64 flex-shrink-0">
                     <div className="aspect-[2/3] rounded-xl overflow-hidden shadow-2xl border border-white/5 obsidian-halo">
                         <img
-                            src={`https://image.tmdb.org/t/p/w500${movie.posterPath}`}
+                            src={movie.posterPath.startsWith('http') ? movie.posterPath : `https://image.tmdb.org/t/p/w500${movie.posterPath}`}
                             alt={movie.title}
                             className="w-full h-full object-cover"
                         />

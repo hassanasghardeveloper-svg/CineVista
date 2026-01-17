@@ -21,23 +21,32 @@ export default function AddMovieModal({ onClose, onAdd }: AddMovieModalProps) {
         setLoading(true)
         setError('')
 
+        const apiKey = process.env.NEXT_PUBLIC_WATCHMODE_API_KEY
+
+        if (!apiKey) {
+            setError('API Key missing. Please check .env.local')
+            setLoading(false)
+            return
+        }
+
         try {
-            // Using TMDB API (you'll need to add your API key)
-            const res = await fetch(`https://api.themoviedb.org/3/movie/${tmdbId}?api_key=2dca580c2a14b55200e784d157207b4d`)
+            // Using Watchmode API to fetch by TMDB ID
+            const res = await fetch(`https://api.watchmode.com/v1/title/tmdb-${tmdbId}/details/?apiKey=${apiKey}`)
             if (!res.ok) throw new Error('Movie not found')
             const data = await res.json()
 
+            // Map Watchmode data to our Movie interface
             setPreview({
-                tmdbId: data.id,
+                tmdbId: parseInt(tmdbId),
                 title: data.title,
-                overview: data.overview,
-                posterPath: data.poster_path,
-                backdropPath: data.backdrop_path,
+                overview: data.plot_overview,
+                posterPath: data.poster,
+                backdropPath: data.backdrop,
                 releaseDate: data.release_date,
-                rating: data.vote_average
+                rating: data.user_rating || 0
             })
         } catch (err) {
-            setError('Could not find movie. Check the TMDB ID.')
+            setError('Could not find movie. Check the TMDB ID or API Key.')
             setPreview(null)
         } finally {
             setLoading(false)

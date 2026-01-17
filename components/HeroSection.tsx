@@ -31,7 +31,7 @@ export default function HeroSection({ movies }: HeroSectionProps) {
 
     const currentMovie = movies[currentIndex]
     const backdropUrl = currentMovie.backdropPath
-        ? `https://image.tmdb.org/t/p/original${currentMovie.backdropPath}`
+        ? (currentMovie.backdropPath.startsWith('http') ? currentMovie.backdropPath : `https://image.tmdb.org/t/p/original${currentMovie.backdropPath}`)
         : '/placeholder-backdrop.jpg'
 
     const variants = {
