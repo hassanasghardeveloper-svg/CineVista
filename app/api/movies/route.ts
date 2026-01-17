@@ -16,7 +16,7 @@ async function fetchTitleDetails(id: number) {
     }
 }
 
-async function fetchTitlesList(type: string, language: string | null, limit: number) {
+async function fetchTitlesList(type: string, language: string | null, limit: number, genre?: string) {
     const params = new URLSearchParams({
         apiKey: API_KEY || '',
         types: type === 'tv' ? 'tv_series' : 'movie',
@@ -24,6 +24,7 @@ async function fetchTitlesList(type: string, language: string | null, limit: num
         sort_by: 'popularity_desc',
     });
     if (language) params.append('languages', language);
+    if (genre) params.append('genres', genre);
 
     const res = await fetch(`${BASE_URL}/list-titles/?${params}`, {
         next: { revalidate: 3600 }
@@ -36,9 +37,9 @@ async function fetchTitlesList(type: string, language: string | null, limit: num
 
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
-    const category = searchParams.get('category') || 'all'; // all, indian, pakistani, hollywood
+    const category = searchParams.get('category') || 'all';
     const type = searchParams.get('type') || 'movie';
-    const limit = parseInt(searchParams.get('limit') || '50');
+    const limit = parseInt(searchParams.get('limit') || '100');
 
     try {
         let allTitles: any[] = [];
@@ -51,8 +52,18 @@ export async function GET(request: Request) {
             allTitles = await fetchTitlesList(type, 'hi', limit);
         } else if (category === 'hollywood') {
             allTitles = await fetchTitlesList(type, 'en', limit);
+        } else if (category === 'action') {
+            allTitles = await fetchTitlesList(type, null, limit, '1'); // Action
+        } else if (category === 'comedy') {
+            allTitles = await fetchTitlesList(type, null, limit, '4'); // Comedy
+        } else if (category === 'horror') {
+            allTitles = await fetchTitlesList(type, null, limit, '11'); // Horror
+        } else if (category === 'animation') {
+            allTitles = await fetchTitlesList(type, null, limit, '3'); // Animation
+        } else if (category === 'documentary') {
+            allTitles = await fetchTitlesList(type, null, limit, '6'); // Documentary
         } else if (category === 'new') {
-            // Fetch and sort by year/release date
+            allTitles = await fetchTitlesList(type, null, limit); // Already trending-ish, but can sort by date
             const params = new URLSearchParams({
                 apiKey: API_KEY || '',
                 types: type === 'tv' ? 'tv_series' : 'movie',
@@ -63,12 +74,11 @@ export async function GET(request: Request) {
             const data = await res.json();
             allTitles = data.titles || [];
         } else {
-            // Default to trending/all
             allTitles = await fetchTitlesList(type, null, limit);
         }
 
         // Fetch details for all titles (in batches to avoid rate limiting)
-        const batchSize = 30;
+        const batchSize = 40;
         const titlesWithDetails: any[] = [];
 
         for (let i = 0; i < allTitles.length; i += batchSize) {
@@ -78,9 +88,8 @@ export async function GET(request: Request) {
             );
             titlesWithDetails.push(...batchResults.filter(Boolean));
 
-            // Small delay between batches to avoid rate limiting
             if (i + batchSize < allTitles.length) {
-                await new Promise(resolve => setTimeout(resolve, 50));
+                await new Promise(resolve => setTimeout(resolve, 30));
             }
         }
 
