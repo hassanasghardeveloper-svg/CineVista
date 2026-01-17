@@ -10,9 +10,15 @@ export default function MovieCard({ movie }: { movie: Movie }) {
             href={`/watch/${movie.id}`}
             className="group relative block aspect-[2/3] w-full bg-dark-800 rounded-lg md:rounded-xl overflow-hidden shadow-2xl transition-all duration-500 hover:shadow-accent-orange/10"
         >
-            <div
-                className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
-                style={{ backgroundImage: `url(${movie.posterPath})` }}
+            <img
+                src={movie.posterPath}
+                alt={movie.title}
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.src = 'https://via.placeholder.com/500x750?text=No+Poster';
+                    target.onerror = null;
+                }}
             />
 
             {/* Premium Overlay */}

@@ -31,11 +31,18 @@ export default function HeroSection({ movies }: { movies: Movie[] }) {
                     transition={{ duration: 1.2, ease: "easeOut" }}
                     className="absolute inset-0"
                 >
-                    <div
-                        className="absolute inset-0 bg-cover bg-center transition-transform duration-[10000ms] scale-105"
-                        style={{ backgroundImage: `url(${movie.backdropPath})` }}
-                    >
-                        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
+                    <div className="absolute inset-0">
+                        <img
+                            src={movie.backdropPath}
+                            alt=""
+                            className="absolute inset-0 w-full h-full object-cover transition-transform duration-[10000ms] scale-105"
+                            onError={(e) => {
+                                const target = e.target as HTMLImageElement;
+                                target.src = 'https://via.placeholder.com/1920x1080?text=CineVault+Premium';
+                                target.onerror = null;
+                            }}
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent shadow-[inset_0_0_100px_rgba(0,0,0,0.8)]" />
                         <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/20 to-transparent" />
                         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,black_100%)] opacity-40" />
                     </div>
