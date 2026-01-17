@@ -14,25 +14,46 @@ body {
     font-feature-settings: "ss01", "ss02", "cv01", "cv02", "cv03";
 }
 
-/* Custom Scrollbar - Modern & Sleek */
+/* Custom Scrollbar - Stealth Mode */
 ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-    background: #050505;
+    background: transparent;
+}
+
+::-line-clamp-thumb:hover {
+    background: linear-gradient(180deg, #ff9d2e 0%, #e87c00 100%);
+    box-shadow: 0 0 15px rgba(232, 124, 0, 0.4);
 }
 
 ::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, #e87c00 0%, #ff9d2e 100%);
+    background: transparent;
     border-radius: 10px;
-    box-shadow: 0 0 10px rgba(232, 124, 0, 0.2);
+    transition: background 0.3s ease;
+}
+
+body:hover::-webkit-scrollbar-thumb,
+main:hover::-webkit-scrollbar-thumb,
+section:hover::-webkit-scrollbar-thumb,
+div:hover::-webkit-scrollbar-thumb {
+    background: rgba(232, 124, 0, 0.2);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(180deg, #ff9d2e 0%, #e87c00 100%);
-    box-shadow: 0 0 15px rgba(232, 124, 0, 0.4);
+    background: linear-gradient(180deg, #e87c00 0%, #ff9d2e 100%) !important;
+}
+
+/* Hide scrollbar utility */
+.hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
 }
 
 /* Firefox support */

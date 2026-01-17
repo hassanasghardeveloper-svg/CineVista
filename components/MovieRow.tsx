@@ -13,7 +13,7 @@ export default function MovieRow({ title, movies }: { title: string; movies: Mov
                 <div className="h-[1px] flex-1 bg-white/5" />
             </h2>
             <div className="relative group/row">
-                <div className="flex gap-4 overflow-x-auto scrollbar-hide pb-4 hide-scrollbar scroll-smooth">
+                <div className="flex gap-4 overflow-x-auto pb-4 hide-scrollbar scroll-smooth">
                     {movies.map(movie => (
                         <div key={movie.id} className="min-w-[160px] md:min-w-[240px] transition-transform duration-300 hover:scale-105 active:scale-95">
                             <MovieCard movie={movie} />
