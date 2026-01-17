@@ -11,8 +11,8 @@ function transformMovie(apiMovie: any): Movie {
         id: String(apiMovie.id),
         title: apiMovie.title || 'Unknown Title',
         overview: apiMovie.plot_overview || 'No description available.',
-        posterPath: apiMovie.poster || 'https://via.placeholder.com/500x750?text=No+Poster',
-        backdropPath: apiMovie.backdrop || apiMovie.poster || '',
+        posterPath: apiMovie.poster || 'https://via.placeholder.com/500x750?text=CineVault',
+        backdropPath: apiMovie.backdrop || apiMovie.poster || 'https://via.placeholder.com/1920x1080?text=CineVault',
         releaseDate: apiMovie.release_date || apiMovie.year?.toString() || '',
         rating: apiMovie.user_rating || 0,
         type: apiMovie.type || 'movie',
@@ -88,8 +88,8 @@ export default function MoviesPage() {
                         <button
                             onClick={() => setActiveTab('all')}
                             className={`px-6 py-3 rounded-full font-bold text-xs uppercase tracking-widest transition-all ${activeTab === 'all'
-                                    ? 'bg-accent-orange text-white'
-                                    : 'bg-white/5 text-white/60 hover:bg-white/10'
+                                ? 'bg-accent-orange text-white'
+                                : 'bg-white/5 text-white/60 hover:bg-white/10'
                                 }`}
                         >
                             All Movies
@@ -97,8 +97,8 @@ export default function MoviesPage() {
                         <button
                             onClick={() => setActiveTab('pakistani')}
                             className={`px-6 py-3 rounded-full font-bold text-xs uppercase tracking-widest transition-all ${activeTab === 'pakistani'
-                                    ? 'bg-green-600 text-white'
-                                    : 'bg-white/5 text-white/60 hover:bg-white/10'
+                                ? 'bg-green-600 text-white'
+                                : 'bg-white/5 text-white/60 hover:bg-white/10'
                                 }`}
                         >
                             🇵🇰 Pakistani
@@ -106,8 +106,8 @@ export default function MoviesPage() {
                         <button
                             onClick={() => setActiveTab('indian')}
                             className={`px-6 py-3 rounded-full font-bold text-xs uppercase tracking-widest transition-all ${activeTab === 'indian'
-                                    ? 'bg-orange-600 text-white'
-                                    : 'bg-white/5 text-white/60 hover:bg-white/10'
+                                ? 'bg-orange-600 text-white'
+                                : 'bg-white/5 text-white/60 hover:bg-white/10'
                                 }`}
                         >
                             🇮🇳 Bollywood
@@ -115,8 +115,8 @@ export default function MoviesPage() {
                         <button
                             onClick={() => setActiveTab('hollywood')}
                             className={`px-6 py-3 rounded-full font-bold text-xs uppercase tracking-widest transition-all ${activeTab === 'hollywood'
-                                    ? 'bg-blue-600 text-white'
-                                    : 'bg-white/5 text-white/60 hover:bg-white/10'
+                                ? 'bg-blue-600 text-white'
+                                : 'bg-white/5 text-white/60 hover:bg-white/10'
                                 }`}
                         >
                             🇺🇸 Hollywood
@@ -131,7 +131,7 @@ export default function MoviesPage() {
                         <p className="text-white/20 text-xs mt-2">This may take a moment</p>
                     </div>
                 ) : movies.length > 0 ? (
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
+                    <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">
                         {movies.map(movie => (
                             <MovieCard key={movie.id} movie={movie} />
                         ))}

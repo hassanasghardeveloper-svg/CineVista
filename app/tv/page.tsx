@@ -11,8 +11,8 @@ function transformMovie(apiMovie: any): Movie {
         id: String(apiMovie.id),
         title: apiMovie.title || 'Unknown Title',
         overview: apiMovie.plot_overview || 'No description available.',
-        posterPath: apiMovie.poster || 'https://via.placeholder.com/500x750?text=No+Poster',
-        backdropPath: apiMovie.backdrop || apiMovie.poster || '',
+        posterPath: apiMovie.poster || 'https://via.placeholder.com/500x750?text=CineVault',
+        backdropPath: apiMovie.backdrop || apiMovie.poster || 'https://via.placeholder.com/1920x1080?text=CineVault',
         releaseDate: apiMovie.release_date || apiMovie.year?.toString() || '',
         rating: apiMovie.user_rating || 0,
         type: apiMovie.type || 'tv_series',
@@ -66,8 +66,8 @@ export default function TVPage() {
                         <button
                             onClick={() => setActiveTab('all')}
                             className={`px-6 py-3 rounded-full font-bold text-xs uppercase tracking-widest transition-all ${activeTab === 'all'
-                                    ? 'bg-accent-orange text-white'
-                                    : 'bg-white/5 text-white/60 hover:bg-white/10'
+                                ? 'bg-accent-orange text-white'
+                                : 'bg-white/5 text-white/60 hover:bg-white/10'
                                 }`}
                         >
                             All Shows
@@ -75,8 +75,8 @@ export default function TVPage() {
                         <button
                             onClick={() => setActiveTab('pakistani')}
                             className={`px-6 py-3 rounded-full font-bold text-xs uppercase tracking-widest transition-all ${activeTab === 'pakistani'
-                                    ? 'bg-green-600 text-white'
-                                    : 'bg-white/5 text-white/60 hover:bg-white/10'
+                                ? 'bg-green-600 text-white'
+                                : 'bg-white/5 text-white/60 hover:bg-white/10'
                                 }`}
                         >
                             🇵🇰 Pakistani Dramas
@@ -84,8 +84,8 @@ export default function TVPage() {
                         <button
                             onClick={() => setActiveTab('indian')}
                             className={`px-6 py-3 rounded-full font-bold text-xs uppercase tracking-widest transition-all ${activeTab === 'indian'
-                                    ? 'bg-orange-600 text-white'
-                                    : 'bg-white/5 text-white/60 hover:bg-white/10'
+                                ? 'bg-orange-600 text-white'
+                                : 'bg-white/5 text-white/60 hover:bg-white/10'
                                 }`}
                         >
                             🇮🇳 Indian Serials
@@ -93,8 +93,8 @@ export default function TVPage() {
                         <button
                             onClick={() => setActiveTab('international')}
                             className={`px-6 py-3 rounded-full font-bold text-xs uppercase tracking-widest transition-all ${activeTab === 'international'
-                                    ? 'bg-blue-600 text-white'
-                                    : 'bg-white/5 text-white/60 hover:bg-white/10'
+                                ? 'bg-blue-600 text-white'
+                                : 'bg-white/5 text-white/60 hover:bg-white/10'
                                 }`}
                         >
                             🌍 International
