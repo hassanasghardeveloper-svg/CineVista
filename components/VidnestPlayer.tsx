@@ -53,7 +53,7 @@ export default function VidnestPlayer({
 
     const params = new URLSearchParams();
     if (autoplay) params.append('autoplay', '1');
-    if (color) params.append('color', color.replace('#', '')); // Vidnest sometimes expects hex without #
+    if (color) params.append('color', color.replace('#', ''));
 
     const finalUrl = `${embedUrl}?${params.toString()}`;
 
@@ -65,10 +65,10 @@ export default function VidnestPlayer({
                 className="absolute inset-0 w-full h-full"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowFullScreen
-                sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-downloads allow-pointer-lock"
+                sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-downloads allow-pointer-lock allow-popups"
                 referrerPolicy="no-referrer"
                 loading="lazy"
-                title={`Vidnest Player - ${type === 'movie' ? 'Movie' : 'TV Series'}`}
+                title={`Vidlink Player - ${type === 'movie' ? 'Movie' : 'TV Series'}`}
             />
         </div>
     );
