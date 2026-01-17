@@ -40,24 +40,24 @@ export default function HeroSection({ movies }: { movies: Movie[] }) {
                         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,black_100%)] opacity-40" />
                     </div>
 
-                    <div className="relative h-full flex flex-col justify-end pb-24 md:pb-32 px-6 md:px-16 max-w-[1600px] mx-auto">
+                    <div className="relative h-full flex flex-col justify-end pb-16 md:pb-32 px-6 md:px-16 max-w-[1600px] mx-auto">
                         <div className="max-w-3xl">
                             <motion.div
                                 initial={{ y: 20, opacity: 0 }}
                                 animate={{ y: 0, opacity: 1 }}
                                 transition={{ delay: 0.3 }}
-                                className="flex items-center gap-3 mb-6"
+                                className="flex items-center gap-3 mb-4 md:mb-6"
                             >
-                                <span className="bg-accent-orange text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded">
+                                <span className="bg-accent-orange text-[8px] md:text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded">
                                     {movie.type === 'tv_series' ? 'TV Series' : 'Movie'}
                                 </span>
                                 {movie.genres && movie.genres[0] && (
-                                    <span className="text-white/60 text-xs font-bold uppercase tracking-widest">
+                                    <span className="text-white/60 text-[10px] md:text-xs font-bold uppercase tracking-widest">
                                         {movie.genres[0]}
                                     </span>
                                 )}
                                 {movie.rating > 0 && (
-                                    <span className="text-accent-orange text-xs font-bold">
+                                    <span className="text-accent-orange text-[10px] md:text-xs font-bold">
                                         ★ {movie.rating.toFixed(1)}
                                     </span>
                                 )}
@@ -67,7 +67,7 @@ export default function HeroSection({ movies }: { movies: Movie[] }) {
                                 initial={{ y: 30, opacity: 0 }}
                                 animate={{ y: 0, opacity: 1 }}
                                 transition={{ delay: 0.4 }}
-                                className="text-5xl md:text-8xl font-black text-white uppercase tracking-tighter mb-6 leading-[0.85]"
+                                className="text-4xl sm:text-5xl md:text-8xl font-black text-white uppercase tracking-tighter mb-4 md:mb-6 leading-[0.9] md:leading-[0.85]"
                             >
                                 {movie.title}
                             </motion.h1>
@@ -76,7 +76,7 @@ export default function HeroSection({ movies }: { movies: Movie[] }) {
                                 initial={{ y: 30, opacity: 0 }}
                                 animate={{ y: 0, opacity: 1 }}
                                 transition={{ delay: 0.5 }}
-                                className="text-white/60 text-lg md:text-xl line-clamp-3 max-w-xl mb-10 leading-relaxed font-medium"
+                                className="text-white/60 text-base md:text-xl line-clamp-2 md:line-clamp-3 max-w-xl mb-8 md:mb-10 leading-relaxed font-medium"
                             >
                                 {movie.overview}
                             </motion.p>
@@ -85,17 +85,17 @@ export default function HeroSection({ movies }: { movies: Movie[] }) {
                                 initial={{ y: 30, opacity: 0 }}
                                 animate={{ y: 0, opacity: 1 }}
                                 transition={{ delay: 0.6 }}
-                                className="flex items-center gap-4"
+                                className="flex flex-wrap items-center gap-3 md:gap-4"
                             >
                                 <Link
                                     href={`/watch/${movie.id}`}
-                                    className="bg-white text-black px-10 py-5 rounded-full font-black uppercase tracking-[0.2em] text-xs hover:bg-accent-orange hover:text-white transition-all hover:scale-105 active:scale-95 flex items-center gap-3 shadow-2xl shadow-white/10"
+                                    className="bg-white text-black px-6 md:px-10 py-3 md:py-5 rounded-full font-black uppercase tracking-[0.1em] md:tracking-[0.2em] text-[10px] md:text-xs hover:bg-accent-orange hover:text-white transition-all hover:scale-105 active:scale-95 flex items-center gap-2 md:gap-3 shadow-2xl shadow-white/10"
                                 >
-                                    <Play className="fill-current w-4 h-4" />
+                                    <Play className="fill-current w-3 h-3 md:w-4 md:h-4" />
                                     Watch Now
                                 </Link>
-                                <button className="bg-white/5 backdrop-blur-xl border border-white/10 text-white px-10 py-5 rounded-full font-black uppercase tracking-[0.2em] text-xs hover:bg-white/10 transition-all flex items-center gap-3 active:scale-95">
-                                    <Info className="w-4 h-4" />
+                                <button className="bg-white/5 backdrop-blur-xl border border-white/10 text-white px-6 md:px-10 py-3 md:py-5 rounded-full font-black uppercase tracking-[0.1em] md:tracking-[0.2em] text-[10px] md:text-xs hover:bg-white/10 transition-all flex items-center gap-2 md:gap-3 active:scale-95">
+                                    <Info className="w-3 h-3 md:w-4 md:h-4" />
                                     More Info
                                 </button>
                             </motion.div>
