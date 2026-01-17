@@ -5,7 +5,7 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Star, Play, ExternalLink, Tv, Film, Youtube, Eye, Zap, Layers } from 'lucide-react';
 import VidkingPlayer from '@/components/VidkingPlayer';
-import VidnestPlayer from '@/components/VidnestPlayer';
+import VidlinkPlayer from '@/components/VidlinkPlayer';
 import VidsrcPlayer from '@/components/VidsrcPlayer';
 
 interface TitleDetails {
@@ -52,7 +52,7 @@ export default function WatchPage() {
     const [error, setError] = useState<string | null>(null);
     const [activeTrailer, setActiveTrailer] = useState<Trailer | null>(null);
     const [watchMode, setWatchMode] = useState<'trailer' | 'movie'>('trailer');
-    const [streamSource, setStreamSource] = useState<'vidking' | 'vidnest' | 'vidsrc'>('vidking');
+    const [streamSource, setStreamSource] = useState<'vidking' | 'vidlink' | 'vidsrc'>('vidking');
     const [progress, setProgress] = useState<number>(0);
 
     const handleProgress = useCallback((p: number) => {
@@ -182,8 +182,8 @@ export default function WatchPage() {
                                 SERVER 1
                             </button>
                             <button
-                                onClick={() => setStreamSource('vidnest')}
-                                className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-tighter transition-all ${streamSource === 'vidnest'
+                                onClick={() => setStreamSource('vidlink')}
+                                className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-tighter transition-all ${streamSource === 'vidlink'
                                     ? 'bg-white/20 text-white'
                                     : 'text-white/40 hover:text-white'
                                     }`}
@@ -218,8 +218,8 @@ export default function WatchPage() {
                                 theme="#f97316" // matching accent-orange
                                 onProgress={handleProgress}
                             />
-                        ) : streamSource === 'vidnest' ? (
-                            <VidnestPlayer
+                        ) : streamSource === 'vidlink' ? (
+                            <VidlinkPlayer
                                 tmdbId={title.tmdb_id}
                                 imdbId={title.imdb_id}
                                 type={title.type === 'tv_series' ? 'tv' : 'movie'}

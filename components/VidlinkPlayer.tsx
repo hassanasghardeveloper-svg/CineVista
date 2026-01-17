@@ -2,18 +2,18 @@
 
 import { useEffect, useRef } from 'react';
 
-interface VidnestPlayerProps {
+interface VidlinkPlayerProps {
     tmdbId?: number | string;
     imdbId?: string;
     type: 'movie' | 'tv';
     season?: number | string;
     episode?: number | string;
-    color?: string; // Hex color for Vidnest
+    color?: string; // Hex color for Vidlink
     onProgress?: (progress: number) => void;
     autoplay?: boolean;
 }
 
-export default function VidnestPlayer({
+export default function VidlinkPlayer({
     tmdbId,
     imdbId,
     type,
