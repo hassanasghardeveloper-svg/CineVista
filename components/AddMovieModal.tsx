@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, ChangeEvent } from 'react'
 import { Movie } from '@/app/page'
 
 interface AddMovieModalProps {
@@ -20,7 +20,7 @@ export default function AddMovieModal({ onClose, onAdd }: AddMovieModalProps) {
     })
     const [error, setError] = useState('')
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target
         setFormData(prev => ({ ...prev, [name]: value }))
     }

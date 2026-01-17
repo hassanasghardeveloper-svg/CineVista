@@ -18,7 +18,7 @@ export default function WatchPage() {
         const saved = localStorage.getItem('cinevault_movies')
         if (saved) {
             const movies: Movie[] = JSON.parse(saved)
-            const found = movies.find(m => m.id === params.id)
+            const found = movies.find(m => m.id === (params.id as string))
             if (found) {
                 setMovie(found)
             }
