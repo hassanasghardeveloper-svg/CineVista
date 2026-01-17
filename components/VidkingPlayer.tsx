@@ -68,6 +68,7 @@ export default function VidkingPlayer({
                 className="absolute inset-0 w-full h-full"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowFullScreen
+                sandbox="allow-scripts allow-same-origin allow-forms"
                 referrerPolicy="no-referrer"
                 loading="lazy"
                 title={`Vidking Player - ${type === 'movie' ? 'Movie' : 'TV Series'}`}
