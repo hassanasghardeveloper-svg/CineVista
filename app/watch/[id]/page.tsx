@@ -1,9 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Star, Play, ExternalLink, Tv, Film, Youtube } from 'lucide-react';
+import { ArrowLeft, Star, Play, ExternalLink, Tv, Film, Youtube, Eye, Zap, Layers } from 'lucide-react';
+import VidkingPlayer from '@/components/VidkingPlayer';
+import VidnestPlayer from '@/components/VidnestPlayer';
 
 interface TitleDetails {
     id: number;
@@ -48,6 +50,20 @@ export default function WatchPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [activeTrailer, setActiveTrailer] = useState<Trailer | null>(null);
+    const [watchMode, setWatchMode] = useState<'trailer' | 'movie'>('trailer');
+    const [streamSource, setStreamSource] = useState<'vidking' | 'vidnest'>('vidking');
+    const [progress, setProgress] = useState<number>(0);
+
+    const handleProgress = useCallback((p: number) => {
+        setProgress(p);
+        if (title) {
+            localStorage.setItem(`cinevault_progress_${title.id}`, JSON.stringify({
+                progress: p,
+                timestamp: Date.now(),
+                title: title.title
+            }));
+        }
+    }, [title]);
 
     useEffect(() => {
         async function fetchData() {
@@ -121,9 +137,97 @@ export default function WatchPage() {
                 </Link>
             </div>
 
+            {/* Player Header / Toggle */}
+            <div className="bg-dark-900 border-b border-white/5 px-6 py-4">
+                <div className="max-w-[1400px] mx-auto flex items-center justify-between">
+                    <div className="flex gap-2 items-center">
+                        <button
+                            onClick={() => setWatchMode('trailer')}
+                            className={`flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-black uppercase tracking-widest transition-all ${watchMode === 'trailer'
+                                ? 'bg-white text-black'
+                                : 'bg-white/5 text-white/40 hover:bg-white/10 hover:text-white'
+                                }`}
+                        >
+                            <Youtube className="w-4 h-4" />
+                            Official Trailer
+                        </button>
+                        {title.tmdb_id && (
+                            <button
+                                onClick={() => setWatchMode('movie')}
+                                className={`flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-black uppercase tracking-widest transition-all ${watchMode === 'movie'
+                                    ? 'bg-accent-orange text-white ring-4 ring-accent-orange/20'
+                                    : 'bg-accent-orange/10 text-accent-orange hover:bg-accent-orange/20'
+                                    }`}
+                            >
+                                <Play className="w-4 h-4 fill-current" />
+                                Watch {title.type === 'tv_series' ? 'Series' : 'Movie'}
+                            </button>
+                        )}
+                    </div>
+
+                    {/* Source Switcher - Only show in movie mode */}
+                    {watchMode === 'movie' && (
+                        <div className="flex items-center gap-3 bg-white/5 p-1 rounded-full border border-white/10">
+                            <button
+                                onClick={() => setStreamSource('vidking')}
+                                className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-tighter transition-all ${streamSource === 'vidking'
+                                    ? 'bg-white/20 text-white'
+                                    : 'text-white/40 hover:text-white'
+                                    }`}
+                            >
+                                <Zap className="w-3 h-3 text-yellow-400" />
+                                SERVER 1 (VK)
+                            </button>
+                            <button
+                                onClick={() => setStreamSource('vidnest')}
+                                className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-tighter transition-all ${streamSource === 'vidnest'
+                                    ? 'bg-white/20 text-white'
+                                    : 'text-white/40 hover:text-white'
+                                    }`}
+                            >
+                                <Layers className="w-3 h-3 text-blue-400" />
+                                SERVER 2 (VN)
+                            </button>
+                        </div>
+                    )}
+                </div>
+            </div>
+
             {/* Video Player Section */}
             <div className="w-full bg-black">
-                {activeTrailer ? (
+                {watchMode === 'movie' && title.tmdb_id ? (
+                    <div className="max-w-[1400px] mx-auto aspect-video">
+                        {streamSource === 'vidking' ? (
+                            <VidkingPlayer
+                                tmdbId={title.tmdb_id}
+                                type={title.type === 'tv_series' ? 'tv' : 'movie'}
+                                theme="#f97316" // matching accent-orange
+                                onProgress={handleProgress}
+                            />
+                        ) : (
+                            <VidnestPlayer
+                                tmdbId={title.tmdb_id}
+                                type={title.type === 'tv_series' ? 'tv' : 'movie'}
+                                color="#f97316" // matching accent-orange
+                                onProgress={handleProgress}
+                            />
+                        )}
+                        {progress > 0 && (
+                            <div className="mt-4 px-6">
+                                <div className="flex justify-between text-xs font-bold text-white/40 mb-2 uppercase tracking-widest">
+                                    <span>Playback Progress</span>
+                                    <span>{progress.toFixed(0)}%</span>
+                                </div>
+                                <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
+                                    <div
+                                        className="h-full bg-accent-orange transition-all duration-300"
+                                        style={{ width: `${progress}%` }}
+                                    />
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                ) : activeTrailer ? (
                     <div className="relative w-full aspect-video max-h-[70vh]">
                         <iframe
                             src={`${activeTrailer.url}?autoplay=1&rel=0`}
