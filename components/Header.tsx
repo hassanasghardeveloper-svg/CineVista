@@ -42,14 +42,14 @@ export default function Header() {
 
                 {/* Actions - Right */}
                 <div className="flex items-center gap-4 z-50">
-                    <Link href="/search" className="p-2 text-white/70 hover:text-white hover:bg-white/10 rounded-full transition-all">
+                    <Link href="/search" className="hidden md:flex p-2 text-white/70 hover:text-white hover:bg-white/10 rounded-full transition-all">
                         <Search className="w-5 h-5" />
                     </Link>
 
-                    {/* Hamburger Button */}
+                    {/* Hamburger Button - Hidden on mobile as per user request */}
                     <button
                         onClick={() => setIsMenuOpen(!isMenuOpen)}
-                        className="md:hidden flex flex-col gap-1.5 p-2"
+                        className="hidden md:hidden flex-col gap-1.5 p-2"
                     >
                         <span className={`w-6 h-0.5 bg-white transition-all ${isMenuOpen ? 'rotate-45 translate-y-2' : ''}`} />
                         <span className={`w-6 h-0.5 bg-white transition-all ${isMenuOpen ? 'opacity-0' : ''}`} />
