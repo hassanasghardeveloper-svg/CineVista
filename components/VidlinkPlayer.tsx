@@ -22,7 +22,7 @@ export default function VidlinkPlayer({
     color = '#f97316',
     onProgress,
     autoplay = true
-}: VidnestPlayerProps) {
+}: VidlinkPlayerProps) {
     const iframeRef = useRef<HTMLIFrameElement>(null);
 
     useEffect(() => {
