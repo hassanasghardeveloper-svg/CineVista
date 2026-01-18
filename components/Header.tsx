@@ -46,7 +46,7 @@ export default function Header() {
                         <Search className="w-5 h-5" />
                     </Link>
 
-                    {/* Hamburger Button - Hidden on mobile as per user request */}
+                    {/* Hamburger Button - Removed from mobile as per request (Search is in bottom nav) */}
                     <button
                         onClick={() => setIsMenuOpen(!isMenuOpen)}
                         className="hidden md:hidden flex-col gap-1.5 p-2"
