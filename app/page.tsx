@@ -51,16 +51,12 @@ export default function Home() {
         async function fetchContent() {
             try {
                 const endpoints = [
-                    '/api/movies?category=trending&limit=20',
-                    '/api/movies?category=new&limit=20',
-                    '/api/movies?category=pakistani&limit=20',
-                    '/api/movies?category=indian&limit=20',
-                    '/api/movies?category=hollywood&limit=20',
-                    '/api/movies?category=action&limit=20',
-                    '/api/movies?category=comedy&limit=20',
-                    '/api/movies?category=horror&limit=20',
-                    '/api/movies?category=animation&limit=20',
-                    '/api/movies?category=documentary&limit=20'
+                    '/api/movies?category=trending&limit=8',
+                    '/api/movies?category=new&limit=8',
+                    '/api/movies?category=pakistani&limit=8',
+                    '/api/movies?category=indian&limit=8',
+                    '/api/movies?category=hollywood&limit=8',
+                    '/api/movies?category=action&limit=8'
                 ];
 
                 const responses = await Promise.all(endpoints.map(url => fetch(url)));
@@ -74,7 +70,7 @@ export default function Home() {
                     return res.json();
                 }));
 
-                const [tData, nData, pData, iData, hData, aData, cData, hrData, anData, dData] = data;
+                const [tData, nData, pData, iData, hData, aData] = data;
 
                 if (tData.titles) setTrending(tData.titles.map(transformMovie));
                 if (nData.titles) setNewest(nData.titles.map(transformMovie));
@@ -82,10 +78,6 @@ export default function Home() {
                 if (iData.titles) setIndian(iData.titles.map(transformMovie));
                 if (hData.titles) setHollywood(hData.titles.map(transformMovie));
                 if (aData.titles) setAction(aData.titles.map(transformMovie));
-                if (cData.titles) setComedy(cData.titles.map(transformMovie));
-                if (hrData.titles) setHorror(hrData.titles.map(transformMovie));
-                if (anData.titles) setAnimation(anData.titles.map(transformMovie));
-                if (dData.titles) setDocumentary(dData.titles.map(transformMovie));
 
             } catch (error: any) {
                 console.error('Failed to fetch content:', error);
@@ -135,10 +127,6 @@ export default function Home() {
                         <MovieRow title="Indian Movies" movies={indian} />
                         <MovieRow title="Hollywood Hits" movies={hollywood} />
                         <MovieRow title="Action Packed" movies={action} />
-                        <MovieRow title="Comedy Club" movies={comedy} />
-                        <MovieRow title="Horror Library" movies={horror} />
-                        <MovieRow title="Animation World" movies={animation} />
-                        <MovieRow title="Documentaries" movies={documentary} />
                     </div>
                     <Footer />
                 </>

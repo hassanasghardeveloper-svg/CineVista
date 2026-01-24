@@ -42,7 +42,7 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const category = searchParams.get('category') || 'all';
     const type = searchParams.get('type') || 'movie';
-    const limit = Math.min(parseInt(searchParams.get('limit') || '20'), 50); // Reduced default limit for quota safety
+    const limit = Math.min(parseInt(searchParams.get('limit') || '10'), 20); // Very strict limit to save quota
 
     try {
         let allTitles: any[] = [];
@@ -80,22 +80,25 @@ export async function GET(request: Request) {
             allTitles = await fetchTitlesList(type, null, limit);
         }
 
-        // For now, we return basic info to save quota. 
-        // We can fetch details on demand in the watch page.
+        // Fetch details in batches for ALL titles (to get posters/backdrops)
+        const batchSize = 10;
+        const titlesWithDetails: any[] = [];
+
+        for (let i = 0; i < allTitles.length; i += batchSize) {
+            const batch = allTitles.slice(i, i + batchSize);
+            const batchResults = await Promise.all(
+                batch.map((title: any) => fetchTitleDetails(title.id))
+            );
+            titlesWithDetails.push(...batchResults.filter(Boolean));
+
+            if (i + batchSize < allTitles.length) {
+                await new Promise(resolve => setTimeout(resolve, 50));
+            }
+        }
+
         return NextResponse.json({
-            titles: allTitles.map(t => ({
-                id: t.id,
-                title: t.title,
-                year: t.year,
-                type: t.type,
-                // These might be missing in list-titles, so we provide defaults
-                poster: `https://images.watchmode.com/poster/${t.id}_small.jpg`,
-                backdrop: `https://images.watchmode.com/backdrop/${t.id}_large.jpg`,
-                plot_overview: '',
-                user_rating: 0,
-                genre_names: []
-            })),
-            total: allTitles.length,
+            titles: titlesWithDetails,
+            total: titlesWithDetails.length,
         });
     } catch (error: any) {
         console.error('API Error:', error);
