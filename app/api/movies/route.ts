@@ -30,7 +30,10 @@ async function fetchTitlesList(type: string, language: string | null, limit: num
         next: { revalidate: 3600 }
     });
 
-    if (!res.ok) return [];
+    if (!res.ok) {
+        if (res.status === 429) throw new Error('QUOTA_EXCEEDED');
+        return [];
+    }
     const data = await res.json();
     return data.titles || [];
 }
@@ -39,7 +42,7 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const category = searchParams.get('category') || 'all';
     const type = searchParams.get('type') || 'movie';
-    const limit = parseInt(searchParams.get('limit') || '100');
+    const limit = Math.min(parseInt(searchParams.get('limit') || '20'), 50); // Reduced default limit for quota safety
 
     try {
         let allTitles: any[] = [];
@@ -77,28 +80,28 @@ export async function GET(request: Request) {
             allTitles = await fetchTitlesList(type, null, limit);
         }
 
-        // Fetch details for all titles (in batches to avoid rate limiting)
-        const batchSize = 40;
-        const titlesWithDetails: any[] = [];
-
-        for (let i = 0; i < allTitles.length; i += batchSize) {
-            const batch = allTitles.slice(i, i + batchSize);
-            const batchResults = await Promise.all(
-                batch.map((title: any) => fetchTitleDetails(title.id))
-            );
-            titlesWithDetails.push(...batchResults.filter(Boolean));
-
-            if (i + batchSize < allTitles.length) {
-                await new Promise(resolve => setTimeout(resolve, 30));
-            }
-        }
-
+        // For now, we return basic info to save quota. 
+        // We can fetch details on demand in the watch page.
         return NextResponse.json({
-            titles: titlesWithDetails,
-            total: titlesWithDetails.length,
+            titles: allTitles.map(t => ({
+                id: t.id,
+                title: t.title,
+                year: t.year,
+                type: t.type,
+                // These might be missing in list-titles, so we provide defaults
+                poster: `https://images.watchmode.com/poster/${t.id}_small.jpg`,
+                backdrop: `https://images.watchmode.com/backdrop/${t.id}_large.jpg`,
+                plot_overview: '',
+                user_rating: 0,
+                genre_names: []
+            })),
+            total: allTitles.length,
         });
-    } catch (error) {
+    } catch (error: any) {
         console.error('API Error:', error);
+        if (error.message === 'QUOTA_EXCEEDED') {
+            return NextResponse.json({ error: 'Quota exceeded', code: '429' }, { status: 429 });
+        }
         return NextResponse.json({ error: 'Failed to fetch content' }, { status: 500 });
     }
 }

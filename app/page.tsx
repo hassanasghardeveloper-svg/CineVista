@@ -45,35 +45,36 @@ export default function Home() {
     const [animation, setAnimation] = useState<Movie[]>([]);
     const [documentary, setDocumentary] = useState<Movie[]>([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         async function fetchContent() {
             try {
-                const [trendingRes, newestRes, pakRes, indRes, hwdRes, actRes, comRes, horRes, aniRes, docRes] = await Promise.all([
-                    fetch('/api/movies?category=trending&limit=100'),
-                    fetch('/api/movies?category=new&limit=100'),
-                    fetch('/api/movies?category=pakistani&limit=100'),
-                    fetch('/api/movies?category=indian&limit=100'),
-                    fetch('/api/movies?category=hollywood&limit=100'),
-                    fetch('/api/movies?category=action&limit=100'),
-                    fetch('/api/movies?category=comedy&limit=100'),
-                    fetch('/api/movies?category=horror&limit=100'),
-                    fetch('/api/movies?category=animation&limit=100'),
-                    fetch('/api/movies?category=documentary&limit=100')
-                ]);
+                const endpoints = [
+                    '/api/movies?category=trending&limit=20',
+                    '/api/movies?category=new&limit=20',
+                    '/api/movies?category=pakistani&limit=20',
+                    '/api/movies?category=indian&limit=20',
+                    '/api/movies?category=hollywood&limit=20',
+                    '/api/movies?category=action&limit=20',
+                    '/api/movies?category=comedy&limit=20',
+                    '/api/movies?category=horror&limit=20',
+                    '/api/movies?category=animation&limit=20',
+                    '/api/movies?category=documentary&limit=20'
+                ];
 
-                const [tData, nData, pData, iData, hData, aData, cData, hrData, anData, dData] = await Promise.all([
-                    trendingRes.json(),
-                    newestRes.json(),
-                    pakRes.json(),
-                    indRes.json(),
-                    hwdRes.json(),
-                    actRes.json(),
-                    comRes.json(),
-                    horRes.json(),
-                    aniRes.json(),
-                    docRes.json()
-                ]);
+                const responses = await Promise.all(endpoints.map(url => fetch(url)));
+
+                const data = await Promise.all(responses.map(async (res) => {
+                    if (!res.ok) {
+                        const err = await res.json();
+                        if (res.status === 429) throw new Error('API_QUOTA');
+                        return { titles: [] };
+                    }
+                    return res.json();
+                }));
+
+                const [tData, nData, pData, iData, hData, aData, cData, hrData, anData, dData] = data;
 
                 if (tData.titles) setTrending(tData.titles.map(transformMovie));
                 if (nData.titles) setNewest(nData.titles.map(transformMovie));
@@ -86,8 +87,13 @@ export default function Home() {
                 if (anData.titles) setAnimation(anData.titles.map(transformMovie));
                 if (dData.titles) setDocumentary(dData.titles.map(transformMovie));
 
-            } catch (error) {
+            } catch (error: any) {
                 console.error('Failed to fetch content:', error);
+                if (error.message === 'API_QUOTA') {
+                    setError('API limit reached. Using recently loaded content or try again later.');
+                } else {
+                    setError('Something went wrong. Please check your connection.');
+                }
             } finally {
                 setLoading(false);
             }
@@ -112,7 +118,14 @@ export default function Home() {
     return (
         <main className="min-h-screen bg-black">
             <Header />
-            {heroContent.length > 0 && (
+            {error && (
+                <div className="pt-32 px-10">
+                    <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-4 text-red-500 text-center">
+                        {error}
+                    </div>
+                </div>
+            )}
+            {heroContent.length > 0 ? (
                 <>
                     <HeroSection movies={heroContent} />
                     <div className="relative z-10 py-20 space-y-16">
@@ -129,6 +142,10 @@ export default function Home() {
                     </div>
                     <Footer />
                 </>
+            ) : !loading && !error && (
+                <div className="min-h-[60vh] flex flex-col items-center justify-center pt-20">
+                    <p className="text-white/40 text-lg">No movies found. Try searching for something else.</p>
+                </div>
             )}
         </main>
     );
