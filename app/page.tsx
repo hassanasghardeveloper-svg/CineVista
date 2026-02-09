@@ -37,22 +37,17 @@ export default function Home() {
     const [trending, setTrending] = useState<Movie[]>([]);
     const [newest, setNewest] = useState<Movie[]>([]);
     const [tvSeries, setTvSeries] = useState<Movie[]>([]);
-    const [hollywood, setHollywood] = useState<Movie[]>([]);
-    const [action, setAction] = useState<Movie[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         async function fetchContent() {
             try {
-                // Use lite mode to reduce API calls (no detail fetching)
                 // Fetch sequentially with delays to avoid rate limiting
                 const categories = [
-                    { url: '/api/movies?category=trending&limit=8&lite=true', setter: setTrending },
-                    { url: '/api/movies?category=new&limit=8&lite=true', setter: setNewest },
-                    { url: '/api/movies?category=trending&type=tv&limit=8&lite=true', setter: setTvSeries },
-                    { url: '/api/movies?category=hollywood&limit=8&lite=true', setter: setHollywood },
-                    { url: '/api/movies?category=action&limit=8&lite=true', setter: setAction },
+                    { url: '/api/movies?category=trending&limit=8', setter: setTrending },
+                    { url: '/api/movies?category=new&limit=8', setter: setNewest },
+                    { url: '/api/movies?category=trending&type=tv&limit=8', setter: setTvSeries },
                 ];
 
                 for (const { url, setter } of categories) {
@@ -116,8 +111,6 @@ export default function Home() {
                         <MovieRow title="Trending Now" movies={trending} />
                         <MovieRow title="New Releases" movies={newest} />
                         <MovieRow title="Popular TV Series" movies={tvSeries} />
-                        <MovieRow title="Hollywood Hits" movies={hollywood} />
-                        <MovieRow title="Action Packed" movies={action} />
                     </div>
                     <Footer />
                 </>

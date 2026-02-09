@@ -8,7 +8,7 @@ interface VidsrcPlayerProps {
     type: 'movie' | 'tv';
     season?: number | string;
     episode?: number | string;
-    color?: string; // Hex color
+    color?: string;
 }
 
 export default function VidsrcPlayer({
@@ -17,28 +17,10 @@ export default function VidsrcPlayer({
     type,
     season = 1,
     episode = 1,
-    color = 'f97316' // orange
 }: VidsrcPlayerProps) {
     const iframeRef = useRef<HTMLIFrameElement>(null);
 
-    // Vidsrc typically follows this format:
-    // https://vidsrc.me/embed/movie?tmdb=TMDB_ID or ?imdb=IMDB_ID
-    const baseUrl = 'https://vidsrc.me/embed';
-
-    let embedUrl = '';
-    if (type === 'movie') {
-        const idParam = tmdbId ? `tmdb=${tmdbId}` : `imdb=${imdbId}`;
-        embedUrl = `${baseUrl}/movie?${idParam}`;
-    } else {
-        const idParam = tmdbId ? `tmdb=${tmdbId}` : `imdb=${imdbId}`;
-        embedUrl = `${baseUrl}/tv?${idParam}&season=${season}&episode=${episode}`;
-    }
-
-    // Add UI customization if supported
-    if (color) {
-        embedUrl += `&color=${color.replace('#', '')}`;
-    }
-
+    // Use vidsrc.to - reliable embed source
     if (!tmdbId && !imdbId) {
         return (
             <div className="w-full aspect-video bg-black rounded-xl flex items-center justify-center border border-white/10">
@@ -47,18 +29,24 @@ export default function VidsrcPlayer({
         );
     }
 
+    let embedUrl = '';
+    if (type === 'movie') {
+        embedUrl = `https://vidsrc.to/embed/movie/${tmdbId || imdbId}`;
+    } else {
+        embedUrl = `https://vidsrc.to/embed/tv/${tmdbId || imdbId}/${season}/${episode}`;
+    }
+
     return (
         <div className="relative w-full aspect-video bg-black rounded-xl overflow-hidden shadow-2xl border border-white/10">
             <iframe
                 ref={iframeRef}
                 src={embedUrl}
                 className="absolute inset-0 w-full h-full"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
                 allowFullScreen
-                sandbox="allow-scripts allow-same-origin allow-forms"
-                referrerPolicy="no-referrer"
+                referrerPolicy="origin"
                 loading="lazy"
-                title={`Vidsrc Player - ${type === 'movie' ? 'Movie' : 'TV Series'}`}
+                title={`Stream Player 3 - ${type === 'movie' ? 'Movie' : 'TV Series'}`}
             />
         </div>
     );

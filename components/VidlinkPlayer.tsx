@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 
 interface VidlinkPlayerProps {
     tmdbId?: number | string;
@@ -8,7 +8,7 @@ interface VidlinkPlayerProps {
     type: 'movie' | 'tv';
     season?: number | string;
     episode?: number | string;
-    color?: string; // Hex color for Vidlink
+    color?: string;
     onProgress?: (progress: number) => void;
     autoplay?: boolean;
 }
@@ -19,56 +19,32 @@ export default function VidlinkPlayer({
     type,
     season = 1,
     episode = 1,
-    color = '#f97316',
-    onProgress,
-    autoplay = true
 }: VidlinkPlayerProps) {
     const iframeRef = useRef<HTMLIFrameElement>(null);
 
-    useEffect(() => {
-        const handleMessage = (event: MessageEvent) => {
-            // Vidnest (VidLink) uses vidlink.pro
-            if (event.origin !== 'https://vidlink.pro') return;
-
-            const data = event.data;
-            if (data && typeof data.progress !== 'undefined') {
-                if (onProgress) {
-                    onProgress(data.progress);
-                }
-            }
-        };
-
-        window.addEventListener('message', handleMessage);
-        return () => window.removeEventListener('message', handleMessage);
-    }, [onProgress]);
-
-    const baseUrl = 'https://vidlink.pro/embed';
+    // Use 2embed - reliable embed source
     const id = tmdbId || imdbId;
 
     if (!id) return <div className="p-10 text-center text-white/40">No ID provided</div>;
 
-    const embedUrl = type === 'movie'
-        ? `${baseUrl}/movie/${id}`
-        : `${baseUrl}/tv/${id}/${season}/${episode}`;
-
-    const params = new URLSearchParams();
-    if (autoplay) params.append('autoplay', '1');
-    if (color) params.append('color', color.replace('#', ''));
-
-    const finalUrl = `${embedUrl}?${params.toString()}`;
+    let embedUrl = '';
+    if (type === 'movie') {
+        embedUrl = `https://www.2embed.cc/embed/${tmdbId || imdbId}`;
+    } else {
+        embedUrl = `https://www.2embed.cc/embedtv/${tmdbId || imdbId}&s=${season}&e=${episode}`;
+    }
 
     return (
         <div className="relative w-full aspect-video bg-black rounded-xl overflow-hidden shadow-2xl border border-white/10">
             <iframe
                 ref={iframeRef}
-                src={finalUrl}
+                src={embedUrl}
                 className="absolute inset-0 w-full h-full"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
                 allowFullScreen
-                sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-downloads allow-pointer-lock allow-popups"
-                referrerPolicy="no-referrer"
+                referrerPolicy="origin"
                 loading="lazy"
-                title={`Vidlink Player - ${type === 'movie' ? 'Movie' : 'TV Series'}`}
+                title={`Stream Player 2 - ${type === 'movie' ? 'Movie' : 'TV Series'}`}
             />
         </div>
     );

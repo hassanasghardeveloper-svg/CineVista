@@ -43,7 +43,6 @@ export async function GET(request: Request) {
     const category = searchParams.get('category') || 'all';
     const type = searchParams.get('type') || 'movie';
     const limit = Math.min(parseInt(searchParams.get('limit') || '10'), 20);
-    const lite = searchParams.get('lite') === 'true'; // Skip detail fetching for lite mode
 
     try {
         let allTitles: any[] = [];
@@ -84,31 +83,7 @@ export async function GET(request: Request) {
             allTitles = await fetchTitlesList(type, null, limit);
         }
 
-        // Lite mode: Return basic data with TMDB poster URLs (no extra API calls)
-        if (lite) {
-            const liteTitles = allTitles.map((title: any) => ({
-                id: title.id,
-                title: title.title,
-                year: title.year,
-                type: title.type,
-                imdb_id: title.imdb_id,
-                tmdb_id: title.tmdb_id,
-                // Use TMDB image API directly - no extra API call needed
-                poster: title.tmdb_id
-                    ? `https://image.tmdb.org/t/p/w500/${title.tmdb_id}.jpg`
-                    : null,
-                backdrop: title.tmdb_id
-                    ? `https://image.tmdb.org/t/p/w1280/${title.tmdb_id}.jpg`
-                    : null,
-            }));
-
-            return NextResponse.json({
-                titles: liteTitles,
-                total: liteTitles.length,
-            });
-        }
-
-        // Full mode: Fetch details (uses more API quota)
+        // Fetch details from Watchmode (includes posters)
         const batchSize = 5;
         const titlesWithDetails: any[] = [];
 
