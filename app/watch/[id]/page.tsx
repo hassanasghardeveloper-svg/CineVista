@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Star, Play, ExternalLink, Tv, Film, Youtube, Eye, Zap, Layers } from 'lucide-react';
+import { ArrowLeft, Star, Play, ExternalLink, Tv, Film, Youtube, Eye, Zap, Layers, Download } from 'lucide-react';
 import VidkingPlayer from '@/components/VidkingPlayer';
 import VidlinkPlayer from '@/components/VidlinkPlayer';
 import VidsrcPlayer from '@/components/VidsrcPlayer';
@@ -165,6 +165,16 @@ export default function WatchPage() {
                                     Watch
                                 </button>
                             )}
+                            {/* Download Button */}
+                            <a
+                                href={`https://www.1337x.to/search/${encodeURIComponent(title.title + ' ' + (title.year || ''))}/1/`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center gap-2 px-4 md:px-6 py-2.5 rounded-full text-[10px] md:text-sm font-black uppercase tracking-widest transition-all bg-green-600/20 text-green-400 hover:bg-green-600 hover:text-white"
+                            >
+                                <Download className="w-4 h-4" />
+                                Download
+                            </a>
                         </div>
                     </div>
 
