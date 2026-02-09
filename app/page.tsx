@@ -36,53 +36,45 @@ function transformMovie(apiMovie: any): Movie {
 export default function Home() {
     const [trending, setTrending] = useState<Movie[]>([]);
     const [newest, setNewest] = useState<Movie[]>([]);
-    const [pakistani, setPakistani] = useState<Movie[]>([]);
-    const [indian, setIndian] = useState<Movie[]>([]);
+    const [tvSeries, setTvSeries] = useState<Movie[]>([]);
     const [hollywood, setHollywood] = useState<Movie[]>([]);
     const [action, setAction] = useState<Movie[]>([]);
-    const [comedy, setComedy] = useState<Movie[]>([]);
-    const [horror, setHorror] = useState<Movie[]>([]);
-    const [animation, setAnimation] = useState<Movie[]>([]);
-    const [documentary, setDocumentary] = useState<Movie[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         async function fetchContent() {
             try {
-                const endpoints = [
-                    '/api/movies?category=trending&limit=8',
-                    '/api/movies?category=new&limit=8',
-                    '/api/movies?category=pakistani&limit=8',
-                    '/api/movies?category=indian&limit=8',
-                    '/api/movies?category=hollywood&limit=8',
-                    '/api/movies?category=action&limit=8'
+                // Use lite mode to reduce API calls (no detail fetching)
+                // Fetch sequentially with delays to avoid rate limiting
+                const categories = [
+                    { url: '/api/movies?category=trending&limit=8&lite=true', setter: setTrending },
+                    { url: '/api/movies?category=new&limit=8&lite=true', setter: setNewest },
+                    { url: '/api/movies?category=trending&type=tv&limit=8&lite=true', setter: setTvSeries },
+                    { url: '/api/movies?category=hollywood&limit=8&lite=true', setter: setHollywood },
+                    { url: '/api/movies?category=action&limit=8&lite=true', setter: setAction },
                 ];
 
-                const responses = await Promise.all(endpoints.map(url => fetch(url)));
-
-                const data = await Promise.all(responses.map(async (res) => {
-                    if (!res.ok) {
-                        const err = await res.json();
-                        if (res.status === 429) throw new Error('API_QUOTA');
-                        return { titles: [] };
+                for (const { url, setter } of categories) {
+                    try {
+                        const res = await fetch(url);
+                        if (res.ok) {
+                            const data = await res.json();
+                            if (data.titles) setter(data.titles.map(transformMovie));
+                        } else if (res.status === 429) {
+                            throw new Error('API_QUOTA');
+                        }
+                        // Small delay between requests
+                        await new Promise(resolve => setTimeout(resolve, 150));
+                    } catch (e: any) {
+                        if (e.message === 'API_QUOTA') throw e;
                     }
-                    return res.json();
-                }));
-
-                const [tData, nData, pData, iData, hData, aData] = data;
-
-                if (tData.titles) setTrending(tData.titles.map(transformMovie));
-                if (nData.titles) setNewest(nData.titles.map(transformMovie));
-                if (pData.titles) setPakistani(pData.titles.map(transformMovie));
-                if (iData.titles) setIndian(iData.titles.map(transformMovie));
-                if (hData.titles) setHollywood(hData.titles.map(transformMovie));
-                if (aData.titles) setAction(aData.titles.map(transformMovie));
+                }
 
             } catch (error: any) {
                 console.error('Failed to fetch content:', error);
                 if (error.message === 'API_QUOTA') {
-                    setError('API limit reached. Using recently loaded content or try again later.');
+                    setError('API limit reached. Please try again later.');
                 } else {
                     setError('Something went wrong. Please check your connection.');
                 }
@@ -123,8 +115,7 @@ export default function Home() {
                     <div className="relative z-10 py-20 space-y-16">
                         <MovieRow title="Trending Now" movies={trending} />
                         <MovieRow title="New Releases" movies={newest} />
-                        <MovieRow title="Pakistani Content" movies={pakistani} />
-                        <MovieRow title="Indian Movies" movies={indian} />
+                        <MovieRow title="Popular TV Series" movies={tvSeries} />
                         <MovieRow title="Hollywood Hits" movies={hollywood} />
                         <MovieRow title="Action Packed" movies={action} />
                     </div>

@@ -42,7 +42,8 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const category = searchParams.get('category') || 'all';
     const type = searchParams.get('type') || 'movie';
-    const limit = Math.min(parseInt(searchParams.get('limit') || '10'), 20); // Very strict limit to save quota
+    const limit = Math.min(parseInt(searchParams.get('limit') || '10'), 20);
+    const lite = searchParams.get('lite') === 'true'; // Skip detail fetching for lite mode
 
     try {
         let allTitles: any[] = [];
@@ -56,32 +57,59 @@ export async function GET(request: Request) {
         } else if (category === 'hollywood') {
             allTitles = await fetchTitlesList(type, 'en', limit);
         } else if (category === 'action') {
-            allTitles = await fetchTitlesList(type, null, limit, '1'); // Action
+            allTitles = await fetchTitlesList(type, null, limit, '1');
         } else if (category === 'comedy') {
-            allTitles = await fetchTitlesList(type, null, limit, '4'); // Comedy
+            allTitles = await fetchTitlesList(type, null, limit, '4');
         } else if (category === 'horror') {
-            allTitles = await fetchTitlesList(type, null, limit, '11'); // Horror
+            allTitles = await fetchTitlesList(type, null, limit, '11');
         } else if (category === 'animation') {
-            allTitles = await fetchTitlesList(type, null, limit, '3'); // Animation
+            allTitles = await fetchTitlesList(type, null, limit, '3');
         } else if (category === 'documentary') {
-            allTitles = await fetchTitlesList(type, null, limit, '6'); // Documentary
+            allTitles = await fetchTitlesList(type, null, limit, '6');
         } else if (category === 'new') {
-            allTitles = await fetchTitlesList(type, null, limit); // Already trending-ish, but can sort by date
             const params = new URLSearchParams({
                 apiKey: API_KEY || '',
                 types: type === 'tv' ? 'tv_series' : 'movie',
                 limit: String(limit),
                 sort_by: 'release_date_desc',
             });
-            const res = await fetch(`${BASE_URL}/list-titles/?${params}`);
-            const data = await res.json();
-            allTitles = data.titles || [];
+            const res = await fetch(`${BASE_URL}/list-titles/?${params}`, {
+                next: { revalidate: 3600 }
+            });
+            if (res.ok) {
+                const data = await res.json();
+                allTitles = data.titles || [];
+            }
         } else {
             allTitles = await fetchTitlesList(type, null, limit);
         }
 
-        // Fetch details in batches for ALL titles (to get posters/backdrops)
-        const batchSize = 10;
+        // Lite mode: Return basic data with TMDB poster URLs (no extra API calls)
+        if (lite) {
+            const liteTitles = allTitles.map((title: any) => ({
+                id: title.id,
+                title: title.title,
+                year: title.year,
+                type: title.type,
+                imdb_id: title.imdb_id,
+                tmdb_id: title.tmdb_id,
+                // Use TMDB image API directly - no extra API call needed
+                poster: title.tmdb_id
+                    ? `https://image.tmdb.org/t/p/w500/${title.tmdb_id}.jpg`
+                    : null,
+                backdrop: title.tmdb_id
+                    ? `https://image.tmdb.org/t/p/w1280/${title.tmdb_id}.jpg`
+                    : null,
+            }));
+
+            return NextResponse.json({
+                titles: liteTitles,
+                total: liteTitles.length,
+            });
+        }
+
+        // Full mode: Fetch details (uses more API quota)
+        const batchSize = 5;
         const titlesWithDetails: any[] = [];
 
         for (let i = 0; i < allTitles.length; i += batchSize) {
@@ -92,7 +120,7 @@ export async function GET(request: Request) {
             titlesWithDetails.push(...batchResults.filter(Boolean));
 
             if (i + batchSize < allTitles.length) {
-                await new Promise(resolve => setTimeout(resolve, 50));
+                await new Promise(resolve => setTimeout(resolve, 100));
             }
         }
 
