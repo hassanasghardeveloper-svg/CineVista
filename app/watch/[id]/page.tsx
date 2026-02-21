@@ -3,10 +3,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Star, Play, ExternalLink, Tv, Film, Youtube, Eye, Zap, Layers, Download } from 'lucide-react';
+import { ArrowLeft, Star, Play, ExternalLink, Tv, Film, Youtube, Zap, Layers, Download } from 'lucide-react';
 import VidkingPlayer from '@/components/VidkingPlayer';
 import VidlinkPlayer from '@/components/VidlinkPlayer';
-import VidsrcPlayer from '@/components/VidsrcPlayer';
 
 interface TitleDetails {
     id: number;
@@ -165,9 +164,9 @@ export default function WatchPage() {
                                     Watch
                                 </button>
                             )}
-                            {/* Download Button - opens torrent search */}
+                            {/* Download Button - Google search for torrent */}
                             <a
-                                href={`https://torrentgalaxy.to/torrents.php?search=${encodeURIComponent(title.title + ' ' + (title.year || ''))}`}
+                                href={`https://www.google.com/search?q=${encodeURIComponent(title.title + ' ' + (title.year || '') + ' download torrent')}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="flex items-center gap-2 px-4 md:px-6 py-2.5 rounded-full text-[10px] md:text-sm font-black uppercase tracking-widest transition-all bg-green-600/20 text-green-400 hover:bg-green-600 hover:text-white"
@@ -201,16 +200,6 @@ export default function WatchPage() {
                                 <Layers className="w-3 h-3 text-blue-400" />
                                 SERVER 2
                             </button>
-                            <button
-                                onClick={() => setStreamSource('vidsrc')}
-                                className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-tighter transition-all ${streamSource === 'vidsrc'
-                                    ? 'bg-white/20 text-white'
-                                    : 'text-white/40 hover:text-white'
-                                    }`}
-                            >
-                                <Eye className="w-3 h-3 text-green-400" />
-                                ASIAN
-                            </button>
                         </div>
                     )}
                 </div>
@@ -220,12 +209,6 @@ export default function WatchPage() {
             <div className="w-full bg-black relative">
                 {watchMode === 'movie' && (title.tmdb_id || title.imdb_id) ? (
                     <div className="max-w-[1400px] mx-auto">
-                        {/* Ad blocker tip */}
-                        <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg px-4 py-2 mb-2 mx-4">
-                            <p className="text-yellow-500 text-xs font-medium text-center">
-                                Tip: Use uBlock Origin or any ad blocker to avoid popup ads
-                            </p>
-                        </div>
                         <div className="w-full aspect-video">
                         {streamSource === 'vidking' ? (
                             <VidkingPlayer
@@ -235,20 +218,13 @@ export default function WatchPage() {
                                 theme="#f97316"
                                 onProgress={handleProgress}
                             />
-                        ) : streamSource === 'vidlink' ? (
+                        ) : (
                             <VidlinkPlayer
                                 tmdbId={title.tmdb_id}
                                 imdbId={title.imdb_id}
                                 type={title.type === 'tv_series' ? 'tv' : 'movie'}
                                 color="#f97316"
                                 onProgress={handleProgress}
-                            />
-                        ) : (
-                            <VidsrcPlayer
-                                tmdbId={title.tmdb_id}
-                                imdbId={title.imdb_id}
-                                type={title.type === 'tv_series' ? 'tv' : 'movie'}
-                                color="f97316"
                             />
                         )}
                         </div>
