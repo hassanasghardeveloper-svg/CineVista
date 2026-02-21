@@ -2,36 +2,33 @@
 
 import { useRef } from 'react';
 
-interface VidkingPlayerProps {
+interface AutoEmbedPlayerProps {
     tmdbId?: number | string;
     imdbId?: string;
     type: 'movie' | 'tv';
     season?: number | string;
     episode?: number | string;
-    theme?: string;
-    onProgress?: (progress: number) => void;
-    autoplay?: boolean;
 }
 
-export default function VidkingPlayer({
+export default function AutoEmbedPlayer({
     tmdbId,
     imdbId,
     type,
     season = 1,
     episode = 1,
-}: VidkingPlayerProps) {
+}: AutoEmbedPlayerProps) {
     const iframeRef = useRef<HTMLIFrameElement>(null);
 
-    // Use vidsrc.cc - clean embed source
+    // MoviesAPI - Good coverage for Asian content
     const id = tmdbId || imdbId;
 
     if (!id) return <div className="p-10 text-center text-white/40">No ID provided</div>;
 
     let embedUrl = '';
     if (type === 'movie') {
-        embedUrl = `https://vidsrc.cc/v2/embed/movie/${tmdbId}`;
+        embedUrl = `https://moviesapi.club/movie/${tmdbId}`;
     } else {
-        embedUrl = `https://vidsrc.cc/v2/embed/tv/${tmdbId}/${season}/${episode}`;
+        embedUrl = `https://moviesapi.club/tv/${tmdbId}-${season}-${episode}`;
     }
 
     return (
@@ -44,7 +41,8 @@ export default function VidkingPlayer({
                 allowFullScreen
                 referrerPolicy="origin"
                 loading="lazy"
-                title={`Stream Player - ${type === 'movie' ? 'Movie' : 'TV Series'}`}
+                sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-presentation allow-popups-to-escape-sandbox"
+                title={`Auto Embed Player - ${type === 'movie' ? 'Movie' : 'TV Series'}`}
             />
         </div>
     );

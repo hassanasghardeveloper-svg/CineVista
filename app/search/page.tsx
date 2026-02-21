@@ -10,20 +10,21 @@ import { Search as SearchIcon, Film, Tv } from 'lucide-react';
 interface SearchResult {
     id: number;
     name: string;
+    title: string;
     type: string;
-    year: number;
+    year: string;
+    poster: string;
     image_url: string;
-    relevance: number;
 }
 
 function transformSearchResult(result: SearchResult): Movie {
     return {
         id: String(result.id),
-        title: result.name,
+        title: result.title || result.name,
         overview: '',
-        posterPath: result.image_url || 'https://via.placeholder.com/500x750?text=CineVault',
-        backdropPath: result.image_url || result.image_url || 'https://via.placeholder.com/1920x1080?text=CineVault',
-        releaseDate: result.year?.toString() || '',
+        posterPath: result.poster || result.image_url || 'https://via.placeholder.com/500x750?text=CineVault',
+        backdropPath: result.poster || 'https://via.placeholder.com/1920x1080?text=CineVault',
+        releaseDate: result.year || '',
         rating: 0,
         type: result.type,
         genres: [],

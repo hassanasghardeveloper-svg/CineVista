@@ -18,7 +18,7 @@ export interface Movie {
     genres: string[];
 }
 
-// Transform API response to our Movie format
+// Transform TMDB API response to our Movie format
 function transformMovie(apiMovie: any): Movie {
     return {
         id: String(apiMovie.id),
@@ -37,42 +37,36 @@ export default function Home() {
     const [trending, setTrending] = useState<Movie[]>([]);
     const [newest, setNewest] = useState<Movie[]>([]);
     const [tvSeries, setTvSeries] = useState<Movie[]>([]);
+    const [topRated, setTopRated] = useState<Movie[]>([]);
+    const [action, setAction] = useState<Movie[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         async function fetchContent() {
             try {
-                // Fetch sequentially with delays to avoid rate limiting
+                // Fetch all categories in parallel (TMDB has generous rate limits)
                 const categories = [
-                    { url: '/api/movies?category=trending&limit=8', setter: setTrending },
-                    { url: '/api/movies?category=new&limit=8', setter: setNewest },
-                    { url: '/api/movies?category=trending&type=tv&limit=8', setter: setTvSeries },
+                    { url: '/api/movies?category=trending', setter: setTrending },
+                    { url: '/api/movies?category=new', setter: setNewest },
+                    { url: '/api/movies?category=trending&type=tv', setter: setTvSeries },
+                    { url: '/api/movies?category=top_rated', setter: setTopRated },
+                    { url: '/api/movies?category=action', setter: setAction },
                 ];
 
-                for (const { url, setter } of categories) {
-                    try {
-                        const res = await fetch(url);
-                        if (res.ok) {
-                            const data = await res.json();
-                            if (data.titles) setter(data.titles.map(transformMovie));
-                        } else if (res.status === 429) {
-                            throw new Error('API_QUOTA');
-                        }
-                        // Small delay between requests
-                        await new Promise(resolve => setTimeout(resolve, 150));
-                    } catch (e: any) {
-                        if (e.message === 'API_QUOTA') throw e;
+                const results = await Promise.all(
+                    categories.map(({ url }) => fetch(url).then(res => res.json()))
+                );
+
+                results.forEach((data, index) => {
+                    if (data.titles) {
+                        categories[index].setter(data.titles.map(transformMovie));
                     }
-                }
+                });
 
             } catch (error: any) {
                 console.error('Failed to fetch content:', error);
-                if (error.message === 'API_QUOTA') {
-                    setError('API limit reached. Please try again later.');
-                } else {
-                    setError('Something went wrong. Please check your connection.');
-                }
+                setError('Something went wrong. Please check your connection.');
             } finally {
                 setLoading(false);
             }
@@ -111,6 +105,8 @@ export default function Home() {
                         <MovieRow title="Trending Now" movies={trending} />
                         <MovieRow title="New Releases" movies={newest} />
                         <MovieRow title="Popular TV Series" movies={tvSeries} />
+                        <MovieRow title="Top Rated" movies={topRated} />
+                        <MovieRow title="Action Movies" movies={action} />
                     </div>
                     <Footer />
                 </>

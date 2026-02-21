@@ -20,7 +20,7 @@ export default function VidsrcPlayer({
 }: VidsrcPlayerProps) {
     const iframeRef = useRef<HTMLIFrameElement>(null);
 
-    // Use vidsrc.to - reliable embed source
+    // Use embed.su - Better for South Asian content (Pakistani, Indian, Turkish dramas)
     if (!tmdbId && !imdbId) {
         return (
             <div className="w-full aspect-video bg-black rounded-xl flex items-center justify-center border border-white/10">
@@ -31,9 +31,9 @@ export default function VidsrcPlayer({
 
     let embedUrl = '';
     if (type === 'movie') {
-        embedUrl = `https://vidsrc.to/embed/movie/${tmdbId || imdbId}`;
+        embedUrl = `https://embed.su/embed/movie/${tmdbId}`;
     } else {
-        embedUrl = `https://vidsrc.to/embed/tv/${tmdbId || imdbId}/${season}/${episode}`;
+        embedUrl = `https://embed.su/embed/tv/${tmdbId}/${season}/${episode}`;
     }
 
     return (
@@ -46,7 +46,7 @@ export default function VidsrcPlayer({
                 allowFullScreen
                 referrerPolicy="origin"
                 loading="lazy"
-                title={`Stream Player 3 - ${type === 'movie' ? 'Movie' : 'TV Series'}`}
+                title={`Asian Server - ${type === 'movie' ? 'Movie' : 'TV Series'}`}
             />
         </div>
     );

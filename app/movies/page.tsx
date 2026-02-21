@@ -20,42 +20,46 @@ function transformMovie(apiMovie: any): Movie {
     };
 }
 
-type Category = 'all' | 'pakistani' | 'indian' | 'hollywood';
+type Category = 'trending' | 'popular' | 'top_rated' | 'pakistani' | 'indian' | 'turkish' | 'hollywood' | 'action' | 'comedy';
 
 export default function MoviesPage() {
     const [movies, setMovies] = useState<Movie[]>([]);
     const [loading, setLoading] = useState(true);
-    const [activeTab, setActiveTab] = useState<Category>('all');
-    const [counts, setCounts] = useState({ pakistani: 0, indian: 0, hollywood: 0, total: 0 });
+    const [activeTab, setActiveTab] = useState<Category>('trending');
+    const [loadingMore, setLoadingMore] = useState(false);
+    const [currentPage, setCurrentPage] = useState(10); // Already loaded 10 pages
 
     useEffect(() => {
         async function fetchMovies() {
             setLoading(true);
+            setMovies([]);
             try {
-                // Fetch based on active category
-                const limit = activeTab === 'all' ? 500 : 100;
-                const res = await fetch(`/api/movies?type=movie&category=${activeTab}&limit=${limit}`);
-                const data = await res.json();
+                // Fetch 10 pages in parallel (200 movies)
+                const pages = Array.from({ length: 10 }, (_, i) => i + 1);
+                const results = await Promise.all(
+                    pages.map(page =>
+                        fetch(`/api/movies?type=movie&category=${activeTab}&page=${page}`)
+                            .then(res => res.json())
+                    )
+                );
 
-                if (data.titles) {
-                    setMovies(data.titles.map(transformMovie));
+                const allMovies: Movie[] = [];
+                const seenIds = new Set<string>();
 
-                    if (activeTab === 'all') {
-                        // When fetching all, also get individual counts
-                        const pkRes = await fetch('/api/movies?type=movie&category=pakistani&limit=100');
-                        const pkData = await pkRes.json();
-
-                        const inRes = await fetch('/api/movies?type=movie&category=indian&limit=300');
-                        const inData = await inRes.json();
-
-                        setCounts({
-                            pakistani: pkData.total || 0,
-                            indian: inData.total || 0,
-                            hollywood: data.total - (pkData.total || 0) - (inData.total || 0),
-                            total: data.total || 0
+                results.forEach(data => {
+                    if (data.titles) {
+                        data.titles.forEach((movie: any) => {
+                            const transformed = transformMovie(movie);
+                            if (!seenIds.has(transformed.id)) {
+                                seenIds.add(transformed.id);
+                                allMovies.push(transformed);
+                            }
                         });
                     }
-                }
+                });
+
+                setMovies(allMovies);
+                setCurrentPage(10);
             } catch (error) {
                 console.error('Failed to fetch movies:', error);
             } finally {
@@ -64,6 +68,46 @@ export default function MoviesPage() {
         }
         fetchMovies();
     }, [activeTab]);
+
+    const loadMore = async () => {
+        setLoadingMore(true);
+        try {
+            // Load 5 more pages
+            const pages = Array.from({ length: 5 }, (_, i) => currentPage + i + 1);
+            const results = await Promise.all(
+                pages.map(page =>
+                    fetch(`/api/movies?type=movie&category=${activeTab}&page=${page}`)
+                        .then(res => res.json())
+                )
+            );
+
+            const newMovies: Movie[] = [];
+            const seenIds = new Set(movies.map(m => m.id));
+
+            results.forEach(data => {
+                if (data.titles) {
+                    data.titles.forEach((movie: any) => {
+                        const transformed = transformMovie(movie);
+                        if (!seenIds.has(transformed.id)) {
+                            seenIds.add(transformed.id);
+                            newMovies.push(transformed);
+                        }
+                    });
+                }
+            });
+
+            setMovies(prev => [...prev, ...newMovies]);
+            setCurrentPage(prev => prev + 5);
+        } catch (error) {
+            console.error('Failed to load more:', error);
+        } finally {
+            setLoadingMore(false);
+        }
+    };
+
+    const handleTabChange = (tab: Category) => {
+        setActiveTab(tab);
+    };
 
     return (
         <main className="min-h-screen bg-black">
@@ -75,27 +119,40 @@ export default function MoviesPage() {
                         Movies
                     </h1>
                     <p className="text-white/40 text-lg max-w-2xl mb-2">
-                        {loading ? 'Loading...' : `${movies.length} movies available`}
+                        {loading ? 'Loading 200+ movies...' : `Showing ${movies.length} movies`}
                     </p>
-                    {!loading && activeTab === 'all' && counts.total > 0 && (
-                        <p className="text-white/30 text-sm">
-                            Pakistani: {counts.pakistani} | Indian: {counts.indian} | Hollywood: {counts.hollywood}
-                        </p>
-                    )}
 
                     {/* Category Tabs */}
                     <div className="flex flex-wrap gap-3 mt-8 mb-8">
                         <button
-                            onClick={() => setActiveTab('all')}
-                            className={`px-6 py-3 rounded-full font-bold text-xs uppercase tracking-widest transition-all ${activeTab === 'all'
+                            onClick={() => handleTabChange('trending')}
+                            className={`px-6 py-3 rounded-full font-bold text-xs uppercase tracking-widest transition-all ${activeTab === 'trending'
                                 ? 'bg-accent-orange text-white'
                                 : 'bg-white/5 text-white/60 hover:bg-white/10'
                                 }`}
                         >
-                            All Movies
+                            Trending
                         </button>
                         <button
-                            onClick={() => setActiveTab('pakistani')}
+                            onClick={() => handleTabChange('popular')}
+                            className={`px-6 py-3 rounded-full font-bold text-xs uppercase tracking-widest transition-all ${activeTab === 'popular'
+                                ? 'bg-accent-orange text-white'
+                                : 'bg-white/5 text-white/60 hover:bg-white/10'
+                                }`}
+                        >
+                            Popular
+                        </button>
+                        <button
+                            onClick={() => handleTabChange('top_rated')}
+                            className={`px-6 py-3 rounded-full font-bold text-xs uppercase tracking-widest transition-all ${activeTab === 'top_rated'
+                                ? 'bg-accent-orange text-white'
+                                : 'bg-white/5 text-white/60 hover:bg-white/10'
+                                }`}
+                        >
+                            Top Rated
+                        </button>
+                        <button
+                            onClick={() => handleTabChange('pakistani')}
                             className={`px-6 py-3 rounded-full font-bold text-xs uppercase tracking-widest transition-all ${activeTab === 'pakistani'
                                 ? 'bg-green-600 text-white'
                                 : 'bg-white/5 text-white/60 hover:bg-white/10'
@@ -104,7 +161,7 @@ export default function MoviesPage() {
                             🇵🇰 Pakistani
                         </button>
                         <button
-                            onClick={() => setActiveTab('indian')}
+                            onClick={() => handleTabChange('indian')}
                             className={`px-6 py-3 rounded-full font-bold text-xs uppercase tracking-widest transition-all ${activeTab === 'indian'
                                 ? 'bg-orange-600 text-white'
                                 : 'bg-white/5 text-white/60 hover:bg-white/10'
@@ -113,7 +170,16 @@ export default function MoviesPage() {
                             🇮🇳 Bollywood
                         </button>
                         <button
-                            onClick={() => setActiveTab('hollywood')}
+                            onClick={() => handleTabChange('turkish')}
+                            className={`px-6 py-3 rounded-full font-bold text-xs uppercase tracking-widest transition-all ${activeTab === 'turkish'
+                                ? 'bg-red-600 text-white'
+                                : 'bg-white/5 text-white/60 hover:bg-white/10'
+                                }`}
+                        >
+                            🇹🇷 Turkish
+                        </button>
+                        <button
+                            onClick={() => handleTabChange('hollywood')}
                             className={`px-6 py-3 rounded-full font-bold text-xs uppercase tracking-widest transition-all ${activeTab === 'hollywood'
                                 ? 'bg-blue-600 text-white'
                                 : 'bg-white/5 text-white/60 hover:bg-white/10'
@@ -121,25 +187,54 @@ export default function MoviesPage() {
                         >
                             🇺🇸 Hollywood
                         </button>
+                        <button
+                            onClick={() => handleTabChange('action')}
+                            className={`px-6 py-3 rounded-full font-bold text-xs uppercase tracking-widest transition-all ${activeTab === 'action'
+                                ? 'bg-red-600 text-white'
+                                : 'bg-white/5 text-white/60 hover:bg-white/10'
+                                }`}
+                        >
+                            Action
+                        </button>
+                        <button
+                            onClick={() => handleTabChange('comedy')}
+                            className={`px-6 py-3 rounded-full font-bold text-xs uppercase tracking-widest transition-all ${activeTab === 'comedy'
+                                ? 'bg-yellow-600 text-white'
+                                : 'bg-white/5 text-white/60 hover:bg-white/10'
+                                }`}
+                        >
+                            Comedy
+                        </button>
                     </div>
                 </div>
 
                 {loading ? (
                     <div className="flex flex-col items-center justify-center py-20">
                         <div className="w-12 h-12 border-4 border-accent-orange border-t-transparent rounded-full animate-spin mb-4" />
-                        <p className="text-white/40 text-sm font-bold uppercase tracking-widest">Loading movies...</p>
-                        <p className="text-white/20 text-xs mt-2">This may take a moment</p>
+                        <p className="text-white/40 text-sm font-bold uppercase tracking-widest">Loading 200+ movies...</p>
                     </div>
                 ) : movies.length > 0 ? (
-                    <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">
-                        {movies.map(movie => (
-                            <MovieCard key={movie.id} movie={movie} />
-                        ))}
-                    </div>
+                    <>
+                        <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">
+                            {movies.map(movie => (
+                                <MovieCard key={movie.id} movie={movie} />
+                            ))}
+                        </div>
+
+                        {/* Load More Button */}
+                        <div className="flex justify-center mt-12">
+                            <button
+                                onClick={loadMore}
+                                disabled={loadingMore}
+                                className="px-8 py-4 rounded-full font-bold text-sm uppercase tracking-widest bg-accent-orange text-white hover:bg-accent-orange/80 disabled:opacity-50 transition-all"
+                            >
+                                {loadingMore ? 'Loading...' : 'Load More Movies'}
+                            </button>
+                        </div>
+                    </>
                 ) : (
                     <div className="py-20 text-center">
                         <p className="text-white/20 text-xl">No movies available in this category.</p>
-                        <p className="text-white/10 text-sm mt-2">Try selecting a different category</p>
                     </div>
                 )}
             </div>

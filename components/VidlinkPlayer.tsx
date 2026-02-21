@@ -22,16 +22,16 @@ export default function VidlinkPlayer({
 }: VidlinkPlayerProps) {
     const iframeRef = useRef<HTMLIFrameElement>(null);
 
-    // Use 2embed - reliable embed source
+    // Use player.smashy - alternative source
     const id = tmdbId || imdbId;
 
     if (!id) return <div className="p-10 text-center text-white/40">No ID provided</div>;
 
     let embedUrl = '';
     if (type === 'movie') {
-        embedUrl = `https://www.2embed.cc/embed/${tmdbId || imdbId}`;
+        embedUrl = `https://player.smashy.stream/movie/${tmdbId}`;
     } else {
-        embedUrl = `https://www.2embed.cc/embedtv/${tmdbId || imdbId}&s=${season}&e=${episode}`;
+        embedUrl = `https://player.smashy.stream/tv/${tmdbId}?s=${season}&e=${episode}`;
     }
 
     return (

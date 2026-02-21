@@ -5,9 +5,11 @@ import { Star, Play } from 'lucide-react';
 import { Movie } from '@/app/page';
 
 export default function MovieCard({ movie }: { movie: Movie }) {
+    const mediaType = movie.type === 'tv' || movie.type === 'tv_series' ? 'tv' : 'movie';
+
     return (
         <Link
-            href={`/watch/${movie.id}`}
+            href={`/watch/${movie.id}?type=${mediaType}`}
             className="group relative block aspect-[2/3] w-full bg-dark-800 rounded-lg md:rounded-xl overflow-hidden shadow-2xl transition-all duration-500 hover:shadow-accent-orange/10"
         >
             <img

@@ -1,25 +1,20 @@
 import { NextResponse } from 'next/server';
 
-const TMDB_API_KEY = '2a4bd64ad04540668cb10286c3fd3d5f'; // Free public key for demo
-const TMDB_BASE = 'https://api.themoviedb.org/3';
+const API_KEY = process.env.TMDB_API_KEY;
+const BASE_URL = 'https://api.themoviedb.org/3';
 
 export async function GET(
     request: Request,
     { params }: { params: { id: string } }
 ) {
+    const id = params.id;
     const { searchParams } = new URL(request.url);
-    const tmdbId = searchParams.get('tmdb_id');
     const type = searchParams.get('type') || 'movie';
 
-    if (!tmdbId) {
-        return NextResponse.json({ error: 'TMDB ID required' }, { status: 400 });
-    }
-
     try {
-        // Fetch videos (trailers) from TMDB
-        const mediaType = type === 'tv_series' ? 'tv' : 'movie';
+        const mediaType = type === 'tv' || type === 'tv_series' ? 'tv' : 'movie';
         const res = await fetch(
-            `${TMDB_BASE}/${mediaType}/${tmdbId}/videos?api_key=${TMDB_API_KEY}`,
+            `${BASE_URL}/${mediaType}/${id}/videos?api_key=${API_KEY}`,
             { next: { revalidate: 86400 } }
         );
 
@@ -29,7 +24,7 @@ export async function GET(
 
         const data = await res.json();
 
-        // Filter for YouTube trailers
+        // Filter for YouTube trailers and teasers
         const trailers = data.results?.filter((v: any) =>
             v.site === 'YouTube' &&
             (v.type === 'Trailer' || v.type === 'Teaser')

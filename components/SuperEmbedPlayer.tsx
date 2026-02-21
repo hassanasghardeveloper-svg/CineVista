@@ -2,36 +2,33 @@
 
 import { useRef } from 'react';
 
-interface VidkingPlayerProps {
+interface SuperEmbedPlayerProps {
     tmdbId?: number | string;
     imdbId?: string;
     type: 'movie' | 'tv';
     season?: number | string;
     episode?: number | string;
-    theme?: string;
-    onProgress?: (progress: number) => void;
-    autoplay?: boolean;
 }
 
-export default function VidkingPlayer({
+export default function SuperEmbedPlayer({
     tmdbId,
     imdbId,
     type,
     season = 1,
     episode = 1,
-}: VidkingPlayerProps) {
+}: SuperEmbedPlayerProps) {
     const iframeRef = useRef<HTMLIFrameElement>(null);
 
-    // Use vidsrc.cc - clean embed source
+    // VidSrc.me - Good for regional content including Bollywood
     const id = tmdbId || imdbId;
 
     if (!id) return <div className="p-10 text-center text-white/40">No ID provided</div>;
 
     let embedUrl = '';
     if (type === 'movie') {
-        embedUrl = `https://vidsrc.cc/v2/embed/movie/${tmdbId}`;
+        embedUrl = `https://vidsrc.me/embed/movie?tmdb=${tmdbId}`;
     } else {
-        embedUrl = `https://vidsrc.cc/v2/embed/tv/${tmdbId}/${season}/${episode}`;
+        embedUrl = `https://vidsrc.me/embed/tv?tmdb=${tmdbId}&season=${season}&episode=${episode}`;
     }
 
     return (
@@ -44,7 +41,8 @@ export default function VidkingPlayer({
                 allowFullScreen
                 referrerPolicy="origin"
                 loading="lazy"
-                title={`Stream Player - ${type === 'movie' ? 'Movie' : 'TV Series'}`}
+                sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-presentation allow-popups-to-escape-sandbox"
+                title={`South Asian Player - ${type === 'movie' ? 'Movie' : 'TV Series'}`}
             />
         </div>
     );

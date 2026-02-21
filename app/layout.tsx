@@ -8,6 +8,10 @@ const inter = Inter({ subsets: ['latin'] });
 export const metadata: Metadata = {
     title: 'CineVault - Premium Streaming',
     description: 'Your premium destination for movies and TV shows',
+    icons: {
+        icon: '/icon.svg',
+        apple: '/apple-icon.svg',
+    },
 };
 
 export default function RootLayout({

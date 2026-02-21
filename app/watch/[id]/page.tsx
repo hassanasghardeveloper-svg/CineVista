@@ -69,22 +69,22 @@ export default function WatchPage() {
     useEffect(() => {
         async function fetchData() {
             try {
+                // Get type from URL query params or default to movie
+                const urlParams = new URLSearchParams(window.location.search);
+                const type = urlParams.get('type') || 'movie';
+
                 // Fetch title details
-                const res = await fetch(`/api/title/${params.id}`);
+                const res = await fetch(`/api/title/${params.id}?type=${type}`);
                 if (!res.ok) throw new Error('Failed to fetch title');
                 const data = await res.json();
                 setTitle(data);
 
-                // Fetch trailers if we have TMDB ID
-                if (data.tmdb_id) {
-                    const trailerRes = await fetch(
-                        `/api/trailer/${params.id}?tmdb_id=${data.tmdb_id}&type=${data.type}`
-                    );
-                    const trailerData = await trailerRes.json();
-                    if (trailerData.videos?.length > 0) {
-                        setTrailers(trailerData.videos);
-                        setActiveTrailer(trailerData.videos[0]);
-                    }
+                // Fetch trailers
+                const trailerRes = await fetch(`/api/trailer/${params.id}?type=${data.type}`);
+                const trailerData = await trailerRes.json();
+                if (trailerData.videos?.length > 0) {
+                    setTrailers(trailerData.videos);
+                    setActiveTrailer(trailerData.videos[0]);
                 }
             } catch (err) {
                 console.error('Error:', err);
@@ -165,9 +165,9 @@ export default function WatchPage() {
                                     Watch
                                 </button>
                             )}
-                            {/* Download Button */}
+                            {/* Download Button - opens torrent search */}
                             <a
-                                href={`https://www.1337x.to/search/${encodeURIComponent(title.title + ' ' + (title.year || ''))}/1/`}
+                                href={`https://torrentgalaxy.to/torrents.php?search=${encodeURIComponent(title.title + ' ' + (title.year || ''))}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="flex items-center gap-2 px-4 md:px-6 py-2.5 rounded-full text-[10px] md:text-sm font-black uppercase tracking-widest transition-all bg-green-600/20 text-green-400 hover:bg-green-600 hover:text-white"
@@ -208,8 +208,8 @@ export default function WatchPage() {
                                     : 'text-white/40 hover:text-white'
                                     }`}
                             >
-                                <Eye className="w-3 h-3 text-purple-400" />
-                                SERVER 3
+                                <Eye className="w-3 h-3 text-green-400" />
+                                ASIAN
                             </button>
                         </div>
                     )}
@@ -219,13 +219,20 @@ export default function WatchPage() {
             {/* Video Player Section */}
             <div className="w-full bg-black relative">
                 {watchMode === 'movie' && (title.tmdb_id || title.imdb_id) ? (
-                    <div className="max-w-[1400px] mx-auto w-full aspect-video">
+                    <div className="max-w-[1400px] mx-auto">
+                        {/* Ad blocker tip */}
+                        <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg px-4 py-2 mb-2 mx-4">
+                            <p className="text-yellow-500 text-xs font-medium text-center">
+                                Tip: Use uBlock Origin or any ad blocker to avoid popup ads
+                            </p>
+                        </div>
+                        <div className="w-full aspect-video">
                         {streamSource === 'vidking' ? (
                             <VidkingPlayer
                                 tmdbId={title.tmdb_id}
                                 imdbId={title.imdb_id}
                                 type={title.type === 'tv_series' ? 'tv' : 'movie'}
-                                theme="#f97316" // matching accent-orange
+                                theme="#f97316"
                                 onProgress={handleProgress}
                             />
                         ) : streamSource === 'vidlink' ? (
@@ -233,7 +240,7 @@ export default function WatchPage() {
                                 tmdbId={title.tmdb_id}
                                 imdbId={title.imdb_id}
                                 type={title.type === 'tv_series' ? 'tv' : 'movie'}
-                                color="#f97316" // matching accent-orange
+                                color="#f97316"
                                 onProgress={handleProgress}
                             />
                         ) : (
@@ -244,6 +251,7 @@ export default function WatchPage() {
                                 color="f97316"
                             />
                         )}
+                        </div>
                         {progress > 0 && (
                             <div className="mt-4 px-6">
                                 <div className="flex justify-between text-xs font-bold text-white/40 mb-2 uppercase tracking-widest">
