@@ -44,6 +44,7 @@ export default function VidkingPlayer({
                 allowFullScreen
                 referrerPolicy="origin"
                 loading="lazy"
+                sandbox="allow-scripts allow-same-origin allow-forms"
                 title={`Stream Player - ${type === 'movie' ? 'Movie' : 'TV Series'}`}
             />
         </div>
