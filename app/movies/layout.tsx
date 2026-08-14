@@ -13,5 +13,21 @@ export default function MoviesLayout({
 }: {
     children: React.ReactNode;
 }) {
-    return <>{children}</>;
+    const schema = {
+        '@context': 'https://schema.org',
+        '@type': 'CollectionPage',
+        'name': 'Watch Free Movies Online - CineVault',
+        'description': 'Stream trending, popular, and top-rated movies. Explore Pakistani, Bollywood, Punjabi, and Turkish films for free on CineVault.',
+        'url': 'https://cinevistas.vercel.app/movies'
+    };
+
+    return (
+        <>
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+            />
+            {children}
+        </>
+    );
 }
