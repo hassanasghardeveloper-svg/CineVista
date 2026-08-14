@@ -6,6 +6,7 @@ import MovieCard from '../../components/MovieCard';
 import Footer from '../../components/Footer';
 import { Movie } from '../page';
 import { Search as SearchIcon, Film, Tv } from 'lucide-react';
+import { POSTER_PLACEHOLDER, BACKDROP_PLACEHOLDER } from '@/lib/placeholders';
 
 interface SearchResult {
     id: number;
@@ -22,8 +23,8 @@ function transformSearchResult(result: SearchResult): Movie {
         id: String(result.id),
         title: result.title || result.name,
         overview: '',
-        posterPath: result.poster || result.image_url || 'https://via.placeholder.com/500x750?text=CineVault',
-        backdropPath: result.poster || 'https://via.placeholder.com/1920x1080?text=CineVault',
+        posterPath: result.poster || result.image_url || POSTER_PLACEHOLDER,
+        backdropPath: result.poster || BACKDROP_PLACEHOLDER,
         releaseDate: result.year || '',
         rating: 0,
         type: result.type,
@@ -48,8 +49,8 @@ export default function SearchPage() {
                         id: String(m.id),
                         title: m.title || 'Unknown',
                         overview: m.plot_overview || '',
-                        posterPath: m.poster || 'https://via.placeholder.com/500x750?text=CineVault',
-                        backdropPath: m.backdrop || 'https://via.placeholder.com/1920x1080?text=CineVault',
+                        posterPath: m.poster || POSTER_PLACEHOLDER,
+                        backdropPath: m.backdrop || BACKDROP_PLACEHOLDER,
                         releaseDate: m.release_date || '',
                         rating: m.user_rating || 0,
                         type: m.type || 'movie',

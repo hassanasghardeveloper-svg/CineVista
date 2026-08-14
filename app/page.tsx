@@ -5,6 +5,7 @@ import Header from '../components/Header';
 import HeroSection from '../components/HeroSection';
 import MovieRow from '../components/MovieRow';
 import Footer from '../components/Footer';
+import { POSTER_PLACEHOLDER, BACKDROP_PLACEHOLDER } from '@/lib/placeholders';
 
 export interface Movie {
     id: string;
@@ -24,12 +25,26 @@ function transformMovie(apiMovie: any): Movie {
         id: String(apiMovie.id),
         title: apiMovie.title || 'Unknown Title',
         overview: apiMovie.plot_overview || 'No description available.',
-        posterPath: apiMovie.poster || 'https://via.placeholder.com/500x750?text=CineVault',
-        backdropPath: apiMovie.backdrop || apiMovie.poster || 'https://via.placeholder.com/1920x1080?text=CineVault',
+        posterPath: apiMovie.poster || POSTER_PLACEHOLDER,
+        backdropPath: apiMovie.backdrop || apiMovie.poster || BACKDROP_PLACEHOLDER,
         releaseDate: apiMovie.release_date || apiMovie.year?.toString() || '',
         rating: apiMovie.user_rating || 0,
         type: apiMovie.type || 'movie',
         genres: apiMovie.genre_names || [],
+    };
+}
+
+function mapLocalToMovie(localItem: any): Movie {
+    return {
+        id: String(localItem.id),
+        title: localItem.title || 'Unknown Title',
+        overview: '',
+        posterPath: localItem.poster || POSTER_PLACEHOLDER,
+        backdropPath: localItem.backdrop || BACKDROP_PLACEHOLDER,
+        releaseDate: localItem.year || '',
+        rating: localItem.user_rating || 0,
+        type: localItem.type || 'movie',
+        genres: []
     };
 }
 
@@ -41,6 +56,19 @@ export default function Home() {
     const [action, setAction] = useState<Movie[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+
+    // Personalization rows
+    const [continueWatching, setContinueWatching] = useState<Movie[]>([]);
+    const [watchlist, setWatchlist] = useState<Movie[]>([]);
+
+    useEffect(() => {
+        // Load personalized items from localStorage on mount
+        const recents = JSON.parse(localStorage.getItem('cinevault_recents') || '[]');
+        setContinueWatching(recents.map(mapLocalToMovie));
+
+        const savedWatchlist = JSON.parse(localStorage.getItem('cinevault_watchlist') || '[]');
+        setWatchlist(savedWatchlist.map(mapLocalToMovie));
+    }, []);
 
     useEffect(() => {
         async function fetchContent() {
@@ -102,6 +130,12 @@ export default function Home() {
                 <>
                     <HeroSection movies={heroContent} />
                     <div className="relative z-10 py-20 space-y-16">
+                        {continueWatching.length > 0 && (
+                            <MovieRow title="Continue Watching" movies={continueWatching} />
+                        )}
+                        {watchlist.length > 0 && (
+                            <MovieRow title="My Watchlist" movies={watchlist} />
+                        )}
                         <MovieRow title="Trending Now" movies={trending} />
                         <MovieRow title="New Releases" movies={newest} />
                         <MovieRow title="Popular TV Series" movies={tvSeries} />

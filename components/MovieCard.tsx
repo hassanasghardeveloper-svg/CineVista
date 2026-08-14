@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { Star, Play } from 'lucide-react';
 import { Movie } from '@/app/page';
+import { POSTER_PLACEHOLDER } from '@/lib/placeholders';
 
 export default function MovieCard({ movie }: { movie: Movie }) {
     const mediaType = movie.type === 'tv' || movie.type === 'tv_series' ? 'tv' : 'movie';
@@ -18,7 +19,7 @@ export default function MovieCard({ movie }: { movie: Movie }) {
                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 onError={(e) => {
                     const target = e.target as HTMLImageElement;
-                    target.src = 'https://via.placeholder.com/500x750?text=No+Poster';
+                    target.src = POSTER_PLACEHOLDER;
                     target.onerror = null;
                 }}
             />

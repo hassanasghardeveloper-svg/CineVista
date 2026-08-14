@@ -17,7 +17,7 @@ export async function GET(
 
         // Fetch title details with videos and credits
         const detailRes = await fetch(
-            `${BASE_URL}/${mediaType}/${id}?api_key=${API_KEY}&append_to_response=videos,credits,watch/providers`,
+            `${BASE_URL}/${mediaType}/${id}?api_key=${API_KEY}&append_to_response=videos,credits,recommendations,watch/providers`,
             { next: { revalidate: 3600 } }
         );
 
@@ -54,7 +54,23 @@ export async function GET(
             // Videos/Trailers
             videos: details.videos?.results || [],
             // Cast
-            cast: details.credits?.cast?.slice(0, 10) || [],
+            cast: details.credits?.cast?.slice(0, 12).map((c: any) => ({
+                id: c.id,
+                name: c.name,
+                character: c.character,
+                profile_path: c.profile_path ? `${IMG_BASE}/w185${c.profile_path}` : null,
+            })) || [],
+            // Recommendations
+            recommendations: details.recommendations?.results?.slice(0, 12).map((item: any) => ({
+                id: item.id,
+                title: item.title || item.name,
+                overview: item.overview,
+                poster: item.poster_path ? `${IMG_BASE}/w500${item.poster_path}` : null,
+                backdrop: item.backdrop_path ? `${IMG_BASE}/w1280${item.backdrop_path}` : null,
+                year: (item.release_date || item.first_air_date || '').split('-')[0],
+                user_rating: item.vote_average,
+                type: item.media_type || (mediaType === 'tv' ? 'tv' : 'movie'),
+            })) || [],
             // Streaming sources (from watch providers)
             streaming_sources: details['watch/providers']?.results?.US?.flatrate || [],
         };

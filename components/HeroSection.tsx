@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Play, Info, ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Movie } from '@/app/page';
+import { BACKDROP_PLACEHOLDER } from '@/lib/placeholders';
 
 export default function HeroSection({ movies }: { movies: Movie[] }) {
     const [index, setIndex] = useState(0);
@@ -38,7 +39,7 @@ export default function HeroSection({ movies }: { movies: Movie[] }) {
                             className="absolute inset-0 w-full h-full object-cover transition-transform duration-[10000ms] scale-105"
                             onError={(e) => {
                                 const target = e.target as HTMLImageElement;
-                                target.src = 'https://via.placeholder.com/1920x1080?text=CineVault+Premium';
+                                target.src = BACKDROP_PLACEHOLDER;
                                 target.onerror = null;
                             }}
                         />
