@@ -11,6 +11,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         { url: `${SITE_URL}/tv`, lastModified: new Date(), changeFrequency: 'daily', priority: 0.8 },
         { url: `${SITE_URL}/artists`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.6 },
         { url: `${SITE_URL}/search`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.4 },
+        { url: `${SITE_URL}/dmca`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.2 },
+        { url: `${SITE_URL}/privacy`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.2 },
+        { url: `${SITE_URL}/terms`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.2 },
     ];
 
     if (!API_KEY) {
