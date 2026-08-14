@@ -8,7 +8,7 @@ const inter = Inter({ subsets: ['latin'] });
 export const metadata: Metadata = {
     title: 'CineVault - Premium Streaming',
     description: 'Your premium destination for movies and TV shows',
-    metadataBase: new URL('https://cine-vista-seven.vercel.app'),
+    metadataBase: new URL('https://cinevistas.vercel.app'),
     alternates: {
         canonical: '/',
     },
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     openGraph: {
         title: 'CineVault - Premium Streaming',
         description: 'Your premium destination for movies and TV shows',
-        url: 'https://cine-vista-seven.vercel.app',
+        url: 'https://cinevistas.vercel.app',
         siteName: 'CineVault',
         images: [
             {

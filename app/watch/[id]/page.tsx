@@ -108,7 +108,7 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
         openGraph: {
             title: pageTitle,
             description: pageDesc,
-            url: `https://cine-vista-seven.vercel.app/watch/${titleDetails.id}?type=${type === 'tv' ? 'tv' : 'movie'}`,
+            url: `https://cinevistas.vercel.app/watch/${titleDetails.id}?type=${type === 'tv' ? 'tv' : 'movie'}`,
             siteName: 'CineVault',
             type: 'video.movie',
             images,
@@ -176,7 +176,7 @@ export default async function WatchPage({ params, searchParams }: Props) {
             '@type': 'WatchAction',
             'target': {
                 '@type': 'EntryPoint',
-                'urlTemplate': `https://cine-vista-seven.vercel.app/watch/${titleDetails.id}?type=tv`
+                'urlTemplate': `https://cinevistas.vercel.app/watch/${titleDetails.id}?type=tv`
             },
             'actionAccessibilityRequirement': {
                 '@type': 'ActionAccessSpecification',
@@ -211,7 +211,7 @@ export default async function WatchPage({ params, searchParams }: Props) {
             '@type': 'WatchAction',
             'target': {
                 '@type': 'EntryPoint',
-                'urlTemplate': `https://cine-vista-seven.vercel.app/watch/${titleDetails.id}?type=movie`
+                'urlTemplate': `https://cinevistas.vercel.app/watch/${titleDetails.id}?type=movie`
             },
             'actionAccessibilityRequirement': {
                 '@type': 'ActionAccessSpecification',

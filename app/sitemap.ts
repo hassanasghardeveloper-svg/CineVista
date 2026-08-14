@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next';
 
 const BASE_URL = 'https://api.themoviedb.org/3';
-const SITE_URL = 'https://cine-vista-seven.vercel.app';
+const SITE_URL = 'https://cinevistas.vercel.app';
 const API_KEY = process.env.TMDB_API_KEY;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {

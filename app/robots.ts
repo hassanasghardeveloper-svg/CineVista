@@ -6,6 +6,6 @@ export default function robots(): MetadataRoute.Robots {
             userAgent: '*',
             allow: '/',
         },
-        sitemap: 'https://cine-vista-seven.vercel.app/sitemap.xml',
+        sitemap: 'https://cinevistas.vercel.app/sitemap.xml',
     };
 }

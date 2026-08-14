@@ -118,7 +118,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         openGraph: {
             title: titleText,
             description: bioText,
-            url: `https://cine-vista-seven.vercel.app/artist/${person.id}`,
+            url: `https://cinevistas.vercel.app/artist/${person.id}`,
             siteName: 'CineVault',
             type: 'profile',
             images,
