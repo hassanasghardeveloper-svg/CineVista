@@ -9,6 +9,16 @@ export const metadata: Metadata = {
     title: 'CineVault - Premium Streaming',
     description: 'Your premium destination for movies and TV shows',
     metadataBase: new URL('https://cine-vista-seven.vercel.app'),
+    alternates: {
+        canonical: '/',
+    },
+    verification: {
+        google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || 'Lc4q4doroRftf5io6k6n8w7vt1R3NPW5I1segzQ7d-0',
+        yandex: process.env.NEXT_PUBLIC_YANDEX_SITE_VERIFICATION || '',
+        other: {
+            'msvalidate.01': process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION || '',
+        }
+    },
     icons: {
         icon: '/icon.svg',
         apple: '/apple-icon.svg',
