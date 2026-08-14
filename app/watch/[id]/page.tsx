@@ -77,13 +77,9 @@ interface RecommendationTitle {
 }
 
 const SERVERS = [
-    { id: 'vidsrc', name: 'Server 1 (Vidsrc)', icon: Zap, color: 'text-yellow-400' },
-    { id: 'smashy', name: 'Server 2 (Smashy)', icon: Layers, color: 'text-blue-400' },
-    { id: 'cineverse', name: 'Server 3 (Cineverse)', icon: Film, color: 'text-purple-400' },
-    { id: 'nxsha', name: 'Server 4 (Nxsha)', icon: Play, color: 'text-green-400' },
-    { id: 'screenscape', name: 'Server 5 (Screenscape)', icon: Star, color: 'text-amber-400' },
-    { id: 'nhdapi', name: 'Server 6 (nhdapi)', icon: Tv, color: 'text-red-400' },
-    { id: 'peachify', name: 'Server 7 (Peachify)', icon: ExternalLink, color: 'text-pink-400' },
+    { id: 'cineverse', name: 'Server 1 (Cineverse)', icon: Film, color: 'text-purple-400' },
+    { id: 'nxsha', name: 'Server 2 (Nxsha)', icon: Play, color: 'text-green-400' },
+    { id: 'screenscape', name: 'Server 3 (Screenscape)', icon: Star, color: 'text-amber-400' },
 ] as const;
 
 export default function WatchPage() {
@@ -94,7 +90,7 @@ export default function WatchPage() {
     const [error, setError] = useState<string | null>(null);
     const [activeTrailer, setActiveTrailer] = useState<Trailer | null>(null);
     const [watchMode, setWatchMode] = useState<'trailer' | 'movie'>('trailer');
-    const [streamSource, setStreamSource] = useState<StreamServer>('vidsrc');
+    const [streamSource, setStreamSource] = useState<StreamServer>('cineverse');
     const [progress, setProgress] = useState<number>(0);
     const [inWatchlist, setInWatchlist] = useState(false);
 
