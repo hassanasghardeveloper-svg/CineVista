@@ -54,6 +54,13 @@ export default function Home() {
     const [tvSeries, setTvSeries] = useState<Movie[]>([]);
     const [topRated, setTopRated] = useState<Movie[]>([]);
     const [action, setAction] = useState<Movie[]>([]);
+    const [comedy, setComedy] = useState<Movie[]>([]);
+    const [horror, setHorror] = useState<Movie[]>([]);
+    const [indian, setIndian] = useState<Movie[]>([]);
+    const [pakistani, setPakistani] = useState<Movie[]>([]);
+    const [punjabi, setPunjabi] = useState<Movie[]>([]);
+    const [turkish, setTurkish] = useState<Movie[]>([]);
+    
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -80,6 +87,12 @@ export default function Home() {
                     { url: '/api/movies?category=trending&type=tv', setter: setTvSeries },
                     { url: '/api/movies?category=top_rated', setter: setTopRated },
                     { url: '/api/movies?category=action', setter: setAction },
+                    { url: '/api/movies?category=comedy', setter: setComedy },
+                    { url: '/api/movies?category=horror', setter: setHorror },
+                    { url: '/api/movies?category=indian', setter: setIndian },
+                    { url: '/api/movies?category=pakistani', setter: setPakistani },
+                    { url: '/api/movies?category=punjabi', setter: setPunjabi },
+                    { url: '/api/movies?category=turkish', setter: setTurkish },
                 ];
 
                 const results = await Promise.all(
@@ -139,8 +152,14 @@ export default function Home() {
                         <MovieRow title="Trending Now" movies={trending} />
                         <MovieRow title="New Releases" movies={newest} />
                         <MovieRow title="Popular TV Series" movies={tvSeries} />
+                        {pakistani.length > 0 && <MovieRow title="🇵🇰 Pakistani Cinema" movies={pakistani} />}
+                        {indian.length > 0 && <MovieRow title="🇮🇳 Bollywood Hits" movies={indian} />}
+                        {punjabi.length > 0 && <MovieRow title="🌾 Punjabi Hits" movies={punjabi} />}
+                        {turkish.length > 0 && <MovieRow title="🇹🇷 Turkish Drama" movies={turkish} />}
                         <MovieRow title="Top Rated" movies={topRated} />
                         <MovieRow title="Action Movies" movies={action} />
+                        {comedy.length > 0 && <MovieRow title="Comedy Movies" movies={comedy} />}
+                        {horror.length > 0 && <MovieRow title="Horror & Thrillers" movies={horror} />}
                     </div>
                     <Footer />
                 </>

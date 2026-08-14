@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Header from '../../components/Header';
 import MovieCard from '../../components/MovieCard';
 import Footer from '../../components/Footer';
@@ -32,11 +33,21 @@ function transformSearchResult(result: SearchResult): Movie {
     };
 }
 
-export default function SearchPage() {
+function SearchContent() {
+    const searchParams = useSearchParams();
+    const qParam = searchParams.get('q') || '';
+
     const [query, setQuery] = useState('');
     const [results, setResults] = useState<Movie[]>([]);
     const [loading, setLoading] = useState(false);
     const [popularMovies, setPopularMovies] = useState<Movie[]>([]);
+
+    // Set initial query from URL param
+    useEffect(() => {
+        if (qParam) {
+            setQuery(qParam);
+        }
+    }, [qParam]);
 
     // Fetch popular movies on load to show when search is empty
     useEffect(() => {
@@ -154,5 +165,22 @@ export default function SearchPage() {
 
             <Footer />
         </main>
+    );
+}
+
+export default function SearchPage() {
+    return (
+        <Suspense fallback={
+            <main className="min-h-screen bg-black">
+                <Header />
+                <div className="pt-32 pb-20 px-6 md:px-12 max-w-[1600px] mx-auto text-center">
+                    <div className="w-12 h-12 border-4 border-accent-orange border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+                    <p className="text-white/40 text-sm font-bold uppercase tracking-widest">Loading Search...</p>
+                </div>
+                <Footer />
+            </main>
+        }>
+            <SearchContent />
+        </Suspense>
     );
 }

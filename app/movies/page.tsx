@@ -22,7 +22,20 @@ function transformMovie(apiMovie: any): Movie {
     };
 }
 
-type Category = 'trending' | 'popular' | 'top_rated' | 'pakistani' | 'indian' | 'turkish' | 'hollywood' | 'action' | 'comedy';
+type Category = 'trending' | 'popular' | 'top_rated' | 'pakistani' | 'punjabi' | 'indian' | 'turkish' | 'hollywood' | 'action' | 'comedy';
+
+const CATEGORY_MAP: Record<Category, string> = {
+    trending: '🔥 Trending',
+    popular: '🌟 Popular',
+    top_rated: '🏆 Top Rated',
+    pakistani: '🇵🇰 Pakistani',
+    punjabi: '🌾 Punjabi',
+    indian: '🇮🇳 Bollywood',
+    turkish: '🇹🇷 Turkish',
+    hollywood: '🇺🇸 Hollywood',
+    action: '🎬 Action',
+    comedy: '🍿 Comedy'
+};
 
 export default function MoviesPage() {
     const [movies, setMovies] = useState<Movie[]>([]);
@@ -216,17 +229,17 @@ export default function MoviesPage() {
                     </p>
 
                     {/* Category Tabs */}
-                    <div className="flex flex-wrap gap-3 mt-8 mb-8">
-                        {(['trending', 'popular', 'top_rated', 'pakistani', 'indian', 'turkish', 'hollywood', 'action', 'comedy'] as Category[]).map(tab => (
+                    <div className="flex flex-wrap gap-3.5 mt-8 mb-10 pb-4 border-b border-white/5">
+                        {(['trending', 'popular', 'top_rated', 'pakistani', 'punjabi', 'indian', 'turkish', 'hollywood', 'action', 'comedy'] as Category[]).map(tab => (
                             <button
                                 key={tab}
                                 onClick={() => handleTabChange(tab)}
-                                className={`px-6 py-3 rounded-full font-bold text-xs uppercase tracking-widest transition-all ${activeTab === tab
-                                    ? 'bg-accent-orange text-white'
-                                    : 'bg-white/5 text-white/60 hover:bg-white/10'
+                                className={`px-5 py-3 rounded-full font-bold text-xs uppercase tracking-wider transition-all duration-300 transform active:scale-95 flex items-center gap-2 ${activeTab === tab
+                                    ? 'bg-gradient-to-r from-accent-orange to-amber-500 text-white shadow-[0_0_20px_rgba(232,124,0,0.4)] border border-transparent scale-105'
+                                    : 'bg-white/[0.03] border border-white/10 text-white/70 hover:text-white hover:bg-white/[0.08] hover:border-white/20'
                                     }`}
                             >
-                                {tab === 'top_rated' ? 'Top Rated' : tab === 'pakistani' ? '🇵🇰 Pakistani' : tab === 'indian' ? '🇮🇳 Bollywood' : tab === 'turkish' ? '🇹🇷 Turkish' : tab === 'hollywood' ? '🇺🇸 Hollywood' : tab}
+                                {CATEGORY_MAP[tab]}
                             </button>
                         ))}
                     </div>

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Star, Play, ExternalLink, Tv, Film, Youtube, Zap, Layers } from 'lucide-react';
 import EmbedPlayer, { StreamServer } from '@/components/EmbedPlayer';
@@ -84,6 +84,7 @@ const SERVERS = [
 
 export default function WatchPage() {
     const params = useParams();
+    const router = useRouter();
     const [title, setTitle] = useState<TitleDetails | null>(null);
     const [trailers, setTrailers] = useState<Trailer[]>([]);
     const [loading, setLoading] = useState(true);
@@ -245,13 +246,19 @@ export default function WatchPage() {
             <div className="bg-dark-900 border-b border-white/5 px-4 md:px-6 py-4 sticky top-0 z-50 backdrop-blur-md">
                 <div className="max-w-[1400px] mx-auto flex flex-col lg:flex-row items-center justify-between gap-4">
                     <div className="flex flex-wrap justify-center lg:justify-start gap-4 items-center w-full lg:w-auto">
-                        <Link
-                            href="/"
+                        <button
+                            onClick={() => {
+                                if (typeof window !== 'undefined' && window.history.length > 1) {
+                                    router.back();
+                                } else {
+                                    router.push('/');
+                                }
+                            }}
                             className="flex items-center gap-2 text-white/60 hover:text-white transition-colors bg-white/5 px-4 py-2 rounded-full text-xs font-bold border border-white/10"
                         >
                             <ArrowLeft className="w-4 h-4" />
                             Back
-                        </Link>
+                        </button>
 
                         <div className="flex items-center gap-2">
                             {trailers.length > 0 && (
