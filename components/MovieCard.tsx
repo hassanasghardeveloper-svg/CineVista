@@ -97,8 +97,8 @@ export default function MovieCard({ movie }: { movie: Movie }) {
                 </button>
             )}
 
-            <div className="absolute inset-0 flex flex-col justify-end p-4 md:p-6 translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                <div className="bg-black/40 backdrop-blur-xl border border-white/10 rounded-xl p-3 md:p-4 opacity-0 group-hover:opacity-100 transition-all duration-500 scale-95 group-hover:scale-100">
+            <div className="absolute inset-0 flex flex-col justify-end p-2 md:p-6 translate-y-0 md:translate-y-4 md:group-hover:translate-y-0 transition-transform duration-500">
+                <div className="bg-black/60 backdrop-blur-xl border border-white/10 rounded-xl p-2.5 md:p-4 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all duration-500 scale-100 md:scale-95 md:group-hover:scale-100">
                     <div className="flex items-center justify-between mb-2">
                         <span className={`${badgeColor} text-[8px] font-black tracking-widest px-1.5 py-0.5 rounded text-white uppercase`}>
                             {badgeLabel}

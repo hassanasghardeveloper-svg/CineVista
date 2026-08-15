@@ -95,7 +95,8 @@ export default function Header() {
     };
 
     return (
-        <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${isScrolled || isMenuOpen ? 'bg-black/95 backdrop-blur-xl border-b border-white/5 py-3' : 'bg-gradient-to-b from-black/80 to-transparent py-5'}`}>
+        <>
+            <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${isScrolled || isMenuOpen ? 'bg-black/95 backdrop-blur-xl border-b border-white/5 py-3' : 'bg-gradient-to-b from-black/80 to-transparent py-5'}`}>
             <div className="max-w-[1600px] mx-auto px-6 md:px-12 flex items-center justify-between relative">
                 {/* Logo - Left */}
                 <Link href="/" className="text-xl md:text-2xl font-black tracking-tighter text-white uppercase group z-50">
@@ -119,24 +120,14 @@ export default function Header() {
                     </Link>
                 </nav>
 
-                {/* Mobile Navigation Menu */}
-                <div className={`md:hidden fixed inset-0 bg-black flex flex-col items-center justify-center gap-8 transition-all duration-500 ${isMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'}`}>
-                    <Link onClick={() => setIsMenuOpen(false)} href="/" className="text-4xl font-black text-white hover:text-accent-orange transition-colors uppercase italic">Home</Link>
-                    <Link onClick={() => setIsMenuOpen(false)} href="/movies" className="text-4xl font-black text-white hover:text-accent-orange transition-colors uppercase italic">Movies</Link>
-                    <Link onClick={() => setIsMenuOpen(false)} href="/tv" className="text-4xl font-black text-white hover:text-accent-orange transition-colors uppercase italic">TV Shows</Link>
-                    <Link onClick={() => setIsMenuOpen(false)} href="/artists" className="text-4xl font-black text-white hover:text-accent-orange transition-colors uppercase italic">Artists</Link>
-                    <Link onClick={() => setIsMenuOpen(false)} href="/recommend" className="text-4xl font-black text-accent-orange hover:text-amber-400 transition-colors uppercase italic flex items-center gap-3">
-                        <Sparkles className="w-8 h-8" />AI Picks
-                    </Link>
-                    <Link onClick={() => setIsMenuOpen(false)} href="/search" className="text-4xl font-black text-white hover:text-accent-orange transition-colors uppercase italic">Search</Link>
-                </div>
+                {/* Mobile Navigation Menu is rendered as a sibling outside header to avoid containing block bugs */}
 
                 {/* Actions & Search - Right */}
                 <div className="flex items-center gap-4 z-50" ref={searchContainerRef}>
                     {/* Autocomplete Search Bar */}
                     <div className="relative flex items-center">
                         {isSearchOpen ? (
-                            <form onSubmit={handleSearchSubmit} className="flex items-center bg-white/5 border border-white/10 rounded-full pl-4 pr-2 py-1 md:w-80 transition-all duration-300">
+                            <form onSubmit={handleSearchSubmit} className="flex items-center bg-white/5 border border-white/10 rounded-full pl-4 pr-2 py-1 w-[calc(100vw-7rem)] sm:w-64 md:w-80 transition-all duration-300">
                                 <input
                                     type="text"
                                     placeholder="Search movies, TV shows..."
@@ -160,7 +151,7 @@ export default function Header() {
 
                         {/* Search Autocomplete Suggestions Dropdown */}
                         {isSearchOpen && (suggestions.length > 0 || loadingSuggestions) && (
-                            <div className="absolute right-0 top-full mt-3 w-80 md:w-96 bg-dark-900/95 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden shadow-2xl z-50">
+                            <div className="absolute right-0 top-full mt-3 w-[calc(100vw-2rem)] sm:w-80 md:w-96 bg-dark-900/95 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden shadow-2xl z-50">
                                 {loadingSuggestions ? (
                                     <div className="p-4 text-center">
                                         <div className="w-5 h-5 border-2 border-accent-orange border-t-transparent rounded-full animate-spin mx-auto" />
@@ -225,5 +216,35 @@ export default function Header() {
                 </div>
             </div>
         </header>
-    );
+
+        {/* Redesigned Mobile Navigation Menu - Solid & Opaque Overlay Sibling */}
+        <div className={`md:hidden fixed inset-0 bg-black/98 backdrop-blur-2xl flex flex-col justify-between p-6 pb-24 transition-all duration-500 z-[100] ${isMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'}`}>
+            {/* Menu Top Bar */}
+            <div className="flex items-center justify-between w-full pt-2">
+                <span className="text-xl font-black tracking-tighter text-white uppercase">
+                    Cine<span className="text-accent-orange">Vault</span>
+                </span>
+                <button onClick={() => setIsMenuOpen(false)} className="p-2 text-white/70 hover:text-white" aria-label="Close menu">
+                    <X className="w-6 h-6" />
+                </button>
+            </div>
+
+            {/* Menu Middle Links */}
+            <div className="flex flex-col items-center gap-7 my-auto">
+                <Link onClick={() => setIsMenuOpen(false)} href="/" className="text-2xl font-black text-white hover:text-accent-orange transition-colors uppercase tracking-widest">Home</Link>
+                <Link onClick={() => setIsMenuOpen(false)} href="/movies" className="text-2xl font-black text-white hover:text-accent-orange transition-colors uppercase tracking-widest">Movies</Link>
+                <Link onClick={() => setIsMenuOpen(false)} href="/tv" className="text-2xl font-black text-white hover:text-accent-orange transition-colors uppercase tracking-widest">TV Shows</Link>
+                <Link onClick={() => setIsMenuOpen(false)} href="/artists" className="text-2xl font-black text-white hover:text-accent-orange transition-colors uppercase tracking-widest">Artists</Link>
+                <Link onClick={() => setIsMenuOpen(false)} href="/recommend" className="text-2xl font-black text-accent-orange hover:text-amber-400 transition-colors uppercase tracking-widest flex items-center gap-2">
+                    <Sparkles className="w-5 h-5 text-accent-orange" />AI Picks
+                </Link>
+            </div>
+
+            {/* Menu Bottom Branding */}
+            <div className="text-center text-[10px] font-bold text-white/20 uppercase tracking-widest">
+                © 2026 CineVault
+            </div>
+        </div>
+    </>
+  );
 }

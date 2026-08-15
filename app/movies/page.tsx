@@ -299,7 +299,7 @@ export default function MoviesPage() {
 
                         {/* Dropdown Panel */}
                         {isCategoryOpen && (
-                            <div className="absolute top-full left-0 mt-3 z-40 bg-black/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl p-5 min-w-[520px] md:min-w-[640px]">
+                            <div className="absolute top-full left-0 mt-3 z-40 bg-black/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl p-5 w-[calc(100vw-2rem)] sm:w-[520px] md:w-[640px]">
                                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                                     {CATEGORY_GROUPS.map(group => (
                                         <div key={group.label}>

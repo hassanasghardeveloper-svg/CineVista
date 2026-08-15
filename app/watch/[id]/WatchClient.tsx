@@ -229,8 +229,9 @@ export default function WatchClient({
 
     return (
         <main className="min-h-screen bg-black">
-            {/* Player Header */}
-            <div className="bg-dark-900 border-b border-white/5 px-4 md:px-6 py-4 sticky top-0 z-50 backdrop-blur-md">
+            <div className="flex flex-col">
+                {/* Player Header */}
+                <div className="bg-dark-900 border-b border-white/5 px-4 md:px-6 py-4 lg:sticky static top-0 z-50 backdrop-blur-md order-2 lg:order-1">
                 <div className="max-w-[1400px] mx-auto flex flex-col lg:flex-row items-center justify-between gap-4">
                     <div className="flex flex-wrap justify-center lg:justify-start gap-4 items-center w-full lg:w-auto">
                         <button
@@ -322,7 +323,20 @@ export default function WatchClient({
             </div>
 
             {/* Video Player Section */}
-            <div className="w-full bg-black relative">
+            <div className="w-full bg-black relative order-1 lg:order-2">
+                {/* Floating Back Button on Mobile */}
+                <button
+                    onClick={() => {
+                        if (typeof window !== 'undefined' && window.history.length > 1) {
+                            router.back();
+                        } else {
+                            router.push('/');
+                        }
+                    }}
+                    className="lg:hidden absolute top-4 left-4 z-40 bg-black/60 backdrop-blur-md border border-white/10 text-white p-2.5 rounded-full shadow-lg"
+                >
+                    <ArrowLeft className="w-5 h-5" />
+                </button>
                 {watchMode === 'movie' && (title.tmdb_id || title.imdb_id) ? (
                     <div className="max-w-[1400px] mx-auto">
                         <div className="w-full aspect-video">
@@ -375,8 +389,9 @@ export default function WatchClient({
                     </div>
                 )}
             </div>
+        </div>
 
-            {/* TV Series Episode & Season Selector */}
+        {/* TV Series Episode & Season Selector */}
             {watchMode === 'movie' && title.type === 'tv_series' && (
                 <div className="bg-dark-900 border-b border-white/5 px-6 py-8">
                     <div className="max-w-[1400px] mx-auto">
@@ -410,19 +425,19 @@ export default function WatchClient({
                                 <p className="text-white/40 text-xs font-bold uppercase tracking-wider">Fetching episodes...</p>
                             </div>
                         ) : episodes.length > 0 ? (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                            <div className="flex flex-col sm:grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                                 {episodes.map((ep) => {
                                     const isSelected = selectedEpisode === ep.episode_number;
                                     return (
                                         <button
                                             key={ep.id}
                                             onClick={() => setSelectedEpisode(ep.episode_number)}
-                                            className={`text-left rounded-xl overflow-hidden border transition-all duration-300 group flex flex-col h-full bg-white/[0.01] ${isSelected
+                                            className={`text-left rounded-xl overflow-hidden border transition-all duration-300 group flex flex-row sm:flex-col h-full bg-white/[0.01] ${isSelected
                                                 ? 'border-accent-orange bg-accent-orange/[0.04] ring-1 ring-accent-orange'
                                                 : 'border-white/5 hover:border-white/10 hover:bg-white/[0.03]'
                                                 }`}
                                         >
-                                            <div className="relative aspect-video w-full bg-white/5 overflow-hidden">
+                                            <div className="relative aspect-video w-28 xs:w-36 sm:w-full bg-white/5 overflow-hidden flex-shrink-0">
                                                 {ep.still_path ? (
                                                     <img
                                                         src={ep.still_path}
@@ -445,9 +460,9 @@ export default function WatchClient({
                                                 </span>
                                             </div>
 
-                                            <div className="p-4 flex-1 flex flex-col justify-between">
+                                            <div className="p-3 sm:p-4 flex-1 min-w-0 flex flex-col justify-center sm:justify-between">
                                                 <div>
-                                                    <h3 className={`font-black text-sm line-clamp-1 transition-colors ${isSelected ? 'text-accent-orange' : 'text-white group-hover:text-white'
+                                                    <h3 className={`font-black text-xs sm:text-sm line-clamp-1 transition-colors ${isSelected ? 'text-accent-orange' : 'text-white group-hover:text-white'
                                                         }`}>
                                                         {ep.name}
                                                     </h3>

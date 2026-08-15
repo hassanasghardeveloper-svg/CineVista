@@ -97,7 +97,7 @@ export default function EmbedPlayer({
     const sandboxValue = server === 'peachify' ? undefined : "allow-scripts allow-same-origin allow-forms";
 
     return (
-        <div className="relative w-full aspect-video bg-black rounded-xl overflow-hidden shadow-2xl border border-white/10">
+        <div className="relative w-full aspect-video bg-black md:rounded-xl overflow-hidden shadow-2xl border-b md:border border-white/10">
             <iframe
                 ref={iframeRef}
                 src={embedUrl}

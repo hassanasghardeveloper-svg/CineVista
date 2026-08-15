@@ -287,14 +287,14 @@ export default function RecommendPage() {
                                     <span className="text-[10px] font-black uppercase tracking-widest text-white/30 block">
                                         Browse Options ({movies.length})
                                     </span>
-                                    <div className="grid grid-cols-2 xs:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-3">
+                                    <div className="flex lg:grid gap-3 overflow-x-auto lg:overflow-x-visible pb-3 lg:pb-0 no-scrollbar grid-cols-2 xs:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3">
                                         {movies.map((movie, idx) => {
                                             const isActive = idx === activeIndex;
                                             return (
                                                 <button
                                                     key={movie.id}
                                                     onClick={() => setActiveIndex(idx)}
-                                                    className={`relative aspect-[2/3] rounded-2xl overflow-hidden border transition-all duration-300 text-left hover:scale-[1.03] ${
+                                                    className={`relative aspect-[2/3] rounded-2xl overflow-hidden border transition-all duration-300 text-left hover:scale-[1.03] flex-shrink-0 w-24 xs:w-32 lg:w-auto ${
                                                         isActive 
                                                             ? 'border-accent-orange ring-2 ring-accent-orange/40 scale-98 shadow-lg' 
                                                             : 'border-white/5 opacity-50 hover:opacity-100'
