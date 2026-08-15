@@ -1,8 +1,6 @@
 import { NextResponse } from 'next/server';
 import Groq from 'groq-sdk';
 
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-
 const TMDB_KEY = process.env.TMDB_API_KEY;
 const TMDB_BASE = 'https://api.themoviedb.org/3';
 const IMG_BASE = 'https://image.tmdb.org/t/p';
@@ -103,6 +101,8 @@ export async function POST(request: Request) {
         }
 
         messages.push({ role: 'user', content: message });
+
+        const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
         // Call Groq
         const completion = await groq.chat.completions.create({
