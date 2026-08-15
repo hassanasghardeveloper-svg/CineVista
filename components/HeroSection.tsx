@@ -32,7 +32,7 @@ export default function HeroSection({ movies }: { movies: Movie[] }) {
         >
             {/* Background Images */}
             <div className="absolute inset-0 z-0">
-                <AnimatePresence mode="keepMounted">
+                <AnimatePresence mode="wait">
                     <motion.div
                         key={index}
                         initial={{ opacity: 0 }}
