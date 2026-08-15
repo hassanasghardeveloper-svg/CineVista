@@ -1,12 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Header from '../../components/Header';
 import MovieCard from '../../components/MovieCard';
 import Footer from '../../components/Footer';
 import CustomDropdown from '@/components/CustomDropdown';
 import { Movie } from '../page';
 import { POSTER_PLACEHOLDER, BACKDROP_PLACEHOLDER } from '@/lib/placeholders';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 
 function transformMovie(apiMovie: any): Movie {
     return {
@@ -22,20 +23,62 @@ function transformMovie(apiMovie: any): Movie {
     };
 }
 
-type Category = 'trending' | 'popular' | 'top_rated' | 'pakistani' | 'punjabi' | 'indian' | 'turkish' | 'hollywood' | 'action' | 'comedy';
+type Category =
+    | 'trending' | 'popular' | 'top_rated'
+    | 'pakistani' | 'punjabi' | 'indian' | 'tollywood' | 'tamil' | 'turkish' | 'hollywood' | 'korean' | 'arabic' | 'french'
+    | 'action' | 'comedy' | 'horror' | 'romance' | 'thriller' | 'drama' | 'animation';
 
-const CATEGORY_MAP: Record<Category, string> = {
-    trending: '🔥 Trending',
-    popular: '🌟 Popular',
-    top_rated: '🏆 Top Rated',
-    pakistani: '🇵🇰 Pakistani',
-    punjabi: '🌾 Punjabi',
-    indian: '🇮🇳 Bollywood',
-    turkish: '🇹🇷 Turkish',
-    hollywood: '🇺🇸 Hollywood',
-    action: '🎬 Action',
-    comedy: '🍿 Comedy'
-};
+interface CategoryGroup {
+    label: string;
+    emoji: string;
+    items: { value: Category; label: string }[];
+}
+
+const CATEGORY_GROUPS: CategoryGroup[] = [
+    {
+        label: 'Charts',
+        emoji: '📊',
+        items: [
+            { value: 'trending', label: '🔥 Trending' },
+            { value: 'popular', label: '🌟 Popular' },
+            { value: 'top_rated', label: '🏆 Top Rated' },
+        ],
+    },
+    {
+        label: 'Regional',
+        emoji: '🌍',
+        items: [
+            { value: 'hollywood', label: '🇺🇸 Hollywood' },
+            { value: 'indian', label: '🇮🇳 Bollywood' },
+            { value: 'pakistani', label: '🇵🇰 Pakistani' },
+            { value: 'punjabi', label: '🌾 Punjabi' },
+            { value: 'tollywood', label: '🎬 Tollywood' },
+            { value: 'tamil', label: '🎭 Tamil' },
+            { value: 'turkish', label: '🇹🇷 Turkish' },
+            { value: 'korean', label: '🇰🇷 Korean' },
+            { value: 'arabic', label: '🌙 Arabic' },
+            { value: 'french', label: '🇫🇷 French' },
+        ],
+    },
+    {
+        label: 'Genre',
+        emoji: '🎭',
+        items: [
+            { value: 'action', label: '💥 Action' },
+            { value: 'comedy', label: '🍿 Comedy' },
+            { value: 'horror', label: '👻 Horror' },
+            { value: 'romance', label: '💖 Romance' },
+            { value: 'thriller', label: '🔪 Thriller' },
+            { value: 'drama', label: '🎭 Drama' },
+            { value: 'animation', label: '🦄 Animation' },
+        ],
+    },
+];
+
+// Flat map for label lookup
+const CATEGORY_LABEL: Record<string, string> = {};
+CATEGORY_GROUPS.forEach(g => g.items.forEach(i => { CATEGORY_LABEL[i.value] = i.label; }));
+
 
 export default function MoviesPage() {
     const [movies, setMovies] = useState<Movie[]>([]);
@@ -43,6 +86,19 @@ export default function MoviesPage() {
     const [activeTab, setActiveTab] = useState<Category>('trending');
     const [loadingMore, setLoadingMore] = useState(false);
     const [currentPage, setCurrentPage] = useState(10); // Already loaded 10 pages
+    const [isCategoryOpen, setIsCategoryOpen] = useState(false);
+    const categoryRef = useRef<HTMLDivElement>(null);
+
+    // Close category dropdown on outside click
+    useEffect(() => {
+        const handler = (e: MouseEvent) => {
+            if (categoryRef.current && !categoryRef.current.contains(e.target as Node)) {
+                setIsCategoryOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handler);
+        return () => document.removeEventListener('mousedown', handler);
+    }, []);
 
     // Filters state
     const [allGenres, setAllGenres] = useState<string[]>([]);
@@ -228,20 +284,48 @@ export default function MoviesPage() {
                         {loading ? 'Loading 200+ movies...' : `Showing ${filteredMovies.length} of ${movies.length} movies`}
                     </p>
 
-                    {/* Category Tabs */}
-                    <div className="flex flex-wrap gap-3.5 mt-8 mb-10 pb-4 border-b border-white/5">
-                        {(['trending', 'popular', 'top_rated', 'pakistani', 'punjabi', 'indian', 'turkish', 'hollywood', 'action', 'comedy'] as Category[]).map(tab => (
-                            <button
-                                key={tab}
-                                onClick={() => handleTabChange(tab)}
-                                className={`px-5 py-3 rounded-full font-bold text-xs uppercase tracking-wider transition-all duration-300 transform active:scale-95 flex items-center gap-2 ${activeTab === tab
-                                    ? 'bg-gradient-to-r from-accent-orange to-amber-500 text-white shadow-[0_0_20px_rgba(232,124,0,0.4)] border border-transparent scale-105'
-                                    : 'bg-white/[0.03] border border-white/10 text-white/70 hover:text-white hover:bg-white/[0.08] hover:border-white/20'
-                                    }`}
-                            >
-                                {CATEGORY_MAP[tab]}
-                            </button>
-                        ))}
+                    {/* Category Grouped Dropdown */}
+                    <div className="relative mt-8 mb-10" ref={categoryRef}>
+                        {/* Trigger Button */}
+                        <button
+                            onClick={() => setIsCategoryOpen(o => !o)}
+                            className="flex items-center gap-3 px-5 py-3 rounded-2xl bg-white/[0.04] border border-white/10 hover:border-white/20 transition-all text-white font-bold text-sm"
+                        >
+                            <span className="text-base">{CATEGORY_LABEL[activeTab]}</span>
+                            <span className="ml-auto text-white/40">
+                                {isCategoryOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                            </span>
+                        </button>
+
+                        {/* Dropdown Panel */}
+                        {isCategoryOpen && (
+                            <div className="absolute top-full left-0 mt-3 z-40 bg-black/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl p-5 min-w-[520px] md:min-w-[640px]">
+                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                                    {CATEGORY_GROUPS.map(group => (
+                                        <div key={group.label}>
+                                            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/30 mb-3 flex items-center gap-1.5">
+                                                <span>{group.emoji}</span> {group.label}
+                                            </p>
+                                            <div className="flex flex-col gap-1">
+                                                {group.items.map(item => (
+                                                    <button
+                                                        key={item.value}
+                                                        onClick={() => { handleTabChange(item.value); setIsCategoryOpen(false); }}
+                                                        className={`text-left px-3 py-2 rounded-xl text-xs font-bold transition-all duration-200 ${
+                                                            activeTab === item.value
+                                                                ? 'bg-accent-orange text-white shadow-[0_0_12px_rgba(232,124,0,0.3)]'
+                                                                : 'text-white/60 hover:text-white hover:bg-white/[0.06]'
+                                                        }`}
+                                                    >
+                                                        {item.label}
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
                     </div>
 
                     {/* Advanced Dropdown Filters */}

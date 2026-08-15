@@ -35,6 +35,7 @@ interface HomeClientProps {
     initialPakistani: Movie[];
     initialPunjabi: Movie[];
     initialTurkish: Movie[];
+    initialKorean: Movie[];
 }
 
 export default function HomeClient({
@@ -49,6 +50,7 @@ export default function HomeClient({
     initialPakistani,
     initialPunjabi,
     initialTurkish,
+    initialKorean,
 }: HomeClientProps) {
     const [trending] = useState<Movie[]>(initialTrending);
     const [newest] = useState<Movie[]>(initialNewest);
@@ -61,6 +63,7 @@ export default function HomeClient({
     const [pakistani] = useState<Movie[]>(initialPakistani);
     const [punjabi] = useState<Movie[]>(initialPunjabi);
     const [turkish] = useState<Movie[]>(initialTurkish);
+    const [korean] = useState<Movie[]>(initialKorean);
 
     // Personalization rows
     const [continueWatching, setContinueWatching] = useState<Movie[]>([]);
@@ -124,8 +127,27 @@ export default function HomeClient({
                         <MovieRow title="Popular TV Series" movies={tvSeries} />
                         {pakistani.length > 0 && <MovieRow title="🇵🇰 Pakistani Cinema" movies={pakistani} />}
                         {indian.length > 0 && <MovieRow title="🇮🇳 Bollywood Hits" movies={indian} />}
+
+                        {/* AI Picks Banner */}
+                        <div className="px-6 md:px-12">
+                            <a href="/recommend" className="group flex flex-col md:flex-row items-center gap-6 bg-gradient-to-r from-accent-orange/10 via-purple-600/10 to-accent-orange/5 border border-accent-orange/20 rounded-2xl p-6 md:p-8 hover:border-accent-orange/50 transition-all duration-300 hover:shadow-[0_0_40px_rgba(232,124,0,0.1)]">
+                                <div className="text-4xl md:text-5xl">🤖</div>
+                                <div className="flex-1 text-center md:text-left">
+                                    <div className="flex items-center justify-center md:justify-start gap-2 mb-1">
+                                        <span className="text-accent-orange text-[10px] font-black uppercase tracking-widest">Powered by Groq AI</span>
+                                    </div>
+                                    <h3 className="text-white font-black text-xl md:text-2xl uppercase tracking-tight mb-1">Not Sure What to Watch?</h3>
+                                    <p className="text-white/40 text-sm">Urdu, Hindi ya English mein batao — AI aapke liye perfect movie/drama recommend karega</p>
+                                </div>
+                                <div className="flex items-center gap-2 bg-accent-orange text-white px-6 py-3 rounded-full font-black uppercase text-xs tracking-widest group-hover:bg-amber-500 transition-colors whitespace-nowrap">
+                                    ✨ Try AI Picks
+                                </div>
+                            </a>
+                        </div>
+
                         {punjabi.length > 0 && <MovieRow title="🌾 Punjabi Hits" movies={punjabi} />}
                         {turkish.length > 0 && <MovieRow title="🇹🇷 Turkish Drama" movies={turkish} />}
+                        {korean.length > 0 && <MovieRow title="🇰🇷 Korean Drama" movies={korean} />}
                         <MovieRow title="Top Rated" movies={topRated} />
                         <MovieRow title="Action Movies" movies={action} />
                         {comedy.length > 0 && <MovieRow title="Comedy Movies" movies={comedy} />}

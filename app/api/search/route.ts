@@ -25,19 +25,28 @@ export async function GET(request: Request) {
 
         const data = await res.json();
 
-        // Transform and filter results (only movies and TV shows)
+        // Transform and filter results (movies, TV shows, and people/artists)
         const results = data.results
-            .filter((item: any) => item.media_type === 'movie' || item.media_type === 'tv')
-            .map((item: any) => ({
-                id: item.id,
-                title: item.title || item.name,
-                name: item.title || item.name,
-                type: item.media_type,
-                year: (item.release_date || item.first_air_date || '').split('-')[0],
-                poster: item.poster_path ? `${IMG_BASE}/w500${item.poster_path}` : null,
-                image_url: item.poster_path ? `${IMG_BASE}/w200${item.poster_path}` : null,
-                tmdb_id: item.id,
-            }));
+            .filter((item: any) => item.media_type === 'movie' || item.media_type === 'tv' || item.media_type === 'person')
+            .map((item: any) => {
+                const isPerson = item.media_type === 'person';
+                const posterUrl = isPerson
+                    ? (item.profile_path ? `${IMG_BASE}/w500${item.profile_path}` : null)
+                    : (item.poster_path ? `${IMG_BASE}/w500${item.poster_path}` : null);
+                const thumbUrl = isPerson
+                    ? (item.profile_path ? `${IMG_BASE}/w200${item.profile_path}` : null)
+                    : (item.poster_path ? `${IMG_BASE}/w200${item.poster_path}` : null);
+                return {
+                    id: item.id,
+                    title: item.title || item.name,
+                    name: item.title || item.name,
+                    type: item.media_type,
+                    year: isPerson ? (item.known_for_department || 'Actor') : (item.release_date || item.first_air_date || '').split('-')[0],
+                    poster: posterUrl,
+                    image_url: thumbUrl,
+                    tmdb_id: item.id,
+                };
+            });
 
         return NextResponse.json({
             results,

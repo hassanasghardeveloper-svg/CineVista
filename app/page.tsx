@@ -68,7 +68,8 @@ export default async function HomePage() {
         indian,
         pakistani,
         punjabi,
-        turkish
+        turkish,
+        korean
     ] = await Promise.all([
         fetchCategory(`${BASE_URL}/trending/movie/week?api_key=${API_KEY}`),
         fetchCategory(`${BASE_URL}/movie/now_playing?api_key=${API_KEY}`),
@@ -81,6 +82,7 @@ export default async function HomePage() {
         fetchCategory(`${BASE_URL}/discover/movie?api_key=${API_KEY}&with_original_language=ur&sort_by=popularity.desc`),
         fetchCategory(`${BASE_URL}/discover/movie?api_key=${API_KEY}&with_original_language=pa&sort_by=popularity.desc`),
         fetchCategory(`${BASE_URL}/discover/movie?api_key=${API_KEY}&with_original_language=tr&sort_by=popularity.desc`),
+        fetchCategory(`${BASE_URL}/discover/tv?api_key=${API_KEY}&with_original_language=ko&sort_by=popularity.desc`, 'tv'),
     ]);
 
     // Structured SEO Schemas
@@ -169,6 +171,7 @@ export default async function HomePage() {
                 initialPakistani={pakistani}
                 initialPunjabi={punjabi}
                 initialTurkish={turkish}
+                initialKorean={korean}
             />
         </>
     );

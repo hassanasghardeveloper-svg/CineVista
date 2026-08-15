@@ -2,13 +2,14 @@
 
 import Link from 'next/link';
 import { useState, useEffect, useRef } from 'react';
-import { Search, X, Play, Film, Tv, Star } from 'lucide-react';
+import { Search, X, Play, Film, Tv, Star, Sparkles, User } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 interface SearchResult {
     id: number;
     title: string;
-    type: 'movie' | 'tv';
+    name: string;
+    type: 'movie' | 'tv' | 'person';
     year: string;
     poster: string | null;
     image_url: string | null;
@@ -72,11 +73,15 @@ export default function Header() {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    const handleSuggestionClick = (id: number, type: 'movie' | 'tv') => {
+    const handleSuggestionClick = (id: number, type: string) => {
         setSearchQuery('');
         setSuggestions([]);
         setIsSearchOpen(false);
-        router.push(`/watch/${id}?type=${type}`);
+        if (type === 'person') {
+            router.push(`/artist/${id}`);
+        } else {
+            router.push(`/watch/${id}?type=${type === 'tv' ? 'tv' : 'movie'}`);
+        }
     };
 
     const handleSearchSubmit = (e: React.FormEvent) => {
@@ -108,6 +113,10 @@ export default function Header() {
                     <Link href="/artists" className="text-sm font-bold text-white/70 hover:text-white transition-colors tracking-wide uppercase">
                         Artists
                     </Link>
+                    <Link href="/recommend" className="flex items-center gap-1.5 text-sm font-bold text-accent-orange hover:text-amber-400 transition-colors tracking-wide uppercase">
+                        <Sparkles className="w-3.5 h-3.5" />
+                        AI Picks
+                    </Link>
                 </nav>
 
                 {/* Mobile Navigation Menu */}
@@ -116,6 +125,9 @@ export default function Header() {
                     <Link onClick={() => setIsMenuOpen(false)} href="/movies" className="text-4xl font-black text-white hover:text-accent-orange transition-colors uppercase italic">Movies</Link>
                     <Link onClick={() => setIsMenuOpen(false)} href="/tv" className="text-4xl font-black text-white hover:text-accent-orange transition-colors uppercase italic">TV Shows</Link>
                     <Link onClick={() => setIsMenuOpen(false)} href="/artists" className="text-4xl font-black text-white hover:text-accent-orange transition-colors uppercase italic">Artists</Link>
+                    <Link onClick={() => setIsMenuOpen(false)} href="/recommend" className="text-4xl font-black text-accent-orange hover:text-amber-400 transition-colors uppercase italic flex items-center gap-3">
+                        <Sparkles className="w-8 h-8" />AI Picks
+                    </Link>
                     <Link onClick={() => setIsMenuOpen(false)} href="/search" className="text-4xl font-black text-white hover:text-accent-orange transition-colors uppercase italic">Search</Link>
                 </div>
 
@@ -161,26 +173,32 @@ export default function Header() {
                                                 onClick={() => handleSuggestionClick(item.id, item.type)}
                                                 className="w-full text-left flex items-center gap-3 p-2 hover:bg-white/5 transition-colors rounded-xl group"
                                             >
-                                                <div className="relative w-10 aspect-[2/3] bg-white/5 rounded overflow-hidden flex-shrink-0">
+                                                {/* Poster / Profile photo */}
+                                                <div className={`relative bg-white/5 rounded overflow-hidden flex-shrink-0 ${item.type === 'person' ? 'w-10 h-10 rounded-full' : 'w-10 aspect-[2/3]'}`}>
                                                     {item.poster ? (
                                                         <img
                                                             src={item.poster}
-                                                            alt={item.title}
+                                                            alt={item.title || item.name}
                                                             className="w-full h-full object-cover"
                                                         />
                                                     ) : (
                                                         <div className="w-full h-full flex items-center justify-center bg-black">
-                                                            <Film className="w-4 h-4 text-white/10" />
+                                                            {item.type === 'person'
+                                                                ? <User className="w-4 h-4 text-white/20" />
+                                                                : <Film className="w-4 h-4 text-white/10" />}
                                                         </div>
                                                     )}
                                                 </div>
                                                 <div className="flex-1 min-w-0">
                                                     <h4 className="font-bold text-xs text-white group-hover:text-accent-orange transition-colors truncate">
-                                                        {item.title}
+                                                        {item.title || item.name}
                                                     </h4>
                                                     <p className="text-[10px] text-white/40 font-semibold mt-0.5 uppercase tracking-wider flex items-center gap-1.5">
-                                                        {item.type === 'tv' ? <Tv className="w-3 h-3 text-blue-400" /> : <Film className="w-3 h-3 text-purple-400" />}
-                                                        {item.type === 'tv' ? 'TV Show' : 'Movie'}
+                                                        {item.type === 'person'
+                                                            ? <><User className="w-3 h-3 text-purple-400" />Artist</>  
+                                                            : item.type === 'tv'
+                                                            ? <><Tv className="w-3 h-3 text-blue-400" />TV Show</>
+                                                            : <><Film className="w-3 h-3 text-orange-400" />Movie</>}
                                                         {item.year && ` • ${item.year}`}
                                                     </p>
                                                 </div>

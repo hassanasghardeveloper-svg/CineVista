@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Star, Play, ExternalLink, Tv, Film, Youtube } from 'lucide-react';
+import { ArrowLeft, Star, Play, ExternalLink, Tv, Film, Youtube, Share2, Copy, Check } from 'lucide-react';
 import EmbedPlayer, { StreamServer } from '@/components/EmbedPlayer';
 import CustomDropdown from '@/components/CustomDropdown';
 import { POSTER_PLACEHOLDER } from '@/lib/placeholders';
@@ -77,9 +77,9 @@ interface RecommendationTitle {
 }
 
 const SERVERS = [
-    { id: 'cineverse', name: 'Server 1 (Cineverse)', icon: Film, color: 'text-purple-400' },
-    { id: 'nxsha', name: 'Server 2 (Nxsha)', icon: Play, color: 'text-green-400' },
-    { id: 'screenscape', name: 'Server 3 (Screenscape)', icon: Star, color: 'text-amber-400' },
+    { id: 'cineverse', name: 'Server 1', icon: Film, color: 'text-purple-400' },
+    { id: 'nxsha', name: 'Server 2', icon: Play, color: 'text-green-400' },
+    { id: 'screenscape', name: 'Server 3', icon: Star, color: 'text-amber-400' },
 ] as const;
 
 export default function WatchClient({
@@ -100,6 +100,19 @@ export default function WatchClient({
     const [streamSource, setStreamSource] = useState<StreamServer>('cineverse');
     const [progress, setProgress] = useState<number>(0);
     const [inWatchlist, setInWatchlist] = useState(false);
+    const [shareCopied, setShareCopied] = useState(false);
+
+    const handleShare = async () => {
+        const url = window.location.href;
+        const text = `Watch "${title?.title}" on CineVault!`;
+        if (navigator.share) {
+            try { await navigator.share({ title: title?.title, text, url }); } catch {}
+        } else {
+            await navigator.clipboard.writeText(url);
+            setShareCopied(true);
+            setTimeout(() => setShareCopied(false), 2000);
+        }
+    };
 
     // TV Show specific state
     const [selectedSeason, setSelectedSeason] = useState<number>(1);
@@ -267,6 +280,17 @@ export default function WatchClient({
                             >
                                 {inWatchlist ? '✓ Watchlist' : '+ Watchlist'}
                             </button>
+
+                            {/* Share Button */}
+                            <button
+                                onClick={handleShare}
+                                title="Share"
+                                className="flex items-center gap-2 px-4 py-2.5 rounded-full text-[10px] md:text-sm font-black uppercase tracking-widest transition-all bg-white/5 text-white/60 border border-white/10 hover:bg-white/10 hover:text-white"
+                            >
+                                {shareCopied
+                                    ? <><Check className="w-4 h-4 text-green-400" /><span className="hidden sm:inline text-green-400">Copied!</span></>
+                                    : <><Share2 className="w-4 h-4" /><span className="hidden sm:inline">Share</span></>}
+                            </button>
                         </div>
                     </div>
 
@@ -287,7 +311,7 @@ export default function WatchClient({
                                                 }`}
                                         >
                                             <IconComponent className={`w-3.5 h-3.5 ${srv.color}`} />
-                                            {srv.name.split(' ')[2] || srv.name}
+                                            {srv.name}
                                         </button>
                                     );
                                 })}
