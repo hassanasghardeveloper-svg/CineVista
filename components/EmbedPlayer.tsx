@@ -38,16 +38,16 @@ export default function EmbedPlayer({
     switch (server) {
         case 'vidsrc':
             if (type === 'movie') {
-                embedUrl = `https://vidsrc.cc/v2/embed/movie/${tmdbId}`;
+                embedUrl = `https://vidsrc.to/embed/movie/${tmdbId}`;
             } else {
-                embedUrl = `https://vidsrc.cc/v2/embed/tv/${tmdbId}/${season}/${episode}`;
+                embedUrl = `https://vidsrc.to/embed/tv/${tmdbId}/${season}/${episode}`;
             }
             break;
         case 'smashy':
             if (type === 'movie') {
-                embedUrl = `https://player.smashy.stream/movie/${tmdbId}`;
+                embedUrl = `https://vidlink.pro/movie/${tmdbId}`;
             } else {
-                embedUrl = `https://player.smashy.stream/tv/${tmdbId}?s=${season}&e=${episode}`;
+                embedUrl = `https://vidlink.pro/tv/${tmdbId}/${season}/${episode}`;
             }
             break;
         case 'cineverse':
@@ -73,9 +73,9 @@ export default function EmbedPlayer({
             break;
         case 'nhdapi':
             if (type === 'movie') {
-                embedUrl = `https://nhdapi.com/embed/movie/${tmdbId}?autoplay`;
+                embedUrl = `https://vidsrc.me/embed/movie?tmdb=${tmdbId}`;
             } else {
-                embedUrl = `https://nhdapi.com/embed/tv/${tmdbId}/${season}/${episode}?autoplay`;
+                embedUrl = `https://vidsrc.me/embed/tv?tmdb=${tmdbId}&season=${season}&episode=${episode}`;
             }
             break;
         case 'peachify':
@@ -93,8 +93,8 @@ export default function EmbedPlayer({
         return <div className="p-10 text-center text-white/40">Invalid Server Selection</div>;
     }
 
-    // Peachify requires sandboxing to be disabled to initialize its player.
-    const sandboxValue = server === 'peachify' ? undefined : "allow-scripts allow-same-origin allow-forms";
+    // Disable sandboxing to allow stream loading and controls
+    const sandboxValue = undefined;
 
     return (
         <div className="relative w-full aspect-video bg-black md:rounded-xl overflow-hidden shadow-2xl border-b md:border border-white/10">

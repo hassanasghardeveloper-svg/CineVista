@@ -80,6 +80,7 @@ const SERVERS = [
     { id: 'cineverse', name: 'Server 1', icon: Film, color: 'text-purple-400' },
     { id: 'nxsha', name: 'Server 2', icon: Play, color: 'text-green-400' },
     { id: 'screenscape', name: 'Server 3', icon: Star, color: 'text-amber-400' },
+    { id: 'vidsrc', name: 'Server 4', icon: Tv, color: 'text-blue-400' },
 ] as const;
 
 export default function WatchClient({
