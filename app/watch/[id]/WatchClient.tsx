@@ -441,9 +441,11 @@ export default function WatchClient({
                                 {episodes.map((ep) => {
                                     const isSelected = selectedEpisode === ep.episode_number;
                                     return (
-                                        <button
+                                        <Link
                                             key={ep.id}
-                                            onClick={() => {
+                                            href={`/watch/${title.id}?type=tv&s=${selectedSeason}&e=${ep.episode_number}`}
+                                            onClick={(e) => {
+                                                e.preventDefault();
                                                 setSelectedEpisode(ep.episode_number);
                                                 router.push(`/watch/${title.id}?type=tv&s=${selectedSeason}&e=${ep.episode_number}`, { scroll: false });
                                             }}
@@ -486,7 +488,7 @@ export default function WatchClient({
                                                     </p>
                                                 </div>
                                             </div>
-                                        </button>
+                                        </Link>
                                     );
                                 })}
                             </div>
