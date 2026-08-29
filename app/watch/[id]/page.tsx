@@ -79,7 +79,7 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
 
     if (!titleDetails) {
         return {
-            title: 'Stream Content - CineVault',
+            title: 'Stream Content - CineVista',
             description: 'Watch the latest movies and TV series online for free.',
         };
     }
@@ -88,10 +88,10 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
     const yearText = titleDetails.year ? `(${titleDetails.year})` : '';
     const mediaTypeText = titleDetails.type === 'tv_series' ? 'TV Series' : 'Movie';
     
-    const pageTitle = `Watch ${titleText} ${yearText} Free Online - CineVault`;
+    const pageTitle = `Watch ${titleText} ${yearText} Free Online - CineVista`;
     const pageDesc = titleDetails.plot_overview 
         ? `${titleDetails.plot_overview.slice(0, 150)}... Watch ${titleText} ${mediaTypeText} online for free in HD quality with multiple streaming servers.`
-        : `Watch ${titleText} ${mediaTypeText} online for free on CineVault. Stream with high quality fallback players.`;
+        : `Watch ${titleText} ${mediaTypeText} online for free on CineVista. Stream with high quality fallback players.`;
 
     const images = [];
     if (titleDetails.backdrop) {
@@ -109,8 +109,8 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
         openGraph: {
             title: pageTitle,
             description: pageDesc,
-            url: `https://cinevistas.vercel.app/watch/${titleDetails.id}?type=${type === 'tv' ? 'tv' : 'movie'}`,
-            siteName: 'CineVault',
+            url: `https://cinevista.online/watch/${titleDetails.id}?type=${type === 'tv' ? 'tv' : 'movie'}`,
+            siteName: 'CineVista',
             type: 'video.movie',
             images,
             actors: titleDetails.cast?.slice(0, 5).map((c: any) => c.name) as any,
@@ -177,7 +177,7 @@ export default async function WatchPage({ params, searchParams }: Props) {
             '@type': 'WatchAction',
             'target': {
                 '@type': 'EntryPoint',
-                'urlTemplate': `https://cinevistas.vercel.app/watch/${titleDetails.id}?type=tv`
+                'urlTemplate': `https://cinevista.online/watch/${titleDetails.id}?type=tv`
             },
             'actionAccessibilityRequirement': {
                 '@type': 'ActionAccessSpecification',
@@ -212,7 +212,7 @@ export default async function WatchPage({ params, searchParams }: Props) {
             '@type': 'WatchAction',
             'target': {
                 '@type': 'EntryPoint',
-                'urlTemplate': `https://cinevistas.vercel.app/watch/${titleDetails.id}?type=movie`
+                'urlTemplate': `https://cinevista.online/watch/${titleDetails.id}?type=movie`
             },
             'actionAccessibilityRequirement': {
                 '@type': 'ActionAccessSpecification',

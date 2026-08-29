@@ -100,7 +100,7 @@ export default function Header() {
             <div className="max-w-[1600px] mx-auto px-6 md:px-12 flex items-center justify-between relative">
                 {/* Logo - Left */}
                 <Link href="/" className="text-xl md:text-2xl font-black tracking-tighter text-white uppercase group z-50">
-                    Cine<span className="text-accent-orange group-hover:text-white transition-colors">Vault</span>
+                    Cine<span className="text-accent-orange group-hover:text-white transition-colors">Vista</span>
                 </Link>
 
                 {/* Navigation - Center (Desktop) */}
@@ -222,7 +222,7 @@ export default function Header() {
             {/* Menu Top Bar */}
             <div className="flex items-center justify-between w-full pt-2">
                 <span className="text-xl font-black tracking-tighter text-white uppercase">
-                    Cine<span className="text-accent-orange">Vault</span>
+                    Cine<span className="text-accent-orange">Vista</span>
                 </span>
                 <button onClick={() => setIsMenuOpen(false)} className="p-2 text-white/70 hover:text-white" aria-label="Close menu">
                     <X className="w-6 h-6" />
@@ -242,7 +242,7 @@ export default function Header() {
 
             {/* Menu Bottom Branding */}
             <div className="text-center text-[10px] font-bold text-white/20 uppercase tracking-widest">
-                © 2026 CineVault
+                © 2026 CineVista
             </div>
         </div>
     </>

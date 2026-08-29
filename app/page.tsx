@@ -49,8 +49,8 @@ async function fetchCategory(url: string, typeOverride?: string): Promise<Movie[
 }
 
 export const metadata: Metadata = {
-    title: 'CineVault - Stream Movies & TV Shows Online Free',
-    description: 'Stream trending movies, popular TV series, Pakistani dramas, and Turkish series for free on CineVault. Watch high-quality fallback streams with zero registration.',
+    title: 'CineVista - Stream Movies & TV Shows Online Free',
+    description: 'Stream trending movies, popular TV series, Pakistani dramas, and Turkish series for free on CineVista. Watch high-quality fallback streams with zero registration.',
     alternates: {
         canonical: '/',
     },
@@ -90,14 +90,14 @@ export default async function HomePage() {
     const websiteSchema = {
         '@context': 'https://schema.org',
         '@type': 'WebSite',
-        'name': 'CineVault',
+        'name': 'CineVista',
         'alternateName': 'CineVista',
-        'url': 'https://cinevistas.vercel.app/',
+        'url': 'https://cinevista.online/',
         'potentialAction': {
             '@type': 'SearchAction',
             'target': {
                 '@type': 'EntryPoint',
-                'urlTemplate': 'https://cinevistas.vercel.app/search?q={search_term_string}'
+                'urlTemplate': 'https://cinevista.online/search?q={search_term_string}'
             },
             'query-input': 'required name=search_term_string'
         }
@@ -109,10 +109,10 @@ export default async function HomePage() {
         'mainEntity': [
             {
                 '@type': 'Question',
-                'name': 'Is CineVault completely free to use?',
+                'name': 'Is CineVista completely free to use?',
                 'acceptedAnswer': {
                     '@type': 'Answer',
-                    'text': 'Yes! CineVault is 100% free to access. We do not charge subscriptions, rental fees, or require any form of payment. Our catalog indexes embed links from public, independent video hosting servers.'
+                    'text': 'Yes! CineVista is 100% free to access. We do not charge subscriptions, rental fees, or require any form of payment. Our catalog indexes embed links from public, independent video hosting servers.'
                 }
             },
             {
@@ -136,7 +136,7 @@ export default async function HomePage() {
                 'name': 'What types of regional movies and TV series are available?',
                 'acceptedAnswer': {
                     '@type': 'Answer',
-                    'text': 'CineVault features specialized categories for Pakistani Cinema, Bollywood Hits, Punjabi Cinema, and Turkish Drama series (often dubbed in Hindi or Urdu). We also provide standard Hollywood releases, action, horror, and comedy content.'
+                    'text': 'CineVista features specialized categories for Pakistani Cinema, Bollywood Hits, Punjabi Cinema, and Turkish Drama series (often dubbed in Hindi or Urdu). We also provide standard Hollywood releases, action, horror, and comedy content.'
                 }
             },
             {
@@ -144,7 +144,7 @@ export default async function HomePage() {
                 'name': 'How can I prevent unwanted popup ads from streaming servers?',
                 'acceptedAnswer': {
                     '@type': 'Answer',
-                    'text': 'Because streams are loaded via third-party iframe codes, these providers occasionally trigger redirects. For the best ad-free streaming experience, we recommend accessing CineVault using privacy-focused browsers like Brave, or installing extensions such as uBlock Origin.'
+                    'text': 'Because streams are loaded via third-party iframe codes, these providers occasionally trigger redirects. For the best ad-free streaming experience, we recommend accessing CineVista using privacy-focused browsers like Brave, or installing extensions such as uBlock Origin.'
                 }
             }
         ]

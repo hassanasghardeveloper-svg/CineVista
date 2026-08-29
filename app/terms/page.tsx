@@ -4,8 +4,8 @@ import Footer from '@/components/Footer';
 import { Scale, HelpCircle } from 'lucide-react';
 
 export const metadata: Metadata = {
-    title: 'Terms of Service - CineVault',
-    description: 'Read the Terms of Service for CineVault. By accessing our search catalog, you agree to our policies regarding third-party links.',
+    title: 'Terms of Service - CineVista',
+    description: 'Read the Terms of Service for CineVista. By accessing our search catalog, you agree to our policies regarding third-party links.',
     alternates: {
         canonical: '/terms',
     },
@@ -42,7 +42,7 @@ export default function TermsPage() {
                                 1. Acceptance of Terms
                             </h2>
                             <p className="text-white/60 leading-relaxed text-sm md:text-base">
-                                By accessing, browsing, or using CineVault (collectively referred to as the "Service"), you acknowledge that you have read, understood, and agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use the website.
+                                By accessing, browsing, or using CineVista (collectively referred to as the "Service"), you acknowledge that you have read, understood, and agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use the website.
                             </p>
                         </section>
 
@@ -53,10 +53,10 @@ export default function TermsPage() {
                                 2. Sourcing & Playback Disclaimers
                             </h2>
                             <p className="text-white/60 leading-relaxed text-sm md:text-base">
-                                CineVault serves exclusively as an aggregation database and directory. We catalog title metadata utilizing the TMDB API and embed client-side player options. 
+                                CineVista serves exclusively as an aggregation database and directory. We catalog title metadata utilizing the TMDB API and embed client-side player options. 
                             </p>
                             <p className="text-white/60 leading-relaxed text-sm md:text-base">
-                                All videos are streamed directly from third-party servers. We do not control, modify, review, or store any video files on our infrastructure. Under no circumstances shall CineVault be held responsible for copyright compliance, safety, legality, or any other aspects of embedded content.
+                                All videos are streamed directly from third-party servers. We do not control, modify, review, or store any video files on our infrastructure. Under no circumstances shall CineVista be held responsible for copyright compliance, safety, legality, or any other aspects of embedded content.
                             </p>
                         </section>
 
@@ -78,7 +78,7 @@ export default function TermsPage() {
                                 4. Limitations of Liability
                             </h2>
                             <p className="text-white/60 leading-relaxed text-sm md:text-base">
-                                CineVault, its operators, and affiliates shall not be liable for any direct, indirect, incidental, or consequential damages resulting from the use of, or inability to use, our service, or from content delivered via third-party providers.
+                                CineVista, its operators, and affiliates shall not be liable for any direct, indirect, incidental, or consequential damages resulting from the use of, or inability to use, our service, or from content delivered via third-party providers.
                             </p>
                         </section>
                     </div>

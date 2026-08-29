@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'Search Movies & TV Shows - CineVault',
-    description: 'Find free streaming options, cast details, reviews, and trailer links for your favorite movies and TV shows instantly on CineVault.',
+    title: 'Search Movies & TV Shows - CineVista',
+    description: 'Find free streaming options, cast details, reviews, and trailer links for your favorite movies and TV shows instantly on CineVista.',
     alternates: {
         canonical: '/search',
     },
@@ -16,9 +16,9 @@ export default function SearchLayout({
     const schema = {
         '@context': 'https://schema.org',
         '@type': 'SearchResultsPage',
-        'name': 'Search Movies & TV Shows - CineVault',
-        'description': 'Find free streaming options, cast details, reviews, and trailer links for your favorite movies and TV shows instantly on CineVault.',
-        'url': 'https://cinevistas.vercel.app/search'
+        'name': 'Search Movies & TV Shows - CineVista',
+        'description': 'Find free streaming options, cast details, reviews, and trailer links for your favorite movies and TV shows instantly on CineVista.',
+        'url': 'https://cinevista.online/search'
     };
 
     return (

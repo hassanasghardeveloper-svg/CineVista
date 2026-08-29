@@ -72,10 +72,10 @@ export default function HomeClient({
 
     useEffect(() => {
         // Load personalized items from localStorage on mount
-        const recents = JSON.parse(localStorage.getItem('cinevault_recents') || '[]');
+        const recents = JSON.parse(localStorage.getItem('cinevista_recents') || '[]');
         setContinueWatching(recents.map(mapLocalToMovie));
 
-        const savedWatchlist = JSON.parse(localStorage.getItem('cinevault_watchlist') || '[]');
+        const savedWatchlist = JSON.parse(localStorage.getItem('cinevista_watchlist') || '[]');
         setWatchlist(savedWatchlist.map(mapLocalToMovie));
     }, []);
 
@@ -87,8 +87,8 @@ export default function HomeClient({
 
     const faqs = [
         {
-            q: "Is CineVault completely free to use?",
-            a: "Yes! CineVault is 100% free to access. We do not charge subscriptions, rental fees, or require any form of payment. Our catalog indexes embed links from public, independent video hosting servers."
+            q: "Is CineVista completely free to use?",
+            a: "Yes! CineVista is 100% free to access. We do not charge subscriptions, rental fees, or require any form of payment. Our catalog indexes embed links from public, independent video hosting servers."
         },
         {
             q: "Do I need to sign up or create an account?",
@@ -100,11 +100,11 @@ export default function HomeClient({
         },
         {
             q: "What types of regional movies and TV series are available?",
-            a: "CineVault features specialized categories for Pakistani Cinema, Bollywood Hits, Punjabi Cinema, and Turkish Drama series (often dubbed in Hindi or Urdu). We also provide standard Hollywood releases, action, horror, and comedy content."
+            a: "CineVista features specialized categories for Pakistani Cinema, Bollywood Hits, Punjabi Cinema, and Turkish Drama series (often dubbed in Hindi or Urdu). We also provide standard Hollywood releases, action, horror, and comedy content."
         },
         {
             q: "How can I prevent unwanted popup ads from streaming servers?",
-            a: "Because streams are loaded via third-party iframe codes, these providers occasionally trigger redirects. For the best ad-free streaming experience, we recommend accessing CineVault using privacy-focused browsers like Brave, or installing extensions such as uBlock Origin."
+            a: "Because streams are loaded via third-party iframe codes, these providers occasionally trigger redirects. For the best ad-free streaming experience, we recommend accessing CineVista using privacy-focused browsers like Brave, or installing extensions such as uBlock Origin."
         }
     ];
 
@@ -162,14 +162,14 @@ export default function HomeClient({
                                 <div className="inline-flex items-center gap-2.5 bg-accent-orange/10 border border-accent-orange/20 px-4 py-2 rounded-full">
                                     <ShieldCheck className="w-4 h-4 text-accent-orange" />
                                     <span className="text-accent-orange text-xs font-black uppercase tracking-widest">
-                                        About CineVault
+                                        About CineVista
                                     </span>
                                 </div>
                                 <h1 className="text-3xl md:text-5xl font-black uppercase tracking-tighter leading-tight">
                                     Stream Movies & TV Shows Online Free
                                 </h1>
                                 <p className="text-white/60 leading-relaxed text-sm md:text-base">
-                                    Welcome to **CineVault**, your premium search catalog and streaming guide for free movies, TV series, and regional dramas. We index public video links from third-party hosts to bring you the best available playback resolutions without requiring an account.
+                                    Welcome to **CineVista**, your premium search catalog and streaming guide for free movies, TV series, and regional dramas. We index public video links from third-party hosts to bring you the best available playback resolutions without requiring an account.
                                 </p>
                                 
                                 <div className="grid grid-cols-2 gap-6 pt-4">

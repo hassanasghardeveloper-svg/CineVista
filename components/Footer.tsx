@@ -7,7 +7,7 @@ export default function Footer() {
                 <div className="flex flex-col md:flex-row items-center justify-between gap-6">
                     <div className="flex flex-col md:flex-row items-center gap-6">
                         <Link href="/" className="text-2xl font-black tracking-tighter text-white uppercase">
-                            Cine<span className="text-accent-orange">Vault</span>
+                            Cine<span className="text-accent-orange">Vista</span>
                         </Link>
                         <div className="flex flex-wrap gap-4 text-xs font-bold uppercase tracking-wider text-white/40">
                             <Link href="/dmca" className="hover:text-accent-orange transition-colors">
@@ -24,7 +24,7 @@ export default function Footer() {
                         </div>
                     </div>
                     <p className="text-white/30 text-xs font-bold uppercase tracking-widest whitespace-nowrap">
-                        © 2026 CineVault. All rights reserved.
+                        © 2026 CineVista. All rights reserved.
                     </p>
                 </div>
             </div>

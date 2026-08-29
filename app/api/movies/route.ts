@@ -61,19 +61,19 @@ export async function GET(request: Request) {
                 endpoint = `${BASE_URL}/${mediaType}/top_rated?api_key=${API_KEY}&page=${page}`;
                 break;
             case 'action':
-                endpoint = `${BASE_URL}/discover/${mediaType}?api_key=${API_KEY}&with_genres=28&page=${page}`;
+                endpoint = `${BASE_URL}/discover/${mediaType}?api_key=${API_KEY}&with_genres=28&page=${page}&sort_by=popularity.desc`;
                 break;
             case 'comedy':
-                endpoint = `${BASE_URL}/discover/${mediaType}?api_key=${API_KEY}&with_genres=35&page=${page}`;
+                endpoint = `${BASE_URL}/discover/${mediaType}?api_key=${API_KEY}&with_genres=35&page=${page}&sort_by=popularity.desc`;
                 break;
             case 'horror':
-                endpoint = `${BASE_URL}/discover/${mediaType}?api_key=${API_KEY}&with_genres=27&page=${page}`;
+                endpoint = `${BASE_URL}/discover/${mediaType}?api_key=${API_KEY}&with_genres=27&page=${page}&sort_by=popularity.desc`;
                 break;
             case 'animation':
-                endpoint = `${BASE_URL}/discover/${mediaType}?api_key=${API_KEY}&with_genres=16&page=${page}`;
+                endpoint = `${BASE_URL}/discover/${mediaType}?api_key=${API_KEY}&with_genres=16&page=${page}&sort_by=popularity.desc`;
                 break;
             case 'documentary':
-                endpoint = `${BASE_URL}/discover/${mediaType}?api_key=${API_KEY}&with_genres=99&page=${page}`;
+                endpoint = `${BASE_URL}/discover/${mediaType}?api_key=${API_KEY}&with_genres=99&page=${page}&sort_by=popularity.desc`;
                 break;
             case 'indian':
                 endpoint = `${BASE_URL}/discover/${mediaType}?api_key=${API_KEY}&with_original_language=hi&page=${page}&sort_by=popularity.desc`;
@@ -109,9 +109,6 @@ export async function GET(request: Request) {
             case 'french':
                 endpoint = `${BASE_URL}/discover/${mediaType}?api_key=${API_KEY}&with_original_language=fr&page=${page}&sort_by=popularity.desc`;
                 break;
-            case 'horror':
-                endpoint = `${BASE_URL}/discover/${mediaType}?api_key=${API_KEY}&with_genres=27&page=${page}&sort_by=popularity.desc`;
-                break;
             case 'romance':
                 endpoint = `${BASE_URL}/discover/${mediaType}?api_key=${API_KEY}&with_genres=10749&page=${page}&sort_by=popularity.desc`;
                 break;
@@ -120,9 +117,6 @@ export async function GET(request: Request) {
                 break;
             case 'drama':
                 endpoint = `${BASE_URL}/discover/${mediaType}?api_key=${API_KEY}&with_genres=18&page=${page}&sort_by=popularity.desc`;
-                break;
-            case 'animation':
-                endpoint = `${BASE_URL}/discover/${mediaType}?api_key=${API_KEY}&with_genres=16&page=${page}&sort_by=popularity.desc`;
                 break;
             default:
                 endpoint = `${BASE_URL}/trending/${mediaType}/week?api_key=${API_KEY}&page=${page}`;

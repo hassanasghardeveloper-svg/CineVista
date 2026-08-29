@@ -4,8 +4,8 @@ import Footer from '@/components/Footer';
 import { Eye, Shield, Lock } from 'lucide-react';
 
 export const metadata: Metadata = {
-    title: 'Privacy Policy - CineVault',
-    description: 'Understand how user privacy and data are managed on CineVault. We protect your privacy by storing data entirely on your local device.',
+    title: 'Privacy Policy - CineVista',
+    description: 'Understand how user privacy and data are managed on CineVista. We protect your privacy by storing data entirely on your local device.',
     alternates: {
         canonical: '/privacy',
     },
@@ -43,7 +43,7 @@ export default function PrivacyPage() {
                                 No-Account Privacy Model
                             </h3>
                             <p className="text-white/60 leading-relaxed text-sm md:text-base font-semibold">
-                                CineVault operates on a zero-registration, zero-database architecture. We do not require emails, usernames, or passwords. Your watchlists, history, and playback preferences never leave your browser.
+                                CineVista operates on a zero-registration, zero-database architecture. We do not require emails, usernames, or passwords. Your watchlists, history, and playback preferences never leave your browser.
                             </p>
                         </div>
                     </div>
@@ -61,7 +61,7 @@ export default function PrivacyPage() {
                                 <li>**Watchlist**: Movies and TV shows you choose to bookmark.</li>
                                 <li>**Recents & Progress**: Playback progress percentages to let you resume watching.</li>
                                 <li>**Playback Preference**: Your selected server/player defaults.</li>
-                            </ul>
+                             </ul>
                             <p className="text-white/60 leading-relaxed text-sm md:text-base pt-2">
                                 You can clear this data completely at any time by clearing your browser cookies and site cache.
                             </p>
@@ -74,7 +74,7 @@ export default function PrivacyPage() {
                                 2. Third-Party Embeds & Cookies
                             </h2>
                             <p className="text-white/60 leading-relaxed text-sm md:text-base">
-                                Because CineVault displays video content using third-party player embeds (iframes), these external services (e.g. VidSrc, Peachify) may set cookies, track your IP address, or load scripts to serve pop-ups and advertisements.
+                                Because CineVista displays video content using third-party player embeds (iframes), these external services (e.g. VidSrc, Peachify) may set cookies, track your IP address, or load scripts to serve pop-ups and advertisements.
                             </p>
                             <p className="text-white/60 leading-relaxed text-sm md:text-base">
                                 We do not control these third-party trackers. For enhanced privacy, we strongly recommend using privacy-focused browsers or standard ad-blocking extensions.
@@ -88,7 +88,7 @@ export default function PrivacyPage() {
                                 3. Server Logging
                             </h2>
                             <p className="text-white/60 leading-relaxed text-sm md:text-base">
-                                Our hosting provider (Vercel) automatically logs standard, non-personally identifiable request traffic (such as user-agent, referrers, and response times) to maintain platform health, prevent DDoS attacks, and optimize loading speed.
+                                Our hosting provider (Cloudflare) automatically logs standard, non-personally identifiable request traffic (such as user-agent, referrers, and response times) to maintain platform health, prevent DDoS attacks, and optimize loading speed.
                             </p>
                         </section>
                     </div>

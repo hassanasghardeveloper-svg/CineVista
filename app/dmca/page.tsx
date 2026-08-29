@@ -5,8 +5,8 @@ import Link from 'next/link';
 import { ShieldAlert, Mail, AlertTriangle } from 'lucide-react';
 
 export const metadata: Metadata = {
-    title: 'DMCA Copyright Policy - CineVault',
-    description: 'Read the DMCA and Copyright Compliance Policy for CineVault. We do not host any files on our servers.',
+    title: 'DMCA Copyright Policy - CineVista',
+    description: 'Read the DMCA and Copyright Compliance Policy for CineVista. We do not host any files on our servers.',
     alternates: {
         canonical: '/dmca',
     },
@@ -44,7 +44,7 @@ export default function DmcaPage() {
                                 Sourcing Disclaimer
                             </h3>
                             <p className="text-white/60 leading-relaxed text-sm md:text-base font-semibold">
-                                CineVault is an indexer and database of movie metadata. We do not upload, host, store, or transmit any video files, media content, or torrent archives on our servers. All streaming playback is loaded directly via third-party external iframe embed codes provided by independent hosting services.
+                                CineVista is an indexer and database of movie metadata. We do not upload, host, store, or transmit any video files, media content, or torrent archives on our servers. All streaming playback is loaded directly via third-party external iframe embed codes provided by independent hosting services.
                             </p>
                         </div>
                     </div>
@@ -56,7 +56,7 @@ export default function DmcaPage() {
                                 1. Copyright Infringement & Takedowns
                             </h2>
                             <p className="text-white/60 leading-relaxed text-sm md:text-base">
-                                We respect the intellectual property rights of others. Since CineVault only links to and embeds external video servers, we do not have direct control over the hosted video files. However, if any content indexed on our site infringes upon your copyright, you can request that we remove the reference link/embed from our catalog.
+                                We respect the intellectual property rights of others. Since CineVista only links to and embeds external video servers, we do not have direct control over the hosted video files. However, if any content indexed on our site infringes upon your copyright, you can request that we remove the reference link/embed from our catalog.
                             </p>
                         </section>
 
@@ -71,7 +71,7 @@ export default function DmcaPage() {
                             </p>
                             <ul className="list-disc list-inside space-y-2 text-white/55 text-sm pl-2">
                                 <li>Identification of the copyrighted work claimed to have been infringed.</li>
-                                <li>The exact URL on CineVault containing the link or embed player you want removed.</li>
+                                <li>The exact URL on CineVista containing the link or embed player you want removed.</li>
                                 <li>Your contact information (name, address, telephone number, and email address).</li>
                                 <li>A statement that you have a good faith belief that use of the material is not authorized by the copyright owner.</li>
                                 <li>A statement, under penalty of perjury, that the information in the notification is accurate and that you are authorized to act on behalf of the owner.</li>

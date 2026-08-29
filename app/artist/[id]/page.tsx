@@ -95,15 +95,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
     if (!person) {
         return {
-            title: 'Artist Profile - CineVault',
+            title: 'Artist Profile - CineVista',
             description: 'Learn more about cast & crew members of your favorite shows.',
         };
     }
 
-    const titleText = `${person.name} - Filmography, Biography & Movies - CineVault`;
+    const titleText = `${person.name} - Filmography, Biography & Movies - CineVista`;
     const bioText = person.biography
-        ? `${person.biography.slice(0, 150)}... Read ${person.name}'s full biography, age, filmography, pictures and free streaming options on CineVault.`
-        : `Explore biography, pictures, full filmography and credits list of ${person.name} on CineVault.`;
+        ? `${person.biography.slice(0, 150)}... Read ${person.name}'s full biography, age, filmography, pictures and free streaming options on CineVista.`
+        : `Explore biography, pictures, full filmography and credits list of ${person.name} on CineVista.`;
 
     const images = [];
     if (person.profile_path) {
@@ -119,8 +119,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         openGraph: {
             title: titleText,
             description: bioText,
-            url: `https://cinevistas.vercel.app/artist/${person.id}`,
-            siteName: 'CineVault',
+            url: `https://cinevista.online/artist/${person.id}`,
+            siteName: 'CineVista',
             type: 'profile',
             images,
         },

@@ -6,6 +6,6 @@ export default function robots(): MetadataRoute.Robots {
             userAgent: '*',
             allow: '/',
         },
-        sitemap: 'https://cinevistas.vercel.app/sitemap.xml',
+        sitemap: 'https://cinevista.online/sitemap.xml',
     };
 }

@@ -6,9 +6,9 @@ import MobileNav from '@/components/MobileNav';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-    title: 'CineVault - Premium Streaming',
+    title: 'CineVista - Premium Streaming',
     description: 'Your premium destination for movies and TV shows',
-    metadataBase: new URL('https://cinevistas.vercel.app'),
+    metadataBase: new URL('https://cinevista.online'),
     alternates: {
         canonical: '/',
     },
@@ -24,16 +24,16 @@ export const metadata: Metadata = {
         apple: '/apple-icon.svg',
     },
     openGraph: {
-        title: 'CineVault - Premium Streaming',
+        title: 'CineVista - Premium Streaming',
         description: 'Your premium destination for movies and TV shows',
-        url: 'https://cinevistas.vercel.app',
-        siteName: 'CineVault',
+        url: 'https://cinevista.online',
+        siteName: 'CineVista',
         images: [
             {
                 url: '/opengraph-image.jpg',
                 width: 1200,
                 height: 630,
-                alt: 'CineVault - Premium Streaming',
+                alt: 'CineVista - Premium Streaming',
             },
         ],
         locale: 'en_US',
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
     },
     twitter: {
         card: 'summary_large_image',
-        title: 'CineVault - Premium Streaming',
+        title: 'CineVista - Premium Streaming',
         description: 'Your premium destination for movies and TV shows',
         images: ['/opengraph-image.jpg'],
     },

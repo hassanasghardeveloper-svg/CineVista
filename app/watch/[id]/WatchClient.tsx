@@ -105,7 +105,7 @@ export default function WatchClient({
 
     const handleShare = async () => {
         const url = window.location.href;
-        const text = `Watch "${title?.title}" on CineVault!`;
+        const text = `Watch "${title?.title}" on CineVista!`;
         if (navigator.share) {
             try { await navigator.share({ title: title?.title, text, url }); } catch {}
         } else {
@@ -125,7 +125,7 @@ export default function WatchClient({
         setProgress(p);
         if (title) {
             // Save specific progress key for resumes
-            localStorage.setItem(`cinevault_progress_${title.id}`, JSON.stringify({
+            localStorage.setItem(`cinevista_progress_${title.id}`, JSON.stringify({
                 id: title.id,
                 title: title.title,
                 poster: title.poster,
@@ -136,7 +136,7 @@ export default function WatchClient({
             }));
 
             // Save in the recents list
-            const recents = JSON.parse(localStorage.getItem('cinevault_recents') || '[]');
+            const recents = JSON.parse(localStorage.getItem('cinevista_recents') || '[]');
             const updatedRecents = [
                 {
                     id: title.id,
@@ -149,7 +149,7 @@ export default function WatchClient({
                 },
                 ...recents.filter((r: any) => String(r.id) !== String(title.id))
             ].slice(0, 12);
-            localStorage.setItem('cinevault_recents', JSON.stringify(updatedRecents));
+            localStorage.setItem('cinevista_recents', JSON.stringify(updatedRecents));
         }
     }, [title]);
 
@@ -176,13 +176,13 @@ export default function WatchClient({
     // Check Watchlist status
     useEffect(() => {
         if (!title) return;
-        const list = JSON.parse(localStorage.getItem('cinevault_watchlist') || '[]');
+        const list = JSON.parse(localStorage.getItem('cinevista_watchlist') || '[]');
         setInWatchlist(list.some((item: any) => String(item.id) === String(title.id)));
     }, [title]);
 
     const toggleWatchlist = () => {
         if (!title) return;
-        let list = JSON.parse(localStorage.getItem('cinevault_watchlist') || '[]');
+        let list = JSON.parse(localStorage.getItem('cinevista_watchlist') || '[]');
         if (inWatchlist) {
             list = list.filter((item: any) => String(item.id) !== String(title.id));
         } else {
@@ -196,7 +196,7 @@ export default function WatchClient({
                 user_rating: title.user_rating
             });
         }
-        localStorage.setItem('cinevault_watchlist', JSON.stringify(list));
+        localStorage.setItem('cinevista_watchlist', JSON.stringify(list));
         setInWatchlist(!inWatchlist);
     };
 
