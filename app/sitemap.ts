@@ -68,7 +68,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
                             if (season.season_number > 0) {
                                 for (let ep = 1; ep <= season.episode_count; ep++) {
                                     sitemaps.push({
-                                        url: `${SITE_URL}/watch/${tv.id}?type=tv&s=${season.season_number}&e=${ep}`,
+                                        url: `${SITE_URL}/watch/${tv.id}?type=tv&amp;s=${season.season_number}&amp;e=${ep}`,
                                         lastModified: new Date(),
                                         changeFrequency: 'weekly' as const,
                                         priority: 0.7,
