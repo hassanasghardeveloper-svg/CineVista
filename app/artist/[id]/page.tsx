@@ -1,4 +1,6 @@
 import type { Metadata } from 'next';
+
+export const runtime = 'edge';
 import ArtistClient from './ArtistClient';
 import Link from 'next/link';
 
