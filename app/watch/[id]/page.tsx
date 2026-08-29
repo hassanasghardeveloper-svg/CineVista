@@ -9,7 +9,11 @@ const IMG_BASE = 'https://image.tmdb.org/t/p';
 
 interface Props {
     params: { id: string };
-    searchParams: { type?: string };
+    searchParams: { 
+        type?: string;
+        s?: string;
+        e?: string;
+    };
 }
 
 async function fetchTitleDetails(id: string, type: string) {
@@ -75,6 +79,8 @@ async function fetchTitleDetails(id: string, type: string) {
 
 export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
     const type = searchParams.type || 'movie';
+    const s = searchParams.s;
+    const e = searchParams.e;
     const titleDetails = await fetchTitleDetails(params.id, type);
 
     if (!titleDetails) {
@@ -88,10 +94,15 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
     const yearText = titleDetails.year ? `(${titleDetails.year})` : '';
     const mediaTypeText = titleDetails.type === 'tv_series' ? 'TV Series' : 'Movie';
     
-    const pageTitle = `Watch ${titleText} ${yearText} Free Online - CineVista`;
-    const pageDesc = titleDetails.plot_overview 
+    let pageTitle = `Watch ${titleText} ${yearText} Free Online - CineVista`;
+    let pageDesc = titleDetails.plot_overview 
         ? `${titleDetails.plot_overview.slice(0, 150)}... Watch ${titleText} ${mediaTypeText} online for free in HD quality with multiple streaming servers.`
         : `Watch ${titleText} ${mediaTypeText} online for free on CineVista. Stream with high quality fallback players.`;
+
+    if (type === 'tv' && s && e) {
+        pageTitle = `Watch ${titleText} Season ${s} Episode ${e} Free Online - CineVista`;
+        pageDesc = `Stream ${titleText} Season ${s} Episode ${e} online free in HD quality. Watch ${titleText} Ep ${e} with English/Urdu subtitles on CineVista.`;
+    }
 
     const images = [];
     if (titleDetails.backdrop) {
@@ -100,16 +111,22 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
         images.push({ url: titleDetails.poster, width: 500, height: 750, alt: titleText });
     }
 
+    const canonicalUrl = type === 'tv' && s && e
+        ? `/watch/${titleDetails.id}?type=tv&s=${s}&e=${e}`
+        : `/watch/${titleDetails.id}?type=${type === 'tv' ? 'tv' : 'movie'}`;
+
+    const absoluteUrl = `https://cinevista.online${canonicalUrl}`;
+
     return {
         title: pageTitle,
         description: pageDesc,
         alternates: {
-            canonical: `/watch/${titleDetails.id}?type=${type === 'tv' ? 'tv' : 'movie'}`,
+            canonical: canonicalUrl,
         },
         openGraph: {
             title: pageTitle,
             description: pageDesc,
-            url: `https://cinevista.online/watch/${titleDetails.id}?type=${type === 'tv' ? 'tv' : 'movie'}`,
+            url: absoluteUrl,
             siteName: 'CineVista',
             type: 'video.movie',
             images,
@@ -129,6 +146,8 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
 
 export default async function WatchPage({ params, searchParams }: Props) {
     const type = searchParams.type || 'movie';
+    const s = searchParams.s;
+    const e = searchParams.e;
     const titleDetails = await fetchTitleDetails(params.id, type);
 
     if (!titleDetails) {
@@ -232,6 +251,8 @@ export default async function WatchPage({ params, searchParams }: Props) {
                 key={titleDetails.id} 
                 initialTitle={titleDetails as any} 
                 initialTrailers={trailers} 
+                initialSeason={s ? parseInt(s) : 1}
+                initialEpisode={e ? parseInt(e) : 1}
             />
         </>
     );

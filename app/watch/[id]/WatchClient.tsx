@@ -86,9 +86,13 @@ const SERVERS = [
 export default function WatchClient({
     initialTitle,
     initialTrailers,
+    initialSeason = 1,
+    initialEpisode = 1,
 }: {
     initialTitle: TitleDetails;
     initialTrailers: Trailer[];
+    initialSeason?: number;
+    initialEpisode?: number;
 }) {
     const params = useParams();
     const router = useRouter();
@@ -116,10 +120,15 @@ export default function WatchClient({
     };
 
     // TV Show specific state
-    const [selectedSeason, setSelectedSeason] = useState<number>(1);
-    const [selectedEpisode, setSelectedEpisode] = useState<number>(1);
+    const [selectedSeason, setSelectedSeason] = useState<number>(initialSeason);
+    const [selectedEpisode, setSelectedEpisode] = useState<number>(initialEpisode);
     const [episodes, setEpisodes] = useState<Episode[]>([]);
     const [fetchingEpisodes, setFetchingEpisodes] = useState(false);
+
+    useEffect(() => {
+        setSelectedSeason(initialSeason);
+        setSelectedEpisode(initialEpisode);
+    }, [initialSeason, initialEpisode]);
 
     const handleProgress = useCallback((p: number) => {
         setProgress(p);
@@ -412,8 +421,10 @@ export default function WatchClient({
                                         label: `Season ${s}`
                                     }))}
                                     onChange={(val) => {
-                                        setSelectedSeason(Number(val));
+                                        const newSeason = Number(val);
+                                        setSelectedSeason(newSeason);
                                         setSelectedEpisode(1);
+                                        router.push(`/watch/${title.id}?type=tv&s=${newSeason}&e=1`, { scroll: false });
                                     }}
                                     className="w-full sm:w-48"
                                 />
@@ -432,7 +443,10 @@ export default function WatchClient({
                                     return (
                                         <button
                                             key={ep.id}
-                                            onClick={() => setSelectedEpisode(ep.episode_number)}
+                                            onClick={() => {
+                                                setSelectedEpisode(ep.episode_number);
+                                                router.push(`/watch/${title.id}?type=tv&s=${selectedSeason}&e=${ep.episode_number}`, { scroll: false });
+                                            }}
                                             className={`text-left rounded-xl overflow-hidden border transition-all duration-300 group flex flex-row sm:flex-col h-full bg-white/[0.01] ${isSelected
                                                 ? 'border-accent-orange bg-accent-orange/[0.04] ring-1 ring-accent-orange'
                                                 : 'border-white/5 hover:border-white/10 hover:bg-white/[0.03]'
@@ -624,6 +638,45 @@ export default function WatchClient({
                     </div>
                 </div>
             </div>
+
+            {/* Dynamic SEO Optimization Block */}
+            {title && (
+                <div className="border-t border-white/5 py-12 max-w-[1400px] mx-auto px-6">
+                    <div className="bg-white/[0.01] border border-white/5 rounded-2xl p-6 md:p-8 space-y-6">
+                        <div>
+                            <h3 className="text-lg font-black uppercase tracking-wider text-white mb-3">
+                                How to watch {title.title} online free
+                            </h3>
+                            <p className="text-white/60 leading-relaxed text-sm md:text-base">
+                                Stream <strong>{title.title}</strong> {title.type === 'tv_series' ? `Season ${selectedSeason} Episode ${selectedEpisode}` : ''} in high definition on CineVista. We provide multiple fallback streaming players (Server 1, Server 2, Server 3, Server 4) to ensure you have an uninterrupted streaming experience. Our indexing database automatically links the best external source embeds with fast loading times and adaptive resolutions.
+                            </p>
+                        </div>
+                        
+                        <hr className="border-white/5" />
+                        
+                        <div className="grid md:grid-cols-3 gap-6 text-sm text-white/50">
+                            <div className="space-y-1">
+                                <span className="text-[10px] font-black uppercase tracking-widest text-accent-orange block">Streaming Quality</span>
+                                <p className="font-semibold text-white">Full HD (1080p) & HD (720p) supported</p>
+                            </div>
+                            <div className="space-y-1">
+                                <span className="text-[10px] font-black uppercase tracking-widest text-accent-orange block">Subtitle Options</span>
+                                <p className="font-semibold text-white">English / Urdu / Hindi Subtitles available</p>
+                            </div>
+                            <div className="space-y-1">
+                                <span className="text-[10px] font-black uppercase tracking-widest text-accent-orange block">Access Type</span>
+                                <p className="font-semibold text-white">100% Free - No Account/Credit Card Required</p>
+                            </div>
+                        </div>
+
+                        <hr className="border-white/5" />
+
+                        <div className="text-xs text-white/40 leading-relaxed">
+                            <strong>Disclaimer:</strong> CineVista is a metadata catalog and search guide. We index external stream players hosted on third-party domains. All content remains property of their respective copyright owners. For copyright queries, please read our DMCA policy or contact the hosting providers directly.
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Cast & Crew Section */}
             {title.cast && title.cast.length > 0 && (

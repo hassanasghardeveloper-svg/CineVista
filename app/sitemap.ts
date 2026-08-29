@@ -42,13 +42,45 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         });
         if (tvRes.ok) {
             const tvData = await tvRes.json();
-            const tvUrls = (tvData.results || []).slice(0, 50).map((tv: any) => ({
+            const trendingTv = tvData.results || [];
+            
+            // 1. Push main TV show URLs
+            const tvUrls = trendingTv.slice(0, 50).map((tv: any) => ({
                 url: `${SITE_URL}/watch/${tv.id}?type=tv`,
                 lastModified: new Date(),
                 changeFrequency: 'weekly' as const,
                 priority: 0.7,
             }));
             sitemaps.push(...tvUrls);
+
+            // 2. Generate episode URLs for the top 5 trending TV shows
+            const topTvShows = trendingTv.slice(0, 5);
+            for (const tv of topTvShows) {
+                try {
+                    const detailRes = await fetch(`${BASE_URL}/tv/${tv.id}?api_key=${API_KEY}`, {
+                        next: { revalidate: 3600 }
+                    });
+                    if (detailRes.ok) {
+                        const details = await detailRes.json();
+                        const seasons = details.seasons || [];
+                        seasons.forEach((season: any) => {
+                            // Only index standard seasons, skip specials (season_number: 0)
+                            if (season.season_number > 0) {
+                                for (let ep = 1; ep <= season.episode_count; ep++) {
+                                    sitemaps.push({
+                                        url: `${SITE_URL}/watch/${tv.id}?type=tv&s=${season.season_number}&e=${ep}`,
+                                        lastModified: new Date(),
+                                        changeFrequency: 'weekly' as const,
+                                        priority: 0.7,
+                                    });
+                                }
+                            }
+                        });
+                    }
+                } catch (err) {
+                    console.error(`Error fetching TV details for sitemap (id: ${tv.id}):`, err);
+                }
+            }
         }
 
         // Fetch popular people
