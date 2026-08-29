@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 
-export const runtime = 'edge';
 import HomeClient from './HomeClient';
 
 const API_KEY = process.env.TMDB_API_KEY;

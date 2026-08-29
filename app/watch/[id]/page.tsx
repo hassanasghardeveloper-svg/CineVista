@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 
-export const runtime = 'edge';
 import WatchClient from './WatchClient';
 import Link from 'next/link';
 

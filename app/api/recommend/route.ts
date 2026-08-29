@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 
-export const runtime = 'edge';
 import Groq from 'groq-sdk';
 
 const TMDB_KEY = process.env.TMDB_API_KEY;
