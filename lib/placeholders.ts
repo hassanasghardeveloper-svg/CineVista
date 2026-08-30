@@ -10,5 +10,5 @@ function svgDataUri(width: number, height: number, label: string) {
     return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
 }
 
-export const POSTER_PLACEHOLDER = svgDataUri(500, 750, 'CINEVAULT');
-export const BACKDROP_PLACEHOLDER = svgDataUri(1920, 1080, 'CINEVAULT');
+export const POSTER_PLACEHOLDER = svgDataUri(500, 750, 'CINEVISTA');
+export const BACKDROP_PLACEHOLDER = svgDataUri(1920, 1080, 'CINEVISTA');
