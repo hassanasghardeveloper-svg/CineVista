@@ -19,7 +19,7 @@ const config: Config = {
                     700: '#1f1f1f',
                 },
                 accent: {
-                    orange: '#e87c00',
+                    orange: '#c2410c',
                 }
             },
         },

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 
 import HomeClient from './HomeClient';
+import { POSTER_PLACEHOLDER, BACKDROP_PLACEHOLDER } from '@/lib/placeholders';
 
 const API_KEY = process.env.TMDB_API_KEY;
 const BASE_URL = 'https://api.themoviedb.org/3';
@@ -17,9 +18,6 @@ export interface Movie {
     type: string;
     genres: string[];
 }
-
-const POSTER_PLACEHOLDER = '/images/poster-placeholder.png';
-const BACKDROP_PLACEHOLDER = '/images/backdrop-placeholder.png';
 
 function transformMovie(apiMovie: any, typeOverride?: string): Movie {
     return {

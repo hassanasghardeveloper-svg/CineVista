@@ -133,6 +133,7 @@ export default function HeroSection({ movies }: { movies: Movie[] }) {
                                 <Link
                                     href={`/watch/${movie.id}?type=${mediaType}`}
                                     className="group bg-white hover:bg-accent-orange text-black hover:text-white px-8 md:px-10 py-3.5 md:py-4.5 rounded-full font-black uppercase tracking-widest text-[10px] md:text-[11px] transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-2.5 shadow-[0_4px_20px_rgba(255,255,255,0.15)] hover:shadow-[0_4px_20px_rgba(232,124,0,0.3)] duration-300"
+                                    aria-label={`Watch ${movie.title} Now`}
                                 >
                                     <Play className="fill-current w-3.5 h-3.5 group-hover:scale-110 transition-transform" />
                                     Watch Now
@@ -140,6 +141,7 @@ export default function HeroSection({ movies }: { movies: Movie[] }) {
                                 <Link
                                     href={`/watch/${movie.id}?type=${mediaType}`}
                                     className="bg-white/10 hover:bg-white/20 border border-white/10 backdrop-blur-md text-white px-8 md:px-10 py-3.5 md:py-4.5 rounded-full font-black uppercase tracking-widest text-[10px] md:text-[11px] transition-all active:scale-95 flex items-center justify-center gap-2.5 duration-300"
+                                    aria-label={`More Info about ${movie.title}`}
                                 >
                                     <Info className="w-3.5 h-3.5" />
                                     More Info
@@ -165,8 +167,9 @@ export default function HeroSection({ movies }: { movies: Movie[] }) {
                                 key={m.id}
                                 onClick={() => setIndex(i)}
                                 className={`relative w-12 aspect-[2/3] rounded-lg overflow-hidden transition-all duration-300 ${i === index ? 'ring-2 ring-accent-orange scale-105' : 'opacity-40 hover:opacity-80'}`}
+                                aria-label={`Go to slide ${i + 1}: ${m.title}`}
                             >
-                                <img src={m.posterPath} alt="" className="w-full h-full object-cover" />
+                                <img src={m.posterPath} alt={m.title} className="w-full h-full object-cover" />
                             </button>
                         ))}
                     </div>

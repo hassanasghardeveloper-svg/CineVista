@@ -28,7 +28,7 @@ export default function MovieRow({ title, movies }: { title: string; movies: Mov
 
     return (
         <section className="px-6 md:px-12 relative group/row">
-            <h2 className="text-sm font-black uppercase tracking-[0.3em] text-white/40 mb-6 flex items-center gap-4">
+            <h2 className="text-sm font-black uppercase tracking-[0.3em] text-white/60 mb-6 flex items-center gap-4">
                 {title}
                 <div className="h-[1px] flex-1 bg-white/5" />
             </h2>
