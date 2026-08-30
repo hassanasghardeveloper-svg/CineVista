@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import MobileNav from '@/components/MobileNav';
+import GoogleAnalytics from '@/components/GoogleAnalytics';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -13,7 +14,7 @@ export const metadata: Metadata = {
         canonical: '/',
     },
     verification: {
-        google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || 'Lc4q4doroRftf5io6k6n8w7vt1R3NPW5I1segzQ7d-0',
+        google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || '7VHmGJtya1aKOksZksfyK8Pugvj7nYEVHAAZEXzhV6c',
         yandex: process.env.NEXT_PUBLIC_YANDEX_SITE_VERIFICATION || '',
         other: {
             'msvalidate.01': process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION || '',
@@ -47,6 +48,16 @@ export const metadata: Metadata = {
     },
 };
 
+const organizationSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    'name': 'CineVista',
+    'url': 'https://cinevista.online',
+    'logo': 'https://cinevista.online/icon.svg',
+    'description': 'CineVista is a premium free streaming guide for movies, TV series, Pakistani dramas, Bollywood, Turkish series, and Korean dramas.',
+    'sameAs': [],
+};
+
 export default function RootLayout({
     children,
 }: {
@@ -54,7 +65,14 @@ export default function RootLayout({
 }) {
     return (
         <html lang="en">
+            <head>
+                <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+                />
+            </head>
             <body className={`${inter.className} antialiased`}>
+                <GoogleAnalytics />
                 {children}
                 <MobileNav />
             </body>

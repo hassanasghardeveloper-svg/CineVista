@@ -1,10 +1,22 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'Watch Free Movies Online - CineVista',
-    description: 'Stream trending, popular, and top-rated movies. Explore Pakistani, Bollywood, Punjabi, and Turkish films for free on CineVista.',
+    title: 'Watch Free Movies Online – Trending, Bollywood, Pakistani & More | CineVista',
+    description: 'Browse and stream 200+ free movies online. Explore trending Hollywood blockbusters, Bollywood hits, Pakistani cinema, Punjabi movies, Turkish films, Korean dramas, and more on CineVista.',
     alternates: {
         canonical: '/movies',
+    },
+    openGraph: {
+        title: 'Watch Free Movies Online – Trending, Bollywood, Pakistani & More | CineVista',
+        description: 'Browse and stream 200+ free movies online. Explore trending Hollywood blockbusters, Bollywood hits, Pakistani cinema, Punjabi movies, Turkish films, Korean dramas, and more on CineVista.',
+        url: 'https://cinevista.online/movies',
+        siteName: 'CineVista',
+        type: 'website',
+    },
+    twitter: {
+        card: 'summary_large_image',
+        title: 'Watch Free Movies Online | CineVista',
+        description: 'Browse and stream 200+ free movies. Hollywood, Bollywood, Pakistani, Turkish, Korean & more.',
     },
 };
 
@@ -16,9 +28,33 @@ export default function MoviesLayout({
     const schema = {
         '@context': 'https://schema.org',
         '@type': 'CollectionPage',
-        'name': 'Watch Free Movies Online - CineVista',
-        'description': 'Stream trending, popular, and top-rated movies. Explore Pakistani, Bollywood, Punjabi, and Turkish films for free on CineVista.',
-        'url': 'https://cinevista.online/movies'
+        'name': 'Watch Free Movies Online – CineVista',
+        'description': 'Browse and stream 200+ free movies online including trending Hollywood, Bollywood, Pakistani, Turkish, and Korean content.',
+        'url': 'https://cinevista.online/movies',
+        'isPartOf': {
+            '@type': 'WebSite',
+            'name': 'CineVista',
+            'url': 'https://cinevista.online',
+        },
+    };
+
+    const breadcrumbSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        'itemListElement': [
+            {
+                '@type': 'ListItem',
+                'position': 1,
+                'name': 'Home',
+                'item': 'https://cinevista.online',
+            },
+            {
+                '@type': 'ListItem',
+                'position': 2,
+                'name': 'Movies',
+                'item': 'https://cinevista.online/movies',
+            },
+        ],
     };
 
     return (
@@ -26,6 +62,10 @@ export default function MoviesLayout({
             <script
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+            />
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
             />
             {children}
         </>

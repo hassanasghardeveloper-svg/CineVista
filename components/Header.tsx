@@ -114,6 +114,9 @@ export default function Header() {
                     <Link href="/artists" className="text-sm font-bold text-white/70 hover:text-white transition-colors tracking-wide uppercase">
                         Artists
                     </Link>
+                    <Link href="/blog" className="text-sm font-bold text-white/70 hover:text-white transition-colors tracking-wide uppercase">
+                        Blog
+                    </Link>
                     <Link href="/recommend" className="flex items-center gap-1.5 text-sm font-bold text-accent-orange hover:text-amber-400 transition-colors tracking-wide uppercase">
                         <Sparkles className="w-3.5 h-3.5" />
                         AI Picks

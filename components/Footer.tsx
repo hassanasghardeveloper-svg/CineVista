@@ -10,6 +10,10 @@ export default function Footer() {
                             Cine<span className="text-accent-orange">Vista</span>
                         </Link>
                         <div className="flex flex-wrap gap-4 text-xs font-bold uppercase tracking-wider text-white/40">
+                            <Link href="/blog" className="hover:text-accent-orange transition-colors">
+                                Blog
+                            </Link>
+                            <span className="text-white/10 hidden md:inline">•</span>
                             <Link href="/dmca" className="hover:text-accent-orange transition-colors">
                                 DMCA
                             </Link>

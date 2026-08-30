@@ -241,11 +241,40 @@ export default async function WatchPage({ params, searchParams }: Props) {
         }
     };
 
+    const breadcrumbSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        'itemListElement': [
+            {
+                '@type': 'ListItem',
+                'position': 1,
+                'name': 'Home',
+                'item': 'https://cinevista.online',
+            },
+            {
+                '@type': 'ListItem',
+                'position': 2,
+                'name': titleDetails.type === 'tv_series' ? 'TV Shows' : 'Movies',
+                'item': `https://cinevista.online/${titleDetails.type === 'tv_series' ? 'tv' : 'movies'}`,
+            },
+            {
+                '@type': 'ListItem',
+                'position': 3,
+                'name': titleDetails.title,
+                'item': `https://cinevista.online/watch/${titleDetails.id}?type=${titleDetails.type === 'tv_series' ? 'tv' : 'movie'}`,
+            },
+        ],
+    };
+
     return (
         <>
             <script
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+            />
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
             />
             <WatchClient 
                 key={titleDetails.id} 
