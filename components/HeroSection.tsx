@@ -82,6 +82,8 @@ export default function HeroSection({ movies }: { movies: Movie[] }) {
                                     <img
                                         src={movie.posterPath}
                                         alt=""
+                                        loading="lazy"
+                                        decoding="async"
                                         className="w-full h-full object-cover animate-fade-in"
                                         onError={(e) => {
                                             const target = e.target as HTMLImageElement;
@@ -169,7 +171,7 @@ export default function HeroSection({ movies }: { movies: Movie[] }) {
                                 className={`relative w-12 aspect-[2/3] rounded-lg overflow-hidden transition-all duration-300 ${i === index ? 'ring-2 ring-accent-orange scale-105' : 'opacity-40 hover:opacity-80'}`}
                                 aria-label={`Go to slide ${i + 1}: ${m.title}`}
                             >
-                                <img src={m.posterPath} alt={m.title} className="w-full h-full object-cover" />
+                                <img src={m.posterPath} alt={m.title} loading="lazy" decoding="async" className="w-full h-full object-cover" />
                             </button>
                         ))}
                     </div>

@@ -55,6 +55,8 @@ export default function MovieCard({ movie }: { movie: Movie }) {
             <img
                 src={movie.posterPath}
                 alt={movie.title}
+                loading="lazy"
+                decoding="async"
                 className={`absolute inset-0 w-full h-full object-cover transition-all duration-700 ${trailerKey ? 'opacity-0' : 'opacity-100 group-hover:scale-110'}`}
                 onError={(e) => {
                     const target = e.target as HTMLImageElement;

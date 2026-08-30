@@ -39,7 +39,7 @@ async function fetchCategory(url: string, typeOverride?: string): Promise<Movie[
         const res = await fetch(url, { next: { revalidate: 3600 } });
         if (!res.ok) return [];
         const data = await res.json();
-        return (data.results || []).map((item: any) => transformMovie(item, typeOverride));
+        return (data.results || []).slice(0, 10).map((item: any) => transformMovie(item, typeOverride));
     } catch (e) {
         console.error(`Error fetching from ${url}:`, e);
         return [];

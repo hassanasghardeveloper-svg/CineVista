@@ -171,6 +171,8 @@ export default function Header() {
                                                         <img
                                                             src={item.poster}
                                                             alt={item.title || item.name}
+                                                            loading="lazy"
+                                                            decoding="async"
                                                             className="w-full h-full object-cover"
                                                         />
                                                     ) : (
