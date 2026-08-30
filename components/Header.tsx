@@ -136,7 +136,7 @@ export default function Header() {
                                     className="bg-transparent border-none text-white focus:outline-none w-full text-xs font-bold"
                                     autoFocus
                                 />
-                                <button type="button" onClick={() => { setIsSearchOpen(false); setSearchQuery(''); setSuggestions([]); }} className="p-1 text-white/40 hover:text-white">
+                                <button type="button" onClick={() => { setIsSearchOpen(false); setSearchQuery(''); setSuggestions([]); }} className="p-1 text-white/40 hover:text-white" aria-label="Close search">
                                     <X className="w-4 h-4" />
                                 </button>
                             </form>
@@ -144,6 +144,7 @@ export default function Header() {
                             <button
                                 onClick={() => setIsSearchOpen(true)}
                                 className="p-2 text-white/70 hover:text-white hover:bg-white/10 rounded-full transition-all"
+                                aria-label="Open search"
                             >
                                 <Search className="w-5 h-5" />
                             </button>
@@ -208,6 +209,7 @@ export default function Header() {
                     <button
                         onClick={() => setIsMenuOpen(!isMenuOpen)}
                         className="md:hidden flex flex-col gap-1.5 p-2"
+                        aria-label="Toggle navigation menu"
                     >
                         <span className={`w-6 h-0.5 bg-white transition-all ${isMenuOpen ? 'rotate-45 translate-y-2' : ''}`} />
                         <span className={`w-6 h-0.5 bg-white transition-all ${isMenuOpen ? 'opacity-0' : ''}`} />

@@ -176,12 +176,14 @@ export default function HeroSection({ movies }: { movies: Movie[] }) {
                         <button
                             onClick={prev}
                             className="p-3 rounded-full bg-white/5 hover:bg-accent-orange border border-white/10 hover:border-transparent text-white transition-all active:scale-90 shadow-lg"
+                            aria-label="Previous slide"
                         >
                             <ChevronLeft className="w-4 h-4" />
                         </button>
                         <button
                             onClick={next}
                             className="p-3 rounded-full bg-white/5 hover:bg-accent-orange border border-white/10 hover:border-transparent text-white transition-all active:scale-90 shadow-lg"
+                            aria-label="Next slide"
                         >
                             <ChevronRight className="w-4 h-4" />
                         </button>

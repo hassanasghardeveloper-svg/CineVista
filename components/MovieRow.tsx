@@ -39,6 +39,7 @@ export default function MovieRow({ title, movies }: { title: string; movies: Mov
                     <button
                         onClick={() => scroll('left')}
                         className="hidden md:flex absolute -left-4 top-1/2 -translate-y-1/2 z-30 p-3 rounded-full bg-black/60 backdrop-blur-xl border border-white/10 text-white hover:bg-accent-orange transition-all active:scale-90 group-hover/row:opacity-100 opacity-0"
+                        aria-label="Scroll left"
                     >
                         <ChevronLeft className="w-5 h-5" />
                     </button>
@@ -48,6 +49,7 @@ export default function MovieRow({ title, movies }: { title: string; movies: Mov
                     <button
                         onClick={() => scroll('right')}
                         className="hidden md:flex absolute -right-4 top-1/2 -translate-y-1/2 z-30 p-3 rounded-full bg-black/60 backdrop-blur-xl border border-white/10 text-white hover:bg-accent-orange transition-all active:scale-90 group-hover/row:opacity-100 opacity-0"
+                        aria-label="Scroll right"
                     >
                         <ChevronRight className="w-5 h-5" />
                     </button>
