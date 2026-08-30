@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import MobileNav from '@/components/MobileNav';
-import GoogleAnalytics from '@/components/GoogleAnalytics';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -66,13 +65,28 @@ export default function RootLayout({
     return (
         <html lang="en">
             <head>
+                <meta name="google-site-verification" content="7VHmGJtya1aKOksZksfyK8Pugvj7nYEVHAAZEXzhV6c" />
+                {/* Google tag (gtag.js) */}
+                <script
+                    async
+                    src="https://www.googletagmanager.com/gtag/js?id=G-BZWSLH7DTS"
+                />
+                <script
+                    dangerouslySetInnerHTML={{
+                        __html: `
+                            window.dataLayer = window.dataLayer || [];
+                            function gtag(){dataLayer.push(arguments);}
+                            gtag('js', new Date());
+                            gtag('config', 'G-BZWSLH7DTS');
+                        `,
+                    }}
+                />
                 <script
                     type="application/ld+json"
                     dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
                 />
             </head>
             <body className={`${inter.className} antialiased`}>
-                <GoogleAnalytics />
                 {children}
                 <MobileNav />
             </body>
