@@ -1,14 +1,14 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'Watch Free Movies Online – Trending, Bollywood, Pakistani & More | CineVista',
-    description: 'Browse and stream 200+ free movies online. Explore trending Hollywood blockbusters, Bollywood hits, Pakistani cinema, Punjabi movies, Turkish films, Korean dramas, and more on CineVista.',
+    title: 'Watch Free Movies Online – Hindi Dubbed, Bollywood, Hollywood | CineVista',
+    description: 'Browse and stream free movies online in HD. Explore trending Hollywood, Hindi dubbed movies, Bollywood hits, Pakistani & Turkish films on CineVista.',
     alternates: {
         canonical: '/movies',
     },
     openGraph: {
-        title: 'Watch Free Movies Online – Trending, Bollywood, Pakistani & More | CineVista',
-        description: 'Browse and stream 200+ free movies online. Explore trending Hollywood blockbusters, Bollywood hits, Pakistani cinema, Punjabi movies, Turkish films, Korean dramas, and more on CineVista.',
+        title: 'Watch Free Movies Online – Hindi Dubbed, Bollywood & Hollywood | CineVista',
+        description: 'Browse and stream free movies online in HD. Explore trending Hollywood, Hindi dubbed movies, Bollywood hits, Pakistani & Turkish films on CineVista.',
         url: 'https://cinevista.online/movies',
         siteName: 'CineVista',
         type: 'website',
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     twitter: {
         card: 'summary_large_image',
         title: 'Watch Free Movies Online | CineVista',
-        description: 'Browse and stream 200+ free movies. Hollywood, Bollywood, Pakistani, Turkish, Korean & more.',
+        description: 'Browse and stream free movies. Hollywood, Hindi Dubbed, Bollywood, Pakistani & more.',
     },
 };
 

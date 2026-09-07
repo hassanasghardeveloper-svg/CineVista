@@ -5,11 +5,14 @@ import { useState, useRef } from 'react';
 import { Star, Play, Volume2, VolumeX } from 'lucide-react';
 import { Movie } from '@/app/page';
 import { POSTER_PLACEHOLDER } from '@/lib/placeholders';
+import { createWatchUrl, createArtistUrl } from '@/lib/slugify';
 
 export default function MovieCard({ movie }: { movie: Movie }) {
     const isPerson = movie.type === 'person';
     const mediaType = movie.type === 'tv' || movie.type === 'tv_series' ? 'tv' : 'movie';
-    const href = isPerson ? `/artist/${movie.id}` : `/watch/${movie.id}?type=${mediaType}`;
+    const href = isPerson
+        ? createArtistUrl(movie.id, movie.title)
+        : createWatchUrl(movie.id, mediaType, movie.title, movie.releaseDate?.split('-')[0]);
 
     const badgeLabel = isPerson ? 'ARTIST' : (movie.type === 'tv' || movie.type === 'tv_series' ? 'TV' : 'HD');
     const badgeColor = isPerson ? 'bg-purple-600' : 'bg-accent-orange';

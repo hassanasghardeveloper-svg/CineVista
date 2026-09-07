@@ -6,6 +6,7 @@ import { Play, Info, ChevronLeft, ChevronRight, Star, Clock, Sparkles } from 'lu
 import { motion, AnimatePresence } from 'framer-motion';
 import { Movie } from '@/app/page';
 import { BACKDROP_PLACEHOLDER } from '@/lib/placeholders';
+import { createWatchUrl } from '@/lib/slugify';
 
 export default function HeroSection({ movies }: { movies: Movie[] }) {
     const [index, setIndex] = useState(0);
@@ -133,7 +134,7 @@ export default function HeroSection({ movies }: { movies: Movie[] }) {
                             {/* Action Buttons */}
                             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                                 <Link
-                                    href={`/watch/${movie.id}?type=${mediaType}`}
+                                    href={createWatchUrl(movie.id, mediaType, movie.title, movie.releaseDate?.split('-')[0])}
                                     className="group bg-white hover:bg-accent-orange text-black hover:text-white px-8 md:px-10 py-3.5 md:py-4.5 rounded-full font-black uppercase tracking-widest text-[10px] md:text-[11px] transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-2.5 shadow-[0_4px_20px_rgba(255,255,255,0.15)] hover:shadow-[0_4px_20px_rgba(232,124,0,0.3)] duration-300"
                                     aria-label={`Watch ${movie.title} Now`}
                                 >
@@ -141,7 +142,7 @@ export default function HeroSection({ movies }: { movies: Movie[] }) {
                                     Watch Now
                                 </Link>
                                 <Link
-                                    href={`/watch/${movie.id}?type=${mediaType}`}
+                                    href={createWatchUrl(movie.id, mediaType, movie.title, movie.releaseDate?.split('-')[0])}
                                     className="bg-white/10 hover:bg-white/20 border border-white/10 backdrop-blur-md text-white px-8 md:px-10 py-3.5 md:py-4.5 rounded-full font-black uppercase tracking-widest text-[10px] md:text-[11px] transition-all active:scale-95 flex items-center justify-center gap-2.5 duration-300"
                                     aria-label={`More Info about ${movie.title}`}
                                 >

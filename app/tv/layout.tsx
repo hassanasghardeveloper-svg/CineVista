@@ -1,14 +1,14 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'Watch Free TV Shows & Series Online – Pakistani Dramas, Turkish Series & More | CineVista',
-    description: 'Stream trending, popular, and top-rated TV series for free. Explore Pakistani dramas, Turkish drama series dubbed in Urdu/Hindi, Korean K-Dramas, Bollywood web series, and more on CineVista.',
+    title: 'Watch Free TV Shows & Hindi Dubbed Series Online | CineVista',
+    description: 'Stream popular TV series, Pakistani dramas, Turkish series dubbed in Hindi/Urdu, and Korean K-Dramas online for free in HD on CineVista.',
     alternates: {
         canonical: '/tv',
     },
     openGraph: {
-        title: 'Watch Free TV Shows & Series Online | CineVista',
-        description: 'Stream trending, popular, and top-rated TV series for free. Explore Pakistani dramas, Turkish drama series, Korean K-Dramas, and more.',
+        title: 'Watch Free TV Shows & Hindi Dubbed Series Online | CineVista',
+        description: 'Stream popular TV series, Pakistani dramas, Turkish series dubbed in Hindi/Urdu, and Korean K-Dramas online for free in HD on CineVista.',
         url: 'https://cinevista.online/tv',
         siteName: 'CineVista',
         type: 'website',
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     twitter: {
         card: 'summary_large_image',
         title: 'Watch Free TV Shows & Series Online | CineVista',
-        description: 'Stream Pakistani dramas, Turkish series, Korean K-Dramas & more free on CineVista.',
+        description: 'Stream Pakistani dramas, Hindi dubbed Turkish series, Korean K-Dramas & more free on CineVista.',
     },
 };
 

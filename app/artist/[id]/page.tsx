@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
-
+import { redirect, notFound } from 'next/navigation';
 import ArtistClient from './ArtistClient';
 import Link from 'next/link';
+import { extractIdFromSlug, slugify, createArtistUrl } from '@/lib/slugify';
 
 const API_KEY = process.env.TMDB_API_KEY;
 const BASE_URL = 'https://api.themoviedb.org/3';
@@ -12,6 +13,7 @@ interface Props {
 }
 
 async function fetchPersonDetails(id: string) {
+    if (!id || !/^\d+$/.test(id)) return null;
     try {
         const [detailRes, imagesRes] = await Promise.all([
             fetch(
@@ -91,12 +93,14 @@ async function fetchPersonDetails(id: string) {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-    const person = await fetchPersonDetails(params.id);
+    const numericId = extractIdFromSlug(params.id);
+    const person = await fetchPersonDetails(numericId);
 
     if (!person) {
         return {
-            title: 'Artist Profile - CineVista',
-            description: 'Learn more about cast & crew members of your favorite shows.',
+            title: 'Artist Profile Not Found - CineVista',
+            description: 'The requested artist profile could not be found on CineVista.',
+            robots: { index: false, follow: false },
         };
     }
 
@@ -110,16 +114,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         images.push({ url: person.profile_path, width: 500, height: 750, alt: person.name });
     }
 
+    const nameSlug = slugify(person.name);
+    const canonicalPath = `/artist/${person.id}${nameSlug ? `-${nameSlug}` : ''}`;
+    const absoluteUrl = `https://cinevista.online${canonicalPath}`;
+
     return {
         title: titleText,
         description: bioText,
         alternates: {
-            canonical: `/artist/${person.id}`,
+            canonical: absoluteUrl,
         },
         openGraph: {
             title: titleText,
             description: bioText,
-            url: `https://cinevista.online/artist/${person.id}`,
+            url: absoluteUrl,
             siteName: 'CineVista',
             type: 'profile',
             images,
@@ -134,17 +142,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function ArtistPage({ params }: Props) {
-    const person = await fetchPersonDetails(params.id);
+    const numericId = extractIdFromSlug(params.id);
+    const person = await fetchPersonDetails(numericId);
 
     if (!person) {
-        return (
-            <main className="min-h-screen bg-black flex items-center justify-center">
-                <div className="text-center">
-                    <p className="text-white/40 text-xl mb-4">Artist profile not found</p>
-                    <Link href="/" className="text-accent-orange hover:underline">← Back to Home</Link>
-                </div>
-            </main>
-        );
+        notFound();
+    }
+
+    // Redirect to canonical slug URL if current URL doesn't have the name slug
+    const nameSlug = slugify(person.name);
+    const expectedParam = `${person.id}${nameSlug ? `-${nameSlug}` : ''}`;
+    if (params.id !== expectedParam) {
+        redirect(`/artist/${expectedParam}`);
     }
 
     // Injected structured data (Person schema)

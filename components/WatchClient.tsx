@@ -7,6 +7,7 @@ import { ArrowLeft, Star, Play, ExternalLink, Tv, Film, Youtube, Share2, Copy, C
 import EmbedPlayer, { StreamServer } from '@/components/EmbedPlayer';
 import CustomDropdown from '@/components/CustomDropdown';
 import { POSTER_PLACEHOLDER } from '@/lib/placeholders';
+import { createWatchUrl, createWatchEpisodeUrl, createArtistUrl, slugify } from '@/lib/slugify';
 
 interface TitleDetails {
     id: number;
@@ -424,7 +425,7 @@ export default function WatchClient({
                                         const newSeason = Number(val);
                                         setSelectedSeason(newSeason);
                                         setSelectedEpisode(1);
-                                        router.push(`/watch/${title.id}?type=tv&s=${newSeason}&e=1`, { scroll: false });
+                                        router.push(createWatchEpisodeUrl(title.id, title.title, newSeason, 1), { scroll: false });
                                     }}
                                     className="w-full sm:w-48"
                                 />
@@ -443,11 +444,11 @@ export default function WatchClient({
                                     return (
                                         <Link
                                             key={ep.id}
-                                            href={`/watch/${title.id}?type=tv&s=${selectedSeason}&e=${ep.episode_number}`}
+                                            href={createWatchEpisodeUrl(title.id, title.title, selectedSeason, ep.episode_number)}
                                             onClick={(e) => {
                                                 e.preventDefault();
                                                 setSelectedEpisode(ep.episode_number);
-                                                router.push(`/watch/${title.id}?type=tv&s=${selectedSeason}&e=${ep.episode_number}`, { scroll: false });
+                                                router.push(createWatchEpisodeUrl(title.id, title.title, selectedSeason, ep.episode_number), { scroll: false });
                                             }}
                                             className={`text-left rounded-xl overflow-hidden border transition-all duration-300 group flex flex-row sm:flex-col h-full bg-white/[0.01] ${isSelected
                                                 ? 'border-accent-orange bg-accent-orange/[0.04] ring-1 ring-accent-orange'
@@ -641,41 +642,186 @@ export default function WatchClient({
                 </div>
             </div>
 
-            {/* Dynamic SEO Optimization Block */}
+            {/* ═══ AEO Content Block — Optimized for Google, ChatGPT, Perplexity ═══ */}
             {title && (
-                <div className="border-t border-white/5 py-12 max-w-[1400px] mx-auto px-6">
+                <div className="border-t border-white/5 py-12 max-w-[1400px] mx-auto px-6 space-y-8">
+
+                    {/* Section 1: About This Movie/Show */}
                     <div className="bg-white/[0.01] border border-white/5 rounded-2xl p-6 md:p-8 space-y-6">
-                        <div>
-                            <h3 className="text-lg font-black uppercase tracking-wider text-white mb-3">
-                                How to watch {title.title} online free
-                            </h3>
-                            <p className="text-white/60 leading-relaxed text-sm md:text-base">
-                                Stream <strong>{title.title}</strong> {title.type === 'tv_series' ? `Season ${selectedSeason} Episode ${selectedEpisode}` : ''} in high definition on CineVista. We provide multiple fallback streaming players (Server 1, Server 2, Server 3, Server 4) to ensure you have an uninterrupted streaming experience. Our indexing database automatically links the best external source embeds with fast loading times and adaptive resolutions.
+                        <h2 className="text-xl font-black uppercase tracking-wider text-white">
+                            {title.type === 'tv_series'
+                                ? `Watch ${title.title} All Episodes Free Online`
+                                : `About ${title.title} (${title.year || ''})`}
+                        </h2>
+                        <div className="text-white/60 leading-relaxed text-sm md:text-base space-y-4">
+                            <p>
+                                <strong>{title.title}</strong> is a {title.genre_names?.join(', ') || ''} {title.type === 'tv_series' ? 'TV series' : 'movie'}
+                                {title.year ? ` released in ${title.year}` : ''}.
+                                {title.user_rating > 0 ? ` It holds a rating of ${title.user_rating.toFixed(1)}/10.` : ''}
+                                {title.runtime_minutes > 0 && title.type !== 'tv_series' ? ` The movie has a runtime of ${title.runtime_minutes} minutes.` : ''}
+                                {title.type === 'tv_series' && title.number_of_seasons ? ` The series has ${title.number_of_seasons} season${title.number_of_seasons > 1 ? 's' : ''} with ${title.number_of_episodes || 'multiple'} episodes.` : ''}
+                            </p>
+                            <p>
+                                <strong>Watch {title.title} online free</strong> on CineVista in HD quality.
+                                Available with <strong>Hindi dubbed</strong> audio, <strong>Urdu subtitles</strong>, and English subtitles.
+                                No registration or credit card required. Stream instantly with multiple server options for the best viewing experience.
+                            </p>
+                            {title.plot_overview && (
+                                <p>{title.plot_overview}</p>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Section 2: Movie/Show Details Table — AEO Optimized */}
+                    <div className="bg-white/[0.01] border border-white/5 rounded-2xl p-6 md:p-8">
+                        <h3 className="text-lg font-black uppercase tracking-wider text-white/40 mb-6">
+                            {title.type === 'tv_series' ? 'Series' : 'Movie'} Details
+                        </h3>
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-sm">
+                                <tbody className="divide-y divide-white/5">
+                                    <tr>
+                                        <td className="py-3 pr-4 text-white/40 font-bold uppercase text-xs tracking-wider w-40">Title</td>
+                                        <td className="py-3 text-white font-semibold">{title.title}</td>
+                                    </tr>
+                                    {title.original_title && title.original_title !== title.title && (
+                                        <tr>
+                                            <td className="py-3 pr-4 text-white/40 font-bold uppercase text-xs tracking-wider">Original Title</td>
+                                            <td className="py-3 text-white/70">{title.original_title}</td>
+                                        </tr>
+                                    )}
+                                    {title.year > 0 && (
+                                        <tr>
+                                            <td className="py-3 pr-4 text-white/40 font-bold uppercase text-xs tracking-wider">Year</td>
+                                            <td className="py-3 text-white/70">{title.year}</td>
+                                        </tr>
+                                    )}
+                                    <tr>
+                                        <td className="py-3 pr-4 text-white/40 font-bold uppercase text-xs tracking-wider">Type</td>
+                                        <td className="py-3 text-white/70">{title.type === 'tv_series' ? 'TV Series' : 'Movie'}</td>
+                                    </tr>
+                                    {title.genre_names?.length > 0 && (
+                                        <tr>
+                                            <td className="py-3 pr-4 text-white/40 font-bold uppercase text-xs tracking-wider">Genre</td>
+                                            <td className="py-3 text-white/70">{title.genre_names.join(', ')}</td>
+                                        </tr>
+                                    )}
+                                    {title.runtime_minutes > 0 && title.type !== 'tv_series' && (
+                                        <tr>
+                                            <td className="py-3 pr-4 text-white/40 font-bold uppercase text-xs tracking-wider">Runtime</td>
+                                            <td className="py-3 text-white/70">{title.runtime_minutes} minutes</td>
+                                        </tr>
+                                    )}
+                                    {title.type === 'tv_series' && title.number_of_seasons && (
+                                        <>
+                                            <tr>
+                                                <td className="py-3 pr-4 text-white/40 font-bold uppercase text-xs tracking-wider">Seasons</td>
+                                                <td className="py-3 text-white/70">{title.number_of_seasons}</td>
+                                            </tr>
+                                            {title.number_of_episodes && (
+                                                <tr>
+                                                    <td className="py-3 pr-4 text-white/40 font-bold uppercase text-xs tracking-wider">Episodes</td>
+                                                    <td className="py-3 text-white/70">{title.number_of_episodes}</td>
+                                                </tr>
+                                            )}
+                                        </>
+                                    )}
+                                    {title.user_rating > 0 && (
+                                        <tr>
+                                            <td className="py-3 pr-4 text-white/40 font-bold uppercase text-xs tracking-wider">Rating</td>
+                                            <td className="py-3 text-white/70">⭐ {title.user_rating.toFixed(1)} / 10</td>
+                                        </tr>
+                                    )}
+                                    <tr>
+                                        <td className="py-3 pr-4 text-white/40 font-bold uppercase text-xs tracking-wider">Audio</td>
+                                        <td className="py-3 text-white/70">Hindi Dubbed, Original Audio</td>
+                                    </tr>
+                                    <tr>
+                                        <td className="py-3 pr-4 text-white/40 font-bold uppercase text-xs tracking-wider">Subtitles</td>
+                                        <td className="py-3 text-white/70">English, Hindi, Urdu</td>
+                                    </tr>
+                                    <tr>
+                                        <td className="py-3 pr-4 text-white/40 font-bold uppercase text-xs tracking-wider">Quality</td>
+                                        <td className="py-3 text-white/70">HD (720p) / Full HD (1080p)</td>
+                                    </tr>
+                                    <tr>
+                                        <td className="py-3 pr-4 text-white/40 font-bold uppercase text-xs tracking-wider">Cost</td>
+                                        <td className="py-3 text-green-400 font-bold">Free — No Registration</td>
+                                    </tr>
+                                    <tr>
+                                        <td className="py-3 pr-4 text-white/40 font-bold uppercase text-xs tracking-wider">Platform</td>
+                                        <td className="py-3 text-accent-orange font-bold">CineVista</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    {/* Section 3: Streaming Info */}
+                    <div className="bg-white/[0.01] border border-white/5 rounded-2xl p-6 md:p-8 space-y-4">
+                        <h3 className="text-lg font-black uppercase tracking-wider text-white mb-3">
+                            How to Stream {title.title} Free on CineVista
+                        </h3>
+                        <div className="text-white/60 leading-relaxed text-sm md:text-base space-y-3">
+                            <p>
+                                CineVista provides <strong>4 streaming servers</strong> for <strong>{title.title}</strong> to ensure uninterrupted playback:
+                            </p>
+                            <ul className="space-y-2 ml-1">
+                                <li className="flex items-center gap-2"><span className="text-purple-400">●</span> <strong>Server 1 (Cineverse)</strong> — Primary HD server with fast loading</li>
+                                <li className="flex items-center gap-2"><span className="text-green-400">●</span> <strong>Server 2 (NxSha)</strong> — Backup server with multi-language support</li>
+                                <li className="flex items-center gap-2"><span className="text-amber-400">●</span> <strong>Server 3 (ScreenScape)</strong> — Alternative with subtitle options</li>
+                                <li className="flex items-center gap-2"><span className="text-blue-400">●</span> <strong>Server 4 (VidSrc)</strong> — Fallback server for maximum availability</li>
+                            </ul>
+                            <p>
+                                For the best ad-free experience, we recommend using <strong>Brave browser</strong> or installing the <strong>uBlock Origin</strong> extension.
                             </p>
                         </div>
-                        
-                        <hr className="border-white/5" />
-                        
-                        <div className="grid md:grid-cols-3 gap-6 text-sm text-white/50">
-                            <div className="space-y-1">
-                                <span className="text-[10px] font-black uppercase tracking-widest text-accent-orange block">Streaming Quality</span>
-                                <p className="font-semibold text-white">Full HD (1080p) & HD (720p) supported</p>
-                            </div>
-                            <div className="space-y-1">
-                                <span className="text-[10px] font-black uppercase tracking-widest text-accent-orange block">Subtitle Options</span>
-                                <p className="font-semibold text-white">English / Urdu / Hindi Subtitles available</p>
-                            </div>
-                            <div className="space-y-1">
-                                <span className="text-[10px] font-black uppercase tracking-widest text-accent-orange block">Access Type</span>
-                                <p className="font-semibold text-white">100% Free - No Account/Credit Card Required</p>
-                            </div>
-                        </div>
+                    </div>
 
-                        <hr className="border-white/5" />
-
-                        <div className="text-xs text-white/40 leading-relaxed">
-                            <strong>Disclaimer:</strong> CineVista is a metadata catalog and search guide. We index external stream players hosted on third-party domains. All content remains property of their respective copyright owners. For copyright queries, please read our DMCA policy or contact the hosting providers directly.
+                    {/* Section 4: FAQ — Triggers Google FAQ Rich Snippets + AEO */}
+                    <div className="bg-white/[0.01] border border-white/5 rounded-2xl p-6 md:p-8">
+                        <h3 className="text-lg font-black uppercase tracking-wider text-white/40 mb-6">
+                            Frequently Asked Questions
+                        </h3>
+                        <div className="space-y-3">
+                            {[
+                                {
+                                    q: `Where can I watch ${title.title} online for free?`,
+                                    a: `You can watch ${title.title} for free on CineVista (cinevista.online). We offer HD streaming with Hindi dubbed audio, Urdu subtitles, and English subtitles. No registration or credit card is required.`
+                                },
+                                {
+                                    q: `Is ${title.title} available in Hindi dubbed?`,
+                                    a: `Yes, ${title.title} is available with Hindi dubbed audio on CineVista. You can switch between original audio and Hindi dubbed versions using the server options. Urdu and English subtitles are also available.`
+                                },
+                                {
+                                    q: `Do I need to sign up to watch ${title.title}?`,
+                                    a: `No, CineVista does not require any registration, account creation, or credit card. You can start streaming ${title.title} instantly by selecting a server and pressing play.`
+                                },
+                                ...(title.type === 'tv_series' ? [{
+                                    q: `How many seasons of ${title.title} are available?`,
+                                    a: `${title.title} has ${title.number_of_seasons || 'multiple'} season${(title.number_of_seasons || 0) > 1 ? 's' : ''} available on CineVista${title.number_of_episodes ? ` with a total of ${title.number_of_episodes} episodes` : ''}. All episodes are available to stream for free in HD quality.`
+                                }] : []),
+                                {
+                                    q: `What quality is ${title.title} available in?`,
+                                    a: `${title.title} is available in HD (720p) and Full HD (1080p) quality on CineVista. The streaming quality depends on the server you choose and your internet connection speed.`
+                                },
+                            ].map((faq, idx) => (
+                                <details key={idx} className="group border border-white/5 rounded-xl overflow-hidden">
+                                    <summary className="flex items-center justify-between cursor-pointer px-5 py-4 text-white text-sm font-bold hover:bg-white/[0.03] transition-colors">
+                                        <span>{faq.q}</span>
+                                        <span className="text-white/30 group-open:rotate-45 transition-transform duration-200 text-lg">+</span>
+                                    </summary>
+                                    <div className="px-5 pb-4 text-white/50 text-sm leading-relaxed">
+                                        {faq.a}
+                                    </div>
+                                </details>
+                            ))}
                         </div>
+                    </div>
+
+                    {/* Disclaimer */}
+                    <div className="text-xs text-white/30 leading-relaxed px-2">
+                        <strong>Disclaimer:</strong> CineVista is a metadata catalog and search guide. We index external stream players hosted on third-party domains. All content remains property of their respective copyright owners. For copyright queries, please read our <Link href="/dmca" className="text-accent-orange/60 hover:underline">DMCA policy</Link> or contact the hosting providers directly.
                     </div>
                 </div>
             )}
@@ -690,7 +836,7 @@ export default function WatchClient({
                         {title.cast.map((member) => (
                             <Link
                                 key={member.id}
-                                href={`/artist/${member.id}`}
+                                href={createArtistUrl(member.id, member.name)}
                                 className="flex-shrink-0 text-center w-24 group"
                             >
                                 <div className="w-20 h-20 rounded-full overflow-hidden mx-auto border border-white/10 mb-3 bg-white/5 group-hover:border-accent-orange/50 transition-all duration-300 ring-0 group-hover:ring-2 group-hover:ring-accent-orange/20">
@@ -726,7 +872,7 @@ export default function WatchClient({
                             return (
                                 <Link
                                     key={rec.id}
-                                    href={`/watch/${rec.id}?type=${mediaType}`}
+                                    href={createWatchUrl(rec.id, mediaType, rec.title, rec.year)}
                                     className="group flex flex-col h-full bg-white/[0.01] border border-white/5 rounded-xl overflow-hidden hover:border-white/10 hover:bg-white/[0.03] transition-all duration-300"
                                 >
                                     <div className="relative aspect-[2/3] w-full bg-white/5 overflow-hidden">

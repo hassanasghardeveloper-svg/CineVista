@@ -19,6 +19,7 @@ import {
     ChevronUp,
 } from 'lucide-react';
 import Header from '@/components/Header';
+import { createWatchUrl } from '@/lib/slugify';
 
 interface PersonDetails {
     id: number;
@@ -385,7 +386,7 @@ function FilmographyCard({ credit, isCrew = false }: { credit: CreditItem; isCre
     const mediaType = credit.media_type === 'tv' ? 'tv' : 'movie';
     return (
         <Link
-            href={`/watch/${credit.id}?type=${mediaType}`}
+            href={createWatchUrl(credit.id, mediaType, credit.title, credit.year)}
             className="group flex flex-col bg-white/[0.02] border border-white/5 rounded-xl overflow-hidden hover:border-accent-orange/30 hover:bg-white/[0.04] transition-all duration-300"
         >
             <div className="relative aspect-[2/3] w-full bg-white/5 overflow-hidden">

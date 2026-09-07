@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { User, Star, TrendingUp } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { createArtistUrl } from '@/lib/slugify';
 
 interface Artist {
     id: number;
@@ -156,7 +157,7 @@ export default function ArtistsPage() {
 function ArtistCard({ artist, rank }: { artist: Artist; rank: number }) {
     return (
         <Link
-            href={`/artist/${artist.id}`}
+            href={createArtistUrl(artist.id, artist.name)}
             className="group relative flex flex-col items-center text-center"
         >
             {/* Photo */}

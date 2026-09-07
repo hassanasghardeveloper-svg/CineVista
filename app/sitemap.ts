@@ -1,6 +1,7 @@
 import { MetadataRoute } from 'next';
 import fs from 'fs';
 import path from 'path';
+import { createWatchUrl, createArtistUrl } from '@/lib/slugify';
 
 const BASE_URL = 'https://api.themoviedb.org/3';
 const SITE_URL = 'https://cinevista.online';
@@ -61,12 +62,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         );
 
         movieResults.forEach(data => {
-            const movieUrls = (data.results || []).map((movie: any) => ({
-                url: `${SITE_URL}/watch/${movie.id}?type=movie`,
-                lastModified: new Date(),
-                changeFrequency: 'weekly' as const,
-                priority: 0.7,
-            }));
+            const movieUrls = (data.results || []).map((movie: any) => {
+                const year = movie.release_date ? movie.release_date.split('-')[0] : '';
+                const path = createWatchUrl(movie.id, 'movie', movie.title || movie.original_title || '', year);
+                return {
+                    url: `${SITE_URL}${path}`,
+                    lastModified: new Date(),
+                    changeFrequency: 'weekly' as const,
+                    priority: 0.7,
+                };
+            });
             sitemaps.push(...movieUrls);
         });
 
@@ -82,12 +87,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         );
 
         tvResults.forEach(data => {
-            const tvUrls = (data.results || []).map((tv: any) => ({
-                url: `${SITE_URL}/watch/${tv.id}?type=tv`,
-                lastModified: new Date(),
-                changeFrequency: 'weekly' as const,
-                priority: 0.7,
-            }));
+            const tvUrls = (data.results || []).map((tv: any) => {
+                const year = tv.first_air_date ? tv.first_air_date.split('-')[0] : '';
+                const path = createWatchUrl(tv.id, 'tv', tv.name || tv.original_name || '', year);
+                return {
+                    url: `${SITE_URL}${path}`,
+                    lastModified: new Date(),
+                    changeFrequency: 'weekly' as const,
+                    priority: 0.7,
+                };
+            });
             sitemaps.push(...tvUrls);
         });
 
@@ -103,12 +112,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         );
 
         peopleResults.forEach(data => {
-            const peopleUrls = (data.results || []).map((person: any) => ({
-                url: `${SITE_URL}/artist/${person.id}`,
-                lastModified: new Date(),
-                changeFrequency: 'weekly' as const,
-                priority: 0.5,
-            }));
+            const peopleUrls = (data.results || []).map((person: any) => {
+                const path = createArtistUrl(person.id, person.name || '');
+                return {
+                    url: `${SITE_URL}${path}`,
+                    lastModified: new Date(),
+                    changeFrequency: 'weekly' as const,
+                    priority: 0.5,
+                };
+            });
             sitemaps.push(...peopleUrls);
         });
 
@@ -124,12 +136,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         );
 
         regionalResults.forEach(data => {
-            const urls = (data.results || []).slice(0, 20).map((movie: any) => ({
-                url: `${SITE_URL}/watch/${movie.id}?type=movie`,
-                lastModified: new Date(),
-                changeFrequency: 'weekly' as const,
-                priority: 0.6,
-            }));
+            const urls = (data.results || []).slice(0, 20).map((movie: any) => {
+                const year = movie.release_date ? movie.release_date.split('-')[0] : '';
+                const path = createWatchUrl(movie.id, 'movie', movie.title || movie.original_title || '', year);
+                return {
+                    url: `${SITE_URL}${path}`,
+                    lastModified: new Date(),
+                    changeFrequency: 'weekly' as const,
+                    priority: 0.6,
+                };
+            });
             sitemaps.push(...urls);
         });
 

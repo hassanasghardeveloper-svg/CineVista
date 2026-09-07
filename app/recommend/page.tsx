@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { Sparkles, Send, Film, Tv, Star, ChevronLeft, ChevronRight, Loader2, Bot, HelpCircle, RotateCcw, Play, ArrowRight } from 'lucide-react';
 import { POSTER_PLACEHOLDER, BACKDROP_PLACEHOLDER } from '@/lib/placeholders';
 import { motion, AnimatePresence } from 'framer-motion';
+import { createWatchUrl } from '@/lib/slugify';
 
 interface MovieResult {
     id: number;
@@ -277,7 +278,7 @@ export default function RecommendPage() {
                                     
                                     <div className="pt-2">
                                         <Link
-                                            href={`/watch/${activeMovie?.id}?type=${activeMovie?.type === 'tv' ? 'tv' : 'movie'}`}
+                                            href={activeMovie ? createWatchUrl(activeMovie.id, activeMovie.type || 'movie', activeMovie.title || '', activeMovie.year) : '#'}
                                             className="inline-flex items-center gap-2.5 bg-white hover:bg-accent-orange text-black hover:text-white px-8 py-4 rounded-full font-black uppercase tracking-widest text-[10px] transition-all hover:scale-105 active:scale-95 shadow-[0_10px_25px_rgba(255,255,255,0.05)] hover:shadow-accent-orange/30 duration-300"
                                         >
                                             <Play className="w-4 h-4 fill-current" />

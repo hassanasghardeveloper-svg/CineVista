@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useState, useEffect, useRef } from 'react';
 import { Search, X, Play, Film, Tv, Star, Sparkles, User } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { createWatchUrl, createArtistUrl } from '@/lib/slugify';
 
 interface SearchResult {
     id: number;
@@ -73,14 +74,14 @@ export default function Header() {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    const handleSuggestionClick = (id: number, type: string) => {
+    const handleSuggestionClick = (item: SearchResult) => {
         setSearchQuery('');
         setSuggestions([]);
         setIsSearchOpen(false);
-        if (type === 'person') {
-            router.push(`/artist/${id}`);
+        if (item.type === 'person') {
+            router.push(createArtistUrl(item.id, item.name || item.title));
         } else {
-            router.push(`/watch/${id}?type=${type === 'tv' ? 'tv' : 'movie'}`);
+            router.push(createWatchUrl(item.id, item.type, item.title || item.name, item.year));
         }
     };
 
@@ -165,7 +166,7 @@ export default function Header() {
                                         {suggestions.map((item) => (
                                             <button
                                                 key={item.id}
-                                                onClick={() => handleSuggestionClick(item.id, item.type)}
+                                                onClick={() => handleSuggestionClick(item)}
                                                 className="w-full text-left flex items-center gap-3 p-2 hover:bg-white/5 transition-colors rounded-xl group"
                                             >
                                                 {/* Poster / Profile photo */}
