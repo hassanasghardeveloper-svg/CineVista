@@ -1,22 +1,26 @@
 import type { Metadata } from 'next';
-import { redirect, notFound } from 'next/navigation';
+import { Suspense } from 'react';
+import { permanentRedirect, notFound } from 'next/navigation';
 import Link from 'next/link';
 import WatchClient from '@/components/WatchClient';
-import { fetchTitleDetails } from '@/lib/tmdb';
+import { fetchTitleDetails, toSchemaDate, FALLBACK_THUMBNAIL } from '@/lib/tmdb';
 import { extractIdFromSlug, slugify } from '@/lib/slugify';
 
 interface Props {
     params: { id: string };
-    searchParams: {
-        s?: string;
-        e?: string;
-    };
 }
 
-export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
+// Cache for an hour like the movie and artist routes.
+export const revalidate = 3600;
+
+// Puts the route in the prerender manifest so on-demand renders are cached
+// rather than re-rendered per request.
+export async function generateStaticParams() {
+    return [];
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const numericId = extractIdFromSlug(params.id);
-    const s = searchParams.s;
-    const e = searchParams.e;
     const titleDetails = await fetchTitleDetails(numericId, 'tv');
 
     if (!titleDetails) {
@@ -35,11 +39,6 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
         ? `Watch ${titleText} ${yearText} TV Series online for free in HD. Available with Hindi dubbed audio, Urdu & English subtitles. ${titleDetails.plot_overview.slice(0, 115)}...`
         : `Watch ${titleText} ${yearText} TV Series online for free in HD with Hindi dubbed audio and multi-language subtitles on CineVista.`;
 
-    if (s && e) {
-        pageTitle = `Watch ${titleText} Season ${s} Episode ${e} Free Online (Hindi Dubbed / Sub) - CineVista`;
-        pageDesc = `Stream ${titleText} Season ${s} Episode ${e} online free in HD quality. Watch with Hindi dubbed audio, English & Urdu subtitles on CineVista.`;
-    }
-
     const images = [];
     if (titleDetails.backdrop) {
         images.push({ url: titleDetails.backdrop, width: 1280, height: 720, alt: titleText });
@@ -49,7 +48,10 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
 
     const slug = slugify(titleText);
     const basePath = `/watch/tv/${titleDetails.id}${slug ? `-${slug}` : ''}`;
-    const canonicalPath = s && e ? `${basePath}?s=${s}&e=${e}` : basePath;
+    // Always the bare series URL: ?s=/?e= variants are the same page with a
+    // different episode selected, so they consolidate here instead of
+    // competing as near-duplicates.
+    const canonicalPath = basePath;
     const absoluteUrl = `https://cinevista.online${canonicalPath}`;
 
     return {
@@ -78,10 +80,8 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
     };
 }
 
-export default async function TvWatchPage({ params, searchParams }: Props) {
+export default async function TvWatchPage({ params }: Props) {
     const numericId = extractIdFromSlug(params.id);
-    const s = searchParams.s;
-    const e = searchParams.e;
     const titleDetails = await fetchTitleDetails(numericId, 'tv');
 
     if (!titleDetails) {
@@ -92,8 +92,7 @@ export default async function TvWatchPage({ params, searchParams }: Props) {
     const expectedSlug = slugify(titleDetails.title);
     const expectedParam = `${titleDetails.id}${expectedSlug ? `-${expectedSlug}` : ''}`;
     if (params.id !== expectedParam) {
-        const queryString = s && e ? `?s=${s}&e=${e}` : '';
-        redirect(`/watch/tv/${expectedParam}${queryString}`);
+        permanentRedirect(`/watch/tv/${expectedParam}`);
     }
 
     // Process trailers on the server
@@ -172,8 +171,8 @@ export default async function TvWatchPage({ params, searchParams }: Props) {
         '@type': 'VideoObject',
         'name': `Watch ${titleDetails.title} (${titleDetails.year || ''}) All Episodes Free Online`,
         'description': titleDetails.plot_overview || `Stream ${titleDetails.title} TV series online for free in HD on CineVista.`,
-        'thumbnailUrl': titleDetails.backdrop || titleDetails.poster,
-        'uploadDate': titleDetails.release_date || undefined,
+        'thumbnailUrl': titleDetails.backdrop || titleDetails.poster || FALLBACK_THUMBNAIL,
+        'uploadDate': toSchemaDate(titleDetails.release_date),
         'contentUrl': `https://cinevista.online/watch/tv/${expectedParam}`,
         'embedUrl': `https://cinevista.online/watch/tv/${expectedParam}`,
         'potentialAction': {
@@ -240,13 +239,15 @@ export default async function TvWatchPage({ params, searchParams }: Props) {
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
             />
-            <WatchClient
-                key={titleDetails.id}
-                initialTitle={titleDetails as any}
-                initialTrailers={trailers}
-                initialSeason={s ? parseInt(s) : 1}
-                initialEpisode={e ? parseInt(e) : 1}
-            />
+            {/* WatchClient reads ?s=/?e= via useSearchParams, which needs a
+                Suspense boundary now that this route is statically rendered. */}
+            <Suspense fallback={null}>
+                <WatchClient
+                    key={titleDetails.id}
+                    initialTitle={titleDetails as any}
+                    initialTrailers={trailers}
+                />
+            </Suspense>
         </>
     );
 }

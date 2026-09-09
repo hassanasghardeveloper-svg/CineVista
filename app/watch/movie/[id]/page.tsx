@@ -1,13 +1,23 @@
 import type { Metadata } from 'next';
-import { redirect, notFound } from 'next/navigation';
+import { Suspense } from 'react';
+import { permanentRedirect, notFound } from 'next/navigation';
 import Link from 'next/link';
 import WatchClient from '@/components/WatchClient';
-import { fetchTitleDetails } from '@/lib/tmdb';
+import { fetchTitleDetails, toSchemaDate, FALLBACK_THUMBNAIL } from '@/lib/tmdb';
 import { extractIdFromSlug, slugify, createWatchUrl } from '@/lib/slugify';
 
 interface Props {
     params: { id: string };
-    searchParams: Record<string, string | undefined>;
+}
+
+// Render once per hour and serve the cached HTML to everyone else, so a full
+// crawl does not re-render every title in the Worker.
+export const revalidate = 3600;
+
+// Empty list: nothing is prerendered at build, but the route enters the
+// prerender manifest so on-demand renders are cached rather than dynamic.
+export async function generateStaticParams() {
+    return [];
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -80,7 +90,7 @@ export default async function MovieWatchPage({ params }: Props) {
     const expectedSlug = slugify(titleDetails.title, titleDetails.year);
     const expectedParam = `${titleDetails.id}${expectedSlug ? `-${expectedSlug}` : ''}`;
     if (params.id !== expectedParam) {
-        redirect(`/watch/movie/${expectedParam}`);
+        permanentRedirect(`/watch/movie/${expectedParam}`);
     }
 
     // Process trailers on the server
@@ -162,8 +172,8 @@ export default async function MovieWatchPage({ params }: Props) {
         '@type': 'VideoObject',
         'name': `Watch ${titleDetails.title} (${titleDetails.year || ''}) Free Online`,
         'description': titleDetails.plot_overview || `Stream ${titleDetails.title} online for free in HD on CineVista.`,
-        'thumbnailUrl': titleDetails.backdrop || titleDetails.poster,
-        'uploadDate': titleDetails.release_date || undefined,
+        'thumbnailUrl': titleDetails.backdrop || titleDetails.poster || FALLBACK_THUMBNAIL,
+        'uploadDate': toSchemaDate(titleDetails.release_date),
         'duration': titleDetails.runtime_minutes ? `PT${titleDetails.runtime_minutes}M` : undefined,
         'contentUrl': `https://cinevista.online/watch/movie/${expectedParam}`,
         'embedUrl': `https://cinevista.online/watch/movie/${expectedParam}`,
@@ -231,13 +241,13 @@ export default async function MovieWatchPage({ params }: Props) {
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
             />
-            <WatchClient
-                key={titleDetails.id}
-                initialTitle={titleDetails as any}
-                initialTrailers={trailers}
-                initialSeason={1}
-                initialEpisode={1}
-            />
+            <Suspense fallback={null}>
+                <WatchClient
+                    key={titleDetails.id}
+                    initialTitle={titleDetails as any}
+                    initialTrailers={trailers}
+                />
+            </Suspense>
         </>
     );
 }

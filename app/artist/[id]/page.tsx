@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
-import { redirect, notFound } from 'next/navigation';
+import { permanentRedirect, notFound } from 'next/navigation';
 import ArtistClient from './ArtistClient';
 import Link from 'next/link';
 import { extractIdFromSlug, slugify, createArtistUrl } from '@/lib/slugify';
+import { assertTmdbOk, TmdbUnavailableError } from '@/lib/tmdb';
 
 const API_KEY = process.env.TMDB_API_KEY;
 const BASE_URL = 'https://api.themoviedb.org/3';
@@ -10,6 +11,16 @@ const IMG_BASE = 'https://image.tmdb.org/t/p';
 
 interface Props {
     params: { id: string };
+}
+
+// Artist pages drive ~90% of impressions; cache them for an hour.
+export const revalidate = 3600;
+
+// Nothing is prerendered at build time, but declaring the route here puts it in
+// the prerender manifest so each artist is rendered once on first request and
+// then served from the ISR cache instead of re-rendering per crawl hit.
+export async function generateStaticParams() {
+    return [];
 }
 
 async function fetchPersonDetails(id: string) {
@@ -26,7 +37,7 @@ async function fetchPersonDetails(id: string) {
             ),
         ]);
 
-        if (!detailRes.ok) return null;
+        if (assertTmdbOk(detailRes, `person/${id}`) === null) return null;
 
         const details = await detailRes.json();
         const images = imagesRes.ok ? await imagesRes.json() : { profiles: [] };
@@ -87,6 +98,9 @@ async function fetchPersonDetails(id: string) {
             crew_credits: notableCrew,
         };
     } catch (e) {
+        // Only a genuine TMDB 404 may become a 404 here; anything else is
+        // temporary and must not tell Google the artist is gone for good.
+        if (e instanceof TmdbUnavailableError) throw e;
         console.error('Error fetching artist details:', e);
         return null;
     }
@@ -153,7 +167,7 @@ export default async function ArtistPage({ params }: Props) {
     const nameSlug = slugify(person.name);
     const expectedParam = `${person.id}${nameSlug ? `-${nameSlug}` : ''}`;
     if (params.id !== expectedParam) {
-        redirect(`/artist/${expectedParam}`);
+        permanentRedirect(`/artist/${expectedParam}`);
     }
 
     // Injected structured data (Person schema)

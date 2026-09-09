@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Star, Play, ExternalLink, Tv, Film, Youtube, Share2, Copy, Check } from 'lucide-react';
 import EmbedPlayer, { StreamServer } from '@/components/EmbedPlayer';
@@ -120,16 +120,24 @@ export default function WatchClient({
         }
     };
 
-    // TV Show specific state
-    const [selectedSeason, setSelectedSeason] = useState<number>(initialSeason);
-    const [selectedEpisode, setSelectedEpisode] = useState<number>(initialEpisode);
+    // TV Show specific state.
+    //
+    // ?s= and ?e= are read here rather than on the server: a server component
+    // that touches searchParams can never be ISR-cached, and leaving the TV
+    // route uncached is what melts the Worker under a full crawl.
+    const searchParams = useSearchParams();
+    const urlSeason = parseInt(searchParams.get('s') || '') || initialSeason;
+    const urlEpisode = parseInt(searchParams.get('e') || '') || initialEpisode;
+
+    const [selectedSeason, setSelectedSeason] = useState<number>(urlSeason);
+    const [selectedEpisode, setSelectedEpisode] = useState<number>(urlEpisode);
     const [episodes, setEpisodes] = useState<Episode[]>([]);
     const [fetchingEpisodes, setFetchingEpisodes] = useState(false);
 
     useEffect(() => {
-        setSelectedSeason(initialSeason);
-        setSelectedEpisode(initialEpisode);
-    }, [initialSeason, initialEpisode]);
+        setSelectedSeason(urlSeason);
+        setSelectedEpisode(urlEpisode);
+    }, [urlSeason, urlEpisode]);
 
     const handleProgress = useCallback((p: number) => {
         setProgress(p);

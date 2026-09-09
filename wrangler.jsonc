@@ -9,5 +9,13 @@
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS"
-  }
+  },
+  // Backing store for the ISR incremental cache (see open-next.config.ts).
+  // Create it once with: wrangler r2 bucket create cinevista-inc-cache
+  "r2_buckets": [
+    {
+      "binding": "NEXT_INC_CACHE_R2_BUCKET",
+      "bucket_name": "cinevista-inc-cache"
+    }
+  ]
 }

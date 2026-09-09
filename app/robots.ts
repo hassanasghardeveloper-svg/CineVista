@@ -5,10 +5,14 @@ export default function robots(): MetadataRoute.Robots {
         rules: [
             {
                 userAgent: '*',
-                allow: '/',
+                // /_next/static holds the CSS and JS bundles. Blocking those
+                // stops Google rendering the page, which feeds straight into
+                // "Crawled - currently not indexed".
+                allow: ['/', '/_next/static/'],
                 disallow: ['/api/', '/_next/'],
             },
         ],
         sitemap: 'https://cinevista.online/sitemap.xml',
+        host: 'https://cinevista.online',
     };
 }

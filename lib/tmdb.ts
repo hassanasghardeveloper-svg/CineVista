@@ -7,6 +7,32 @@ const API_KEY = process.env.TMDB_API_KEY;
 const BASE_URL = 'https://api.themoviedb.org/3';
 const IMG_BASE = 'https://image.tmdb.org/t/p';
 
+/**
+ * Thrown when TMDB is reachable but unhappy (rate limit, outage, network blip).
+ *
+ * This has to stay separate from "TMDB says this id does not exist". A missing
+ * id is a real 404, but a rate limit is temporary -- and answering a temporary
+ * problem with a 404 tells Google the page is permanently gone and gets it
+ * deindexed. Callers let this bubble up so the request fails with a 5xx, which
+ * Google retries instead.
+ */
+export class TmdbUnavailableError extends Error {
+    constructor(message: string) {
+        super(message);
+        this.name = 'TmdbUnavailableError';
+    }
+}
+
+/**
+ * Returns for a TMDB response: `null` only for a genuine 404, otherwise throws
+ * on any other failure.
+ */
+export function assertTmdbOk(res: Response, what: string): null | void {
+    if (res.ok) return;
+    if (res.status === 404) return null;
+    throw new TmdbUnavailableError(`TMDB ${res.status} for ${what}`);
+}
+
 export async function fetchTitleDetails(id: string, type: string) {
     if (!id || !/^\d+$/.test(id)) return null;
     try {
@@ -16,7 +42,7 @@ export async function fetchTitleDetails(id: string, type: string) {
             { next: { revalidate: 3600 } }
         );
 
-        if (!detailRes.ok) return null;
+        if (assertTmdbOk(detailRes, `${mediaType}/${id}`) === null) return null;
         const details = await detailRes.json();
 
         // Extract directors from crew
@@ -64,7 +90,26 @@ export async function fetchTitleDetails(id: string, type: string) {
             streaming_sources: details['watch/providers']?.results?.US?.flatrate || [],
         };
     } catch (e) {
+        // A transient TMDB problem must not be reported as "this title does not
+        // exist" -- rethrow so the route 5xx's and keeps its place in the index.
+        if (e instanceof TmdbUnavailableError) throw e;
         console.error('Error fetching details:', e);
-        return null;
+        throw new TmdbUnavailableError(`TMDB request failed for ${type}/${id}`);
     }
+}
+
+/** Fallback thumbnail for titles TMDB has no artwork for. */
+export const FALLBACK_THUMBNAIL = 'https://cinevista.online/opengraph-image.jpg';
+
+/**
+ * Google rejects a bare `YYYY-MM-DD` uploadDate: it wants full ISO 8601 with a
+ * time zone. Returns undefined for anything unparseable so the property is
+ * omitted rather than emitted invalid.
+ */
+export function toSchemaDate(date?: string | null): string | undefined {
+    if (!date) return undefined;
+    const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(date.trim());
+    if (match) return `${date.trim()}T00:00:00+00:00`;
+    const parsed = new Date(date);
+    return isNaN(parsed.getTime()) ? undefined : parsed.toISOString();
 }
