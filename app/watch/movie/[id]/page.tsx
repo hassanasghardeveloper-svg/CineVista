@@ -3,21 +3,21 @@ import { Suspense } from 'react';
 import { permanentRedirect, notFound } from 'next/navigation';
 import Link from 'next/link';
 import WatchClient from '@/components/WatchClient';
-import { fetchTitleDetails, toSchemaDate, FALLBACK_THUMBNAIL } from '@/lib/tmdb';
+import { fetchTitleDetails, fetchPrerenderParams, toSchemaDate, FALLBACK_THUMBNAIL } from '@/lib/tmdb';
 import { extractIdFromSlug, slugify, createWatchUrl } from '@/lib/slugify';
 
 interface Props {
     params: { id: string };
 }
 
-// Render once per hour and serve the cached HTML to everyone else, so a full
-// crawl does not re-render every title in the Worker.
-export const revalidate = 3600;
+// Title details barely change, so a day between renders is plenty. Each
+// render costs Worker CPU, which the free plan caps at 10 ms.
+export const revalidate = 86400;
 
-// Empty list: nothing is prerendered at build, but the route enters the
-// prerender manifest so on-demand renders are cached rather than dynamic.
+// Popular titles are rendered at build time and served as static assets. The
+// rest of the catalogue still renders on demand and is cached afterwards.
 export async function generateStaticParams() {
-    return [];
+    return fetchPrerenderParams('movie');
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

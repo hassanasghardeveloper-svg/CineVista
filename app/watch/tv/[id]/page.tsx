@@ -3,20 +3,19 @@ import { Suspense } from 'react';
 import { permanentRedirect, notFound } from 'next/navigation';
 import Link from 'next/link';
 import WatchClient from '@/components/WatchClient';
-import { fetchTitleDetails, toSchemaDate, FALLBACK_THUMBNAIL } from '@/lib/tmdb';
+import { fetchTitleDetails, fetchPrerenderParams, toSchemaDate, FALLBACK_THUMBNAIL } from '@/lib/tmdb';
 import { extractIdFromSlug, slugify } from '@/lib/slugify';
 
 interface Props {
     params: { id: string };
 }
 
-// Cache for an hour like the movie and artist routes.
-export const revalidate = 3600;
+// Cache for a day like the movie route.
+export const revalidate = 86400;
 
-// Puts the route in the prerender manifest so on-demand renders are cached
-// rather than re-rendered per request.
+// Popular shows are rendered at build time, the rest on demand.
 export async function generateStaticParams() {
-    return [];
+    return fetchPrerenderParams('tv');
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

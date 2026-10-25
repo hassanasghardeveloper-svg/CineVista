@@ -3,6 +3,8 @@
  * Used by both /watch/movie/[id] and /watch/tv/[id] routes.
  */
 
+import { slugify } from './slugify';
+
 const API_KEY = process.env.TMDB_API_KEY;
 const BASE_URL = 'https://api.themoviedb.org/3';
 const IMG_BASE = 'https://image.tmdb.org/t/p';
@@ -39,7 +41,7 @@ export async function fetchTitleDetails(id: string, type: string) {
         const mediaType = type === 'tv' || type === 'tv_series' ? 'tv' : 'movie';
         const detailRes = await fetch(
             `${BASE_URL}/${mediaType}/${id}?api_key=${API_KEY}&append_to_response=videos,credits,recommendations,watch/providers`,
-            { next: { revalidate: 3600 } }
+            { next: { revalidate: 86400 } }
         );
 
         if (assertTmdbOk(detailRes, `${mediaType}/${id}`) === null) return null;
@@ -112,4 +114,62 @@ export function toSchemaDate(date?: string | null): string | undefined {
     if (match) return `${date.trim()}T00:00:00+00:00`;
     const parsed = new Date(date);
     return isNaN(parsed.getTime()) ? undefined : parsed.toISOString();
+}
+
+/**
+ * TMDB list endpoints whose titles are prerendered at build time, as
+ * [path, extra query, page count]. Regional lists come first because that is
+ * where most of CineVista's search traffic lands.
+ */
+const PRERENDER_LISTS: Record<'movie' | 'tv', [string, string, number][]> = {
+    movie: [
+        ['/discover/movie', '&with_original_language=ur&sort_by=popularity.desc', 3],
+        ['/discover/movie', '&with_original_language=hi&sort_by=popularity.desc', 5],
+        ['/discover/movie', '&with_original_language=pa&sort_by=popularity.desc', 2],
+        ['/movie/now_playing', '', 3],
+        ['/trending/movie/week', '', 5],
+        ['/movie/popular', '', 10],
+    ],
+    tv: [
+        ['/discover/tv', '&with_original_language=ur&sort_by=popularity.desc', 3],
+        ['/discover/tv', '&with_original_language=hi&sort_by=popularity.desc', 3],
+        ['/discover/tv', '&with_original_language=tr&sort_by=popularity.desc', 3],
+        ['/discover/tv', '&with_original_language=ko&sort_by=popularity.desc', 2],
+        ['/trending/tv/week', '', 3],
+        ['/tv/popular', '', 5],
+    ],
+};
+
+/**
+ * `generateStaticParams` for the watch routes: the most-visited titles, keyed
+ * by their canonical slug so the build renders the page, not a redirect.
+ *
+ * Prerendered pages ship as static assets and never touch the Worker's CPU
+ * limit, which on the free plan is what turned crawls into 5xx errors. A list
+ * that fails to load is skipped instead of failing the build.
+ */
+export async function fetchPrerenderParams(type: 'movie' | 'tv'): Promise<{ id: string }[]> {
+    if (!API_KEY) return [];
+    const requests = PRERENDER_LISTS[type].flatMap(([path, query, pages]) =>
+        Array.from({ length: pages }, (_, i) =>
+            fetch(`${BASE_URL}${path}?api_key=${API_KEY}&page=${i + 1}${query}`, { next: { revalidate: 86400 } })
+                .then(res => (res.ok ? res.json() : { results: [] }))
+                .then(data => (data.results || []) as any[])
+                .catch(() => [] as any[])
+        )
+    );
+    const seen = new Set<string>();
+    const params: { id: string }[] = [];
+    for (const item of (await Promise.all(requests)).flat()) {
+        const id = String(item.id);
+        if (seen.has(id)) continue;
+        seen.add(id);
+        // Must match each route's canonical slug: movies carry the year, TV
+        // shows do not.
+        const slug = type === 'movie'
+            ? slugify(item.title, (item.release_date || '').split('-')[0])
+            : slugify(item.name);
+        params.push({ id: `${id}${slug ? `-${slug}` : ''}` });
+    }
+    return params;
 }

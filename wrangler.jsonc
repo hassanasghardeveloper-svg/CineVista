@@ -10,11 +10,19 @@
     "directory": ".open-next/assets",
     "binding": "ASSETS"
   },
-  // Backing store for the ISR incremental cache (see open-next.config.ts).
-  "kv_namespaces": [
+  // Worker logs in the dashboard -- without these the CPU-limit failures behind
+  // the Oct 2026 stale-content bug were invisible.
+  "observability": {
+    "enabled": true
+  },
+  // Lets the revalidation queue re-render stale pages in their own invocation.
+  "services": [
     {
-      "binding": "NEXT_INC_CACHE_KV",
-      "id": "752ed2c4547945f68f6c7240a0b363c4"
+      "binding": "WORKER_SELF_REFERENCE",
+      "service": "cinevista"
     }
   ]
+  // No KV binding: the incremental cache is static assets + Cache API (see
+  // open-next.config.ts). The old NEXT_INC_CACHE_KV namespace
+  // (752ed2c4547945f68f6c7240a0b363c4) is unused and can be deleted.
 }

@@ -48,7 +48,9 @@ export function createWatchUrl(
     year?: string | number
 ): string {
     const mediaType = type === 'tv' || type === 'tv_series' ? 'tv' : 'movie';
-    const slug = slugify(title, year);
+    // The TV route's canonical slug has no year; adding one made every TV link
+    // (and every TV sitemap entry) answer with a 308 redirect.
+    const slug = mediaType === 'tv' ? slugify(title) : slugify(title, year);
     return `/watch/${mediaType}/${id}${slug ? `-${slug}` : ''}`;
 }
 

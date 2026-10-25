@@ -46,6 +46,17 @@ async function fetchCategory(url: string, typeOverride?: string): Promise<Movie[
     }
 }
 
+// Only the hero slides show an overview and backdrop. Stripping them from row
+// cards cuts the serialized homepage roughly in half, and with it the render CPU
+// that keeps tripping the Worker CPU limit during revalidation.
+const HERO_COUNT = 6;
+
+function toCard(movie: Movie): Movie {
+    return { ...movie, overview: '', backdropPath: '' };
+}
+
+export const revalidate = 3600;
+
 export const metadata: Metadata = {
     title: 'CineVista - Stream Movies & TV Shows Online Free',
     description: 'Stream trending movies, popular TV series, Pakistani dramas, and Turkish series for free on CineVista. Watch high-quality fallback streams with zero registration.',
@@ -159,18 +170,18 @@ export default async function HomePage() {
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
             />
             <HomeClient
-                initialTrending={trending}
-                initialNewest={newest}
-                initialTvSeries={tvSeries}
-                initialTopRated={topRated}
-                initialAction={action}
-                initialComedy={comedy}
-                initialHorror={horror}
-                initialIndian={indian}
-                initialPakistani={pakistani}
-                initialPunjabi={punjabi}
-                initialTurkish={turkish}
-                initialKorean={korean}
+                initialTrending={trending.map((m, i) => (i < HERO_COUNT ? m : toCard(m)))}
+                initialNewest={newest.map(toCard)}
+                initialTvSeries={tvSeries.map(toCard)}
+                initialTopRated={topRated.map(toCard)}
+                initialAction={action.map(toCard)}
+                initialComedy={comedy.map(toCard)}
+                initialHorror={horror.map(toCard)}
+                initialIndian={indian.map(toCard)}
+                initialPakistani={pakistani.map(toCard)}
+                initialPunjabi={punjabi.map(toCard)}
+                initialTurkish={turkish.map(toCard)}
+                initialKorean={korean.map(toCard)}
             />
         </>
     );

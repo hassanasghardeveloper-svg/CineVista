@@ -3,6 +3,7 @@ import path from 'path';
 import { createWatchUrl, createArtistUrl } from '@/lib/slugify';
 import {
     findShard,
+    listShards,
     renderUrlSet,
     SITE_URL,
     XML_HEADERS,
@@ -16,10 +17,11 @@ const API_KEY = process.env.TMDB_API_KEY;
 // Each shard is rebuilt at most once a day.
 export const revalidate = 86400;
 
-// Empty on purpose: shards are rendered on first request and then cached,
-// so the build does not have to make hundreds of TMDB calls.
+// Every shard is built ahead of time. Rendered on demand, a shard makes 20
+// TMDB calls inside one request, which took close to a minute on the free plan
+// and often hit its CPU limit.
 export async function generateStaticParams() {
-    return [];
+    return [{ shard: 'static' }, ...listShards().map(shard => ({ shard: shard.id }))];
 }
 
 function staticEntries(): SitemapEntry[] {

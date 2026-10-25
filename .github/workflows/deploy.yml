@@ -1,0 +1,55 @@
+# Rebuilds and deploys the site every day so the homepage, sitemaps and
+# popular title pages pick up new releases.
+#
+# On the Workers free plan, pages re-rendered inside the Worker often hit the
+# 10 ms CPU limit. A build on GitHub's runner has no such limit, so the daily
+# build is what keeps content fresh.
+#
+# Required repository secrets (Settings -> Secrets and variables -> Actions):
+#   CLOUDFLARE_API_TOKEN   token with the "Edit Cloudflare Workers" template
+#   CLOUDFLARE_ACCOUNT_ID
+#   TMDB_API_KEY
+#   GROQ_API_KEY
+#   NEXT_PUBLIC_GA_MEASUREMENT_ID
+#   NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
+name: Daily deploy
+
+on:
+  schedule:
+    - cron: "0 0 * * *" # 05:00 Pakistan time
+  workflow_dispatch:
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      # OpenNext reads .env at build time and bundles it into the Worker.
+      - name: Write .env
+        run: |
+          cat > .env <<ENV
+          TMDB_API_KEY=${{ secrets.TMDB_API_KEY }}
+          GROQ_API_KEY=${{ secrets.GROQ_API_KEY }}
+          NEXT_PUBLIC_GA_MEASUREMENT_ID=${{ secrets.NEXT_PUBLIC_GA_MEASUREMENT_ID }}
+          NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION=${{ secrets.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION }}
+          ENV
+
+      - run: npm run build-cloudflare
+
+      - run: npm run deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
