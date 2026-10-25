@@ -840,7 +840,7 @@ export default function WatchClient({
                     <h3 className="text-lg font-black uppercase tracking-wider text-white/40 mb-6">
                         Cast & Crew
                     </h3>
-                    <div className="flex gap-6 overflow-x-auto pb-4" style={{scrollbarWidth:'none', msOverflowStyle:'none'}}>
+                    <div className="flex gap-6 overflow-x-auto pb-4 no-scrollbar">
                         {title.cast.map((member) => (
                             <Link
                                 key={member.id}

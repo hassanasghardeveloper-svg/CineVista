@@ -14,27 +14,39 @@ body {
     font-feature-settings: "ss01", "ss02", "cv01", "cv02", "cv03";
 }
 
-/* Hide ALL scrollbars globally — no exceptions */
+/* Slim themed scrollbar, so visitors can see where they are on long pages */
+html {
+    scrollbar-width: thin;
+    scrollbar-color: #c2410c #0a0a0a;
+}
+
 ::-webkit-scrollbar {
-    width: 0 !important;
-    height: 0 !important;
-    display: none !important;
+    width: 8px;
+    height: 8px;
 }
 
-*,
-*::before,
-*::after {
-    -ms-overflow-style: none !important;
-    scrollbar-width: none !important;
+::-webkit-scrollbar-track {
+    background: #0a0a0a;
 }
 
-/* Hide scrollbar utility */
-.hide-scrollbar {
+::-webkit-scrollbar-thumb {
+    background: #c2410c;
+    border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #ea580c;
+}
+
+/* Horizontal card rows scroll by swipe/arrows, so their scrollbar stays hidden */
+.hide-scrollbar,
+.no-scrollbar {
     -ms-overflow-style: none;
     scrollbar-width: none;
 }
 
-.hide-scrollbar::-webkit-scrollbar {
+.hide-scrollbar::-webkit-scrollbar,
+.no-scrollbar::-webkit-scrollbar {
     display: none;
 }
 

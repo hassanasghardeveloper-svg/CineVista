@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import MobileNav from '@/components/MobileNav';
+import BackToTop from '@/components/BackToTop';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -89,6 +90,7 @@ export default function RootLayout({
             <body className={`${inter.className} antialiased`}>
                 {children}
                 <MobileNav />
+                <BackToTop />
             </body>
         </html>
     );
